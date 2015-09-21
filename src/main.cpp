@@ -1,18 +1,8 @@
-#include <SFML/Graphics.hpp>
+#include "BB/Game.h"
+#include "BB/GameState/GameStateInit.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-    while(window.isOpen()) {
-        sf::Event event;
-        while(window.pollEvent(event)) {
-            if(event.type == sf::Event::Closed)
-                window.close();
-        }
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
-    return 0;
+    bb::Game game;
+    game.pushState(new bb::GameStateInit(game));
+    return game.run();
 }

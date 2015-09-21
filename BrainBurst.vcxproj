@@ -129,7 +129,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BB\Game.cpp" />
+    <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
+    <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\BB\Game.h" />
+    <ClInclude Include="include\BB\GameState\GameStateInit.h" />
+    <ClInclude Include="include\BB\GameState\IGameState.h" />
+    <ClInclude Include="include\BB\Handler\WindowHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
