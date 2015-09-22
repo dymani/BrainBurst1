@@ -129,8 +129,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
+    <ClCompile Include="src\BB\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
+    <ClCompile Include="src\BB\Handler\GraphicsHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -139,9 +142,13 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BB\Component\GraphicsComponent.h" />
+    <ClInclude Include="include\BB\Component\IComponent.h" />
+    <ClInclude Include="include\BB\Entity.h" />
     <ClInclude Include="include\BB\Game.h" />
     <ClInclude Include="include\BB\GameState\GameStateInit.h" />
     <ClInclude Include="include\BB\GameState\IGameState.h" />
+    <ClInclude Include="include\BB\Handler\GraphicsHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

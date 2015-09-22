@@ -3,6 +3,9 @@
 
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/WindowHandler.h"
+#include "BB/Handler/GraphicsHandler.h"
+#include "BB/Entity.h"
+#include "BB/Component/GraphicsComponent.h"
 
 namespace bb {
     class GameStateInit: public IGameState {
@@ -13,6 +16,7 @@ namespace bb {
         void handleInput();
     private:
         WindowHandler m_windowHandler;
+        GraphicsHandler m_graphicsHandler;
         bool m_isRunning;
     };
 }
