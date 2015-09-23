@@ -196,3 +196,7 @@ FakesAssemblies/
 *.opt
 /dependencies/SFML
 /include/SFML
+/dependencies
+/include/lua
+/include/LuaBridge/detail
+/include/LuaBridge

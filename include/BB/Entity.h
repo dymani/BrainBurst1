@@ -3,6 +3,7 @@
 
 #include <typeindex>
 #include <map>
+#include <SFML/Graphics.hpp>
 
 namespace bb {
     class IComponent;
@@ -22,8 +23,11 @@ namespace bb {
         }
         Entity* setZ(float z);
         float getZ();
+        Entity* setCoord(sf::Vector2i coord);
+        sf::Vector2i getCoord();
     private:
         std::map<std::type_index, IComponent*> m_components;
+        sf::Vector2i m_coord;
         float m_z;
     };
 }

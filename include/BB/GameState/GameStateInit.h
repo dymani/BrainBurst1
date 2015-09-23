@@ -6,6 +6,7 @@
 #include "BB/Handler/GraphicsHandler.h"
 #include "BB/Entity.h"
 #include "BB/Component/GraphicsComponent.h"
+#include "BB/Handler/ResourceHandler.h"
 
 namespace bb {
     class GameStateInit: public IGameState {
@@ -17,6 +18,7 @@ namespace bb {
     private:
         WindowHandler m_windowHandler;
         GraphicsHandler m_graphicsHandler;
+        ResourceHandler m_resourceHandler;
         bool m_isRunning;
     };
 }

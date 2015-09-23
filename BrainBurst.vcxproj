@@ -83,8 +83,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>SolutionDir)dependencies;$(SolutionDir)dependencies\SFML;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies;$(SolutionDir)dependencies\SFML;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-main-d.lib;sfml-graphics-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-window-d.lib;lua52.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -110,8 +110,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>SolutionDir)dependencies;$(SolutionDir)dependencies\SFML;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-main.lib;sfml-graphics.lib;sfml-network.lib;sfml-system.lib;sfml-audio.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies;$(SolutionDir)dependencies\SFML;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-main.lib;sfml-graphics.lib;sfml-network.lib;sfml-system.lib;sfml-audio.lib;sfml-window.lib;lua52.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,11 +134,13 @@
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
     <ClCompile Include="src\BB\Handler\GraphicsHandler.cpp" />
+    <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="assets\data\resource.lua" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -149,7 +151,14 @@
     <ClInclude Include="include\BB\GameState\GameStateInit.h" />
     <ClInclude Include="include\BB\GameState\IGameState.h" />
     <ClInclude Include="include\BB\Handler\GraphicsHandler.h" />
+    <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\test.png" />
+    <Image Include="assets\textures\test1.png" />
+    <Image Include="assets\textures\test2.png" />
+    <Image Include="assets\textures\test3.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

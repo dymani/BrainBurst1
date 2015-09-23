@@ -36,10 +36,14 @@
     <ClCompile Include="src\BB\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\BB\Handler\ResourceHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include=".gitignore" />
+    <None Include="assets\data\resource.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BB\Game.h">
@@ -66,5 +70,22 @@
     <ClInclude Include="include\BB\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\BB\Handler\ResourceHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\test.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\test1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\test2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\test3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

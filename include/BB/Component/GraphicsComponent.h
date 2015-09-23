@@ -8,10 +8,10 @@ namespace bb {
     class GraphicsComponent: public IComponent {
     public:
         GraphicsComponent();
-        GraphicsComponent* setColor(sf::Color color);
-        sf::Color& getColor();
+        GraphicsComponent* setTexture(sf::Texture& texture);
+        sf::Sprite& getSprite();
     private:
-        sf::Color m_color;
+        sf::Sprite m_sprite;
     };
 }
 

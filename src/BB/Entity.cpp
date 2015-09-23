@@ -24,4 +24,13 @@ namespace bb {
     float Entity::getZ() {
         return m_z;
     }
+
+    Entity* Entity::setCoord(sf::Vector2i coord) {
+        m_coord = coord;
+        return this;
+    }
+
+    sf::Vector2i Entity::getCoord() {
+        return m_coord;
+    }
 }
