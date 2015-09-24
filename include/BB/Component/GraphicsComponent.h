@@ -10,8 +10,11 @@ namespace bb {
         GraphicsComponent();
         GraphicsComponent* setTexture(sf::Texture& texture);
         sf::Sprite& getSprite();
+        GraphicsComponent* setZ(float z);
+        float getZ();
     private:
         sf::Sprite m_sprite;
+        float m_z;
     };
 }
 

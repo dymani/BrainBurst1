@@ -16,21 +16,12 @@ namespace bb {
         return this;
     }
 
-    Entity* Entity::setZ(float z) {
-        m_z = z;
-        return this;
-    }
-
-    float Entity::getZ() {
-        return m_z;
-    }
-
-    Entity* Entity::setCoord(sf::Vector2i coord) {
+    Entity* Entity::setCoord(sf::Vector2f coord) {
         m_coord = coord;
         return this;
     }
 
-    sf::Vector2i Entity::getCoord() {
+    sf::Vector2f Entity::getCoord() {
         return m_coord;
     }
 }

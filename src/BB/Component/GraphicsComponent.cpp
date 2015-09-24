@@ -12,4 +12,13 @@ namespace bb {
     sf::Sprite& GraphicsComponent::getSprite() {
         return m_sprite;
     }
+
+    GraphicsComponent* GraphicsComponent::setZ(float z) {
+        m_z = z;
+        return this;
+    }
+
+    float GraphicsComponent::getZ() {
+        return m_z;
+    }
 }

@@ -19,7 +19,7 @@ namespace bb {
     class ResourceHandler {
     public:
         ResourceHandler(Game& game);
-        void load();
+        void load(luabridge::lua_State* L);
         sf::Texture& getTexture(std::string name);
     private:
         Game& m_game;

@@ -9,12 +9,11 @@ namespace bb {
 
     class GraphicsHandler {
     public:
-        GraphicsHandler(WindowHandler& windowHandler);
-        void addEntity(Entity* entity);
+        GraphicsHandler(WindowHandler& windowHandler, std::vector<Entity*>& entities);
         void draw(const double dt);
     private:
         WindowHandler& m_windowHandler;
-        std::vector<Entity*> m_entities;
+        std::vector<Entity*>& m_entities;
     };
     bool compareEntities(Entity* a, Entity* b);
 }

@@ -21,14 +21,12 @@ namespace bb {
             }
             return nullptr;
         }
-        Entity* setZ(float z);
-        float getZ();
-        Entity* setCoord(sf::Vector2i coord);
-        sf::Vector2i getCoord();
+        Entity* setCoord(sf::Vector2f coord);
+        sf::Vector2f getCoord();
     private:
         std::map<std::type_index, IComponent*> m_components;
-        sf::Vector2i m_coord;
-        float m_z;
+        sf::Vector2f m_coord;
+
     };
 }
 
