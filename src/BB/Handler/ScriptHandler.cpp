@@ -27,12 +27,12 @@ namespace bb {
             std::cerr << "Error while getting \"templates\" in " + file + ".\n";
             return;
         }
-        for(int i = 0; i < luaTemplates.length(); i++) {
-            LuaRef luaTemplate = luaTemplates[i + 1];
+        for(int i = 1; i <= luaTemplates.length(); i++) {
+            LuaRef luaTemplate = luaTemplates[i];
             LuaRef luaName = luaTemplate["name"];
             LuaRef luaComponents = luaTemplate["components"];
             if(!luaName.isString() || !luaComponents.isTable()) {
-                std::cerr << "Error while getting \"template[" + std::to_string(i + 1) + "]\" in " + file
+                std::cerr << "Error while getting \"template[" + std::to_string(i) + "]\" in " + file
                     + ".\n";
                 return;
             }
@@ -42,7 +42,7 @@ namespace bb {
             if(!luaGraphicsComponent.isTable()
                 || !luaTexture.isString()
                 || !luaZ.isNumber()) {
-                std::cerr << "Error while getting \"GraphicsComponent\" of \"define[" + std::to_string(i + 1)
+                std::cerr << "Error while getting \"GraphicsComponent\" of \"define[" + std::to_string(i)
                     + "]\" in " + file + ".\n";
                 return;
             }
@@ -59,15 +59,15 @@ namespace bb {
             std::cerr << "Error while getting \"entities\" in " + file + ".\n";
             return;
         }
-        for(int i = 0; i < luaEntities.length(); i++) {
-            LuaRef luaEntity = luaEntities[i + 1];
+        for(int i = 1; i <= luaEntities.length(); i++) {
+            LuaRef luaEntity = luaEntities[i];
             LuaRef luaName = luaEntity["name"];
             LuaRef luaX = luaEntity["x"];
             LuaRef luaY = luaEntity["y"];
             if(!luaName.isString()
                 || !luaX.isNumber()
                 || !luaY.isNumber()) {
-                std::cerr << "Error while getting \"entities[" + std::to_string(i + 1) + "]\" in " + file
+                std::cerr << "Error while getting \"entities[" + std::to_string(i) + "]\" in " + file
                     + ".\n";
                 return;
             }

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <map>
 #include <LuaBridge\LuaBridge.h>
 extern "C" {
@@ -21,10 +22,12 @@ namespace bb {
         ResourceHandler(Game& game);
         void load(luabridge::lua_State* L);
         sf::Texture& getTexture(std::string name);
+        sf::SoundBuffer& getSoundBuffer(std::string name);
     private:
         Game& m_game;
-        std::map<std::string, std::string> m_texturesLoading;
+        std::map<std::string, std::string> m_texturesLoading, m_soundBuffersLoading;
         std::map<std::string, sf::Texture> m_textures;
+        std::map<std::string, sf::SoundBuffer> m_soundBuffers;
     };
 }
 

@@ -11,10 +11,11 @@ extern "C" {
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/WindowHandler.h"
 #include "BB/Handler/GraphicsHandler.h"
-#include "BB/Entity.h"
-#include "BB/Component/GraphicsComponent.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/ScriptHandler.h"
+#include "BB/Handler/AudioHandler.h"
+#include "BB/Entity.h"
+#include "BB/Component/GraphicsComponent.h"
 
 namespace bb {
     class GameStateInit: public IGameState {
@@ -29,10 +30,12 @@ namespace bb {
         GraphicsHandler m_graphicsHandler;
         ResourceHandler m_resourceHandler;
         ScriptHandler m_scriptHandler;
+        AudioHandler m_audioHandler;
         bool m_isRunning;
         luabridge::lua_State* L;
         std::shared_ptr<luabridge::LuaRef> m_initFunc;
         std::vector<Entity*> m_entities;
+        int id;
     };
 }
 

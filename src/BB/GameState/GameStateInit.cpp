@@ -3,7 +3,8 @@
 
 namespace bb {
     GameStateInit::GameStateInit(Game& game):IGameState(game), m_graphicsHandler(m_windowHandler, m_entities),
-        m_resourceHandler(game), m_scriptHandler(m_resourceHandler), m_initFunc(nullptr) {
+        m_resourceHandler(game), m_scriptHandler(m_resourceHandler), m_audioHandler(m_resourceHandler),
+        m_initFunc(nullptr) {
         m_windowHandler.createWindow(sf::VideoMode(1024, 576), "Brain Burst 2039", sf::Style::Close,
             sf::ContextSettings());
         m_isRunning = true;
@@ -19,6 +20,7 @@ namespace bb {
     }
 
     bool GameStateInit::update() {
+        m_audioHandler.update();
         return m_isRunning;
     }
 
@@ -41,8 +43,20 @@ namespace bb {
                         m_windowHandler.getWindow().close();
                         m_isRunning = false;
                         return;
-                    case sf::Keyboard::Space:
+                    case sf::Keyboard::F5:
                         m_scriptHandler.loadEntities(m_entities, L, "assets/data/gameStateInit.lua");
+                        break;
+                    case sf::Keyboard::Num1:
+                        id = m_audioHandler.play("test1");
+                        break;
+                    case sf::Keyboard::Num2:
+                        m_audioHandler.play("test2");
+                        break;
+                    case sf::Keyboard::Num3:
+                        m_audioHandler.play("test3");
+                        break;
+                    case sf::Keyboard::Space:
+                        m_audioHandler.togglePause(id);
                         break;
                 }
             }
