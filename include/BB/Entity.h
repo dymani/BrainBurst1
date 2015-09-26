@@ -11,6 +11,7 @@ namespace bb {
     class Entity {
     public:
         Entity();
+        Entity(const Entity& rhs);
         ~Entity();
         Entity* addComponent(std::type_index type, IComponent* component);
         template <typename T>

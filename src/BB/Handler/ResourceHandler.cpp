@@ -7,8 +7,7 @@ namespace bb {
 
     void ResourceHandler::load(luabridge::lua_State* L) {
         using namespace luabridge;
-        if(luaL_loadfile(L, "assets/data/resource.lua") ||
-            lua_pcall(L, 0, 0, 0)) {
+        if(luaL_loadfile(L, "assets/data/resource.lua") || lua_pcall(L, 0, 0, 0)) {
             std::cerr << "Error while loading resource.lua.\n";
             return;
         }

@@ -5,10 +5,12 @@ namespace bb {
     Entity::Entity() {
     }
 
+    Entity::Entity(const Entity& rhs) {
+        m_components = rhs.m_components;
+        m_coord = rhs.m_coord;
+    }
+
     Entity::~Entity() {
-        for(auto& c : m_components) {
-            delete c.second;
-        }
     }
 
     Entity* Entity::addComponent(std::type_index type, IComponent* component) {

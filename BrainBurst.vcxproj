@@ -135,6 +135,7 @@
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
     <ClCompile Include="src\BB\Handler\GraphicsHandler.cpp" />
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
+    <ClCompile Include="src\BB\Handler\ScriptHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="include\BB\GameState\IGameState.h" />
     <ClInclude Include="include\BB\Handler\GraphicsHandler.h" />
     <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
+    <ClInclude Include="include\BB\Handler\ScriptHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,47 @@
-gameStateInit = {
-    init=function(gameStateInit)
-        gameStateInit:addEntity("test1", 306, 238, 0)
-        gameStateInit:addEntity("test2", 356, 238, 1)
-        gameStateInit:addEntity("test3", 406, 238, 2)
-    end
+templates = {
+  {
+    name = "Test1",
+    components = {
+      GraphicsComponent = {
+        texture = "test1",
+        z = 0
+      }
+    }
+  },
+  {
+    name = "Test2",
+    components = {
+      GraphicsComponent = {
+        texture = "test2",
+        z = 1
+      }
+    }
+  },
+  {
+    name = "Test3",
+    components = {
+      GraphicsComponent = {
+        texture = "test3",
+        z = 2
+      }
+    }
+  }
+}
+
+entities = {
+  {
+    name = "Test1",
+    x = 206,
+    y = 238
+  },
+  {
+    name = "Test2",
+    x = 462,
+    y = 238
+  },
+  {
+    name = "Test3",
+    x = 718,
+    y = 238
+  }
 }
