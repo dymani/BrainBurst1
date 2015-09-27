@@ -11,6 +11,7 @@ namespace bb {
             std::cerr << "Error while loading resource.lua.\n";
             return;
         }
+
         LuaRef luaTextures = getGlobal(L, "textures");
         if(!luaTextures.isTable()) {
             std::cerr << "Error while getting \"textures\" in resource.lua.\n";
@@ -33,6 +34,7 @@ namespace bb {
             file = luaFile.cast<std::string>();
             m_texturesLoading[name] = file;
         }
+
         LuaRef luaSounds = getGlobal(L, "sounds");
         if(!luaSounds.isTable()) {
             std::cerr << "Error while getting \"sounds\" in resource.lua.\n";
@@ -53,6 +55,28 @@ namespace bb {
             name = luaName.cast<std::string>();
             file = luaFile.cast<std::string>();
             m_soundBuffersLoading[name] = file;
+        }
+
+        LuaRef luaFonts = getGlobal(L, "fonts");
+        if(!luaFonts.isTable()) {
+            std::cerr << "Error while getting \"fonts\" in resource.lua.\n";
+            return;
+        }
+        for(int i = 1; i <= luaFonts.length(); i++) {
+            LuaRef luaFont = luaFonts[i];
+            if(!luaFont.isTable()) {
+                std::cerr << "Error while getting \"font\" " << i << " in resource.lua.\n";
+                return;
+            }
+            LuaRef luaName = luaFont["name"];
+            LuaRef luaFile = luaFont["file"];
+            if(!luaName.isString() || !luaFile.isString()) {
+                std::cerr << "Error while getting \"font\" " << i << " in resource.lua.\n";
+                return;
+            }
+            name = luaName.cast<std::string>();
+            file = luaFile.cast<std::string>();
+            m_fontsLoading[name] = file;
         }
     }
 
@@ -78,9 +102,9 @@ namespace bb {
     sf::SoundBuffer& ResourceHandler::getSoundBuffer(std::string name) {
         auto soundBufferIt = m_soundBuffersLoading.find(name);
         if(soundBufferIt != m_soundBuffersLoading.end()) {
-            sf::SoundBuffer soundBffer;
-            if(soundBffer.loadFromFile("assets/sounds/" + m_soundBuffersLoading[name])) {
-                m_soundBuffers[name] = soundBffer;
+            sf::SoundBuffer soundBuffer;
+            if(soundBuffer.loadFromFile("assets/sounds/" + m_soundBuffersLoading[name])) {
+                m_soundBuffers[name] = soundBuffer;
                 m_soundBuffersLoading.erase(soundBufferIt);
             } else {
                 std::cerr << "Error while loading sound " + name + ".\n";
@@ -92,6 +116,26 @@ namespace bb {
                 std::cerr << "Error while getting sound " + name + ".\n";
             }
             return m_soundBuffers[name];
+        }
+    }
+
+    sf::Font& ResourceHandler::getFont(std::string name) {
+        auto fontIt = m_fontsLoading.find(name);
+        if(fontIt != m_fontsLoading.end()) {
+            sf::Font font;
+            if(font.loadFromFile("assets/fonts/" + m_fontsLoading[name])) {
+                m_fonts[name] = font;
+                m_fontsLoading.erase(fontIt);
+            } else {
+                std::cerr << "Error while loading font " + name + ".\n";
+            }
+            return m_fonts[name];
+        } else {
+            auto it = m_fonts.find(name);
+            if(it == m_fonts.end()) {
+                std::cerr << "Error while getting font " + name + ".\n";
+            }
+            return m_fonts[name];
         }
     }
 }

@@ -23,11 +23,13 @@ namespace bb {
         void load(luabridge::lua_State* L);
         sf::Texture& getTexture(std::string name);
         sf::SoundBuffer& getSoundBuffer(std::string name);
+        sf::Font& getFont(std::string name);
     private:
         Game& m_game;
-        std::map<std::string, std::string> m_texturesLoading, m_soundBuffersLoading;
+        std::map<std::string, std::string> m_texturesLoading, m_soundBuffersLoading, m_fontsLoading;
         std::map<std::string, sf::Texture> m_textures;
         std::map<std::string, sf::SoundBuffer> m_soundBuffers;
+        std::map<std::string, sf::Font> m_fonts;
     };
 }
 

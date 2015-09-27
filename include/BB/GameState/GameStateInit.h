@@ -14,6 +14,7 @@ extern "C" {
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/ScriptHandler.h"
 #include "BB/Handler/AudioHandler.h"
+#include "BB/Handler/GuiHandler.h"
 #include "BB/Entity.h"
 #include "BB/Component/GraphicsComponent.h"
 
@@ -31,6 +32,7 @@ namespace bb {
         ResourceHandler m_resourceHandler;
         ScriptHandler m_scriptHandler;
         AudioHandler m_audioHandler;
+        GuiHandler m_guiHandler;
         bool m_isRunning;
         luabridge::lua_State* L;
         std::shared_ptr<luabridge::LuaRef> m_initFunc;

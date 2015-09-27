@@ -6,6 +6,7 @@ namespace bb {
     public:
         virtual ~IComponent() {
         };
+        virtual IComponent* copy() = 0;
     protected:
 
     };

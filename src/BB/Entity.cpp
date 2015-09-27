@@ -6,7 +6,9 @@ namespace bb {
     }
 
     Entity::Entity(const Entity& rhs) {
-        m_components = rhs.m_components;
+        for(auto& component : rhs.m_components) {
+            m_components[std::type_index(typeid(*component.second))] = component.second->copy();
+        }
         m_coord = rhs.m_coord;
     }
 
