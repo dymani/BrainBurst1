@@ -24,25 +24,20 @@ namespace bb {
             if(!gc) {
                 continue;
             }
-            sf::Drawable& drawable = gc->getDrawable();
-            dynamic_cast<sf::Transformable&>(drawable).setPosition(sf::Vector2f(entity->getCoord()));
-            window.draw(drawable);
+            sf::Transform transform;
+            transform.translate(entity->getCoord());
+            for(auto& drawable : gc->getDrawables()) {
+                window.draw(*drawable.second->m_drawable, transform);
+            }
         }
     }
 
     bool compareEntities(Entity* a, Entity* b) {
         auto gcA = a->get<GraphicsComponent>();
         auto gcB = b->get<GraphicsComponent>();
-        if(gcA && !gcB) {
-            return true;
-        } else if(!gcA && gcB) {
-            return false;
-        } else if(!gcA && !gcB) {
-            auto gcA = a->get<GuiComponent>();
-            auto gcB = b->get<GuiComponent>();
-            return (gcA->getType() < gcB->getType());
-        } else {
+        if(gcA && gcB) {
             return (gcA->getZ() < gcB->getZ());
         }
+        return true;
     }
 }

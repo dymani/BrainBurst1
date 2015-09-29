@@ -26,6 +26,7 @@ namespace bb {
                 break;
             case 0:
                 m_audioHandler.play("test2");
+                std::cout << m_guiHandler.getEntity(3)->get<GuiComponent>()->getText() << std::endl;
                 std::cout << "Pressed 0\n";
                 break;
             case 1:
@@ -65,17 +66,8 @@ namespace bb {
                         m_scriptHandler.loadEntities(m_entities, L, "assets/data/gameStateInit.lua");
                         std::cout << "Script gameStateInit.lua reloaded.\n";
                         break;
-                    case sf::Keyboard::Num1:
-                        id = m_audioHandler.play("test1");
-                        break;
-                    case sf::Keyboard::Num2:
-                        m_audioHandler.play("test2");
-                        break;
-                    case sf::Keyboard::Num3:
-                        m_audioHandler.play("test3");
-                        break;
-                    case sf::Keyboard::Space:
-                        m_audioHandler.togglePause(id);
+                    case sf::Keyboard::Pause:
+                        std::cout << "Breakpoint\n";
                         break;
                 }
             }

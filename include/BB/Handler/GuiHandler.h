@@ -12,9 +12,11 @@ namespace bb {
         GuiHandler(WindowHandler& windowHandler, std::vector<Entity*>& entities);
         int update();
         void handleInput(sf::Event& windowEvent);
+        Entity* getEntity(int id);
     private:
         WindowHandler& m_windowHandler;
         std::vector<Entity*>& m_entities;
+        std::map<int, Entity*> m_guiEntities;
     };
 }
 

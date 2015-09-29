@@ -17,6 +17,7 @@ extern "C" {
 #include "BB/Handler/GuiHandler.h"
 #include "BB/Entity.h"
 #include "BB/Component/GraphicsComponent.h"
+#include "BB/Component/GuiComponent.h"
 
 namespace bb {
     class GameStateInit: public IGameState {

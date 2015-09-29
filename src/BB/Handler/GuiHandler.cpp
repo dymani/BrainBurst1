@@ -9,15 +9,20 @@ namespace bb {
     }
 
     int GuiHandler::update() {
+        m_guiEntities.clear();
+        int i = -1;
         for(auto& entity : m_entities) {
             auto gc = entity->get<GuiComponent>();
             if(!gc)
                 continue;
+            m_guiEntities[gc->getId()] = entity;
+            if(i != -1)
+                continue;
             if(gc->update(entity->get<GraphicsComponent>())) {
-                return gc->getId();
+                i = gc->getId();
             }
         }
-        return -1;
+        return i;
     }
 
     void GuiHandler::handleInput(sf::Event& windowEvent) {
@@ -30,4 +35,13 @@ namespace bb {
                 return;
         }
     }
+
+    Entity* GuiHandler::getEntity(int id) {
+        if(m_guiEntities.find(id) == m_guiEntities.end()) {
+            std::cerr << "Error while getting gui entity with id " + std::to_string(id) + ".\n";
+            return nullptr;
+        }
+        return m_guiEntities[id];
+    }
+
 }
