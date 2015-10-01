@@ -21,13 +21,18 @@ namespace bb {
             LuaRef luaOffsetY = luaDrawable["offsetY"];
             if(!luaDrawable.isTable()
                 || !luaDName.isString()
-                || !luaType.isNumber()
-                || !luaOffsetX.isNumber()
-                || !luaOffsetY.isNumber()) {
+                || !luaType.isNumber()) {
                 std::cerr << "Error while reading drawables[" + std::to_string(i)
                     + "] of GraphicsComponent.\n";
                 error = true;
                 continue;
+            }
+            int offsetX = 0;
+            int offsetY = 0;
+            if(luaOffsetX.isNumber()
+                && luaOffsetY.isNumber()) {
+                offsetX = luaOffsetX.cast<int>();
+                offsetY = luaOffsetY.cast<int>();
             }
             if(luaType.cast<int>() == SPRITE) {
                 LuaRef luaTexture = luaDrawable["texture"];
@@ -56,7 +61,7 @@ namespace bb {
                     }
                     sprite->setTextureRect(getTextureRect("default"));
                 }
-                sprite->setPosition(luaOffsetX.cast<float>(), luaOffsetY.cast<float>());
+                sprite->setPosition(offsetX, offsetY);
             } else if(luaType.cast<int>() == TEXT) {
                 LuaRef luaFont = luaDrawable["font"];
                 LuaRef luaSize = luaDrawable["size"];
@@ -74,7 +79,7 @@ namespace bb {
                 text->setFont(m_resourceHandler.getFont(luaFont.cast<std::string>()));
                 text->setCharacterSize(luaSize.cast<unsigned int>());
                 setAlign(luaAlign.cast<int>());
-                text->setPosition(luaOffsetX.cast<float>(), luaOffsetY.cast<float>());
+                text->setPosition(offsetX, offsetY);
             } else {
                 std::cerr << "Error while reading type of drawables[" + std::to_string(i)
                     + "] of GraphicsComponent.\n";

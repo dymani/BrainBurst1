@@ -86,10 +86,10 @@ namespace bb {
             sf::Texture texture;
             if(texture.loadFromFile("assets/textures/" + m_texturesLoading[name])) {
                 m_textures[name] = texture;
-                m_texturesLoading.erase(textureIt);
             } else {
                 std::cerr << "Error while loading texture " + name + ".\n";
             }
+            m_texturesLoading.erase(textureIt);
         } else {
             auto it = m_textures.find(name);
             if(it == m_textures.end()) {
@@ -105,10 +105,10 @@ namespace bb {
             sf::SoundBuffer soundBuffer;
             if(soundBuffer.loadFromFile("assets/sounds/" + m_soundBuffersLoading[name])) {
                 m_soundBuffers[name] = soundBuffer;
-                m_soundBuffersLoading.erase(soundBufferIt);
             } else {
                 std::cerr << "Error while loading sound " + name + ".\n";
             }
+            m_soundBuffersLoading.erase(soundBufferIt);
             return m_soundBuffers[name];
         } else {
             auto it = m_soundBuffers.find(name);
@@ -125,10 +125,10 @@ namespace bb {
             sf::Font font;
             if(font.loadFromFile("assets/fonts/" + m_fontsLoading[name])) {
                 m_fonts[name] = font;
-                m_fontsLoading.erase(fontIt);
             } else {
                 std::cerr << "Error while loading font " + name + ".\n";
             }
+            m_fontsLoading.erase(fontIt);
             return m_fonts[name];
         } else {
             auto it = m_fonts.find(name);
@@ -138,4 +138,42 @@ namespace bb {
             return m_fonts[name];
         }
     }
+
+    bool ResourceHandler::load() {
+        if(!m_texturesLoading.empty()) {
+            auto& it = m_texturesLoading.begin();
+            sf::Texture texture;
+            if(texture.loadFromFile("assets/textures/" + it->second)) {
+                m_textures[it->first] = texture;
+            } else {
+                std::cerr << "Error while loading texture " + it->second + ".\n";
+            }
+            m_texturesLoading.erase(it);
+            return false;
+        }
+        if(!m_soundBuffersLoading.empty()) {
+            auto& it = m_soundBuffersLoading.begin();
+            sf::SoundBuffer soundBuffer;
+            if(soundBuffer.loadFromFile("assets/sounds/" + it->second)) {
+                m_soundBuffers[it->first] = soundBuffer;
+            } else {
+                std::cerr << "Error while loading sound " + it->second + ".\n";
+            }
+            m_soundBuffersLoading.erase(it);
+            return false;
+        }
+        if(!m_fontsLoading.empty()) {
+            auto& it = m_fontsLoading.begin();
+            sf::Font font;
+            if(font.loadFromFile("assets/fonts/" + it->second)) {
+                m_fonts[it->first] = font;
+            } else {
+                std::cerr << "Error while loading font " + it->second + ".\n";
+            }
+            m_fontsLoading.erase(it);
+            return false;
+        }
+        return true;
+    }
+
 }

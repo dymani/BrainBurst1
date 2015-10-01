@@ -28,15 +28,14 @@ namespace bb {
         void draw(const double dt);
         void handleInput();
     private:
-        WindowHandler m_windowHandler;
-        GraphicsHandler m_graphicsHandler;
-        ResourceHandler m_resourceHandler;
-        ScriptHandler m_scriptHandler;
-        AudioHandler m_audioHandler;
-        GuiHandler m_guiHandler;
+        WindowHandler* m_windowHandler;
+        GraphicsHandler* m_graphicsHandler;
+        ResourceHandler* m_resourceHandler;
+        ScriptHandler* m_scriptHandler;
+        AudioHandler* m_audioHandler;
+        GuiHandler* m_guiHandler;
         bool m_isRunning;
         luabridge::lua_State* L;
-        std::shared_ptr<luabridge::LuaRef> m_initFunc;
         std::vector<Entity*> m_entities;
         int id;
     };

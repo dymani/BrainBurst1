@@ -1,5 +1,28 @@
 templates = {
   {
+    name = "Init",
+    components = {
+      GraphicsComponent = {
+        {
+          name = "default",
+          type = 0,
+          texture = "init"
+        }
+      }
+    }
+  }
+}
+entities = {
+  {
+    name = "Init",
+    x = 0,
+    y = 0,
+    z = 0
+  }
+}
+
+--[[templates = {
+  {
     name = "Sprite",
     components = {
       GraphicsComponent = {
@@ -140,3 +163,4 @@ entities = {
     }
   }
 }
+--]]

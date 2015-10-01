@@ -24,6 +24,7 @@ namespace bb {
         sf::Texture& getTexture(std::string name);
         sf::SoundBuffer& getSoundBuffer(std::string name);
         sf::Font& getFont(std::string name);
+        bool load();
     private:
         Game& m_game;
         std::map<std::string, std::string> m_texturesLoading, m_soundBuffersLoading, m_fontsLoading;
