@@ -200,3 +200,4 @@ FakesAssemblies/
 /include/lua
 /include/LuaBridge/detail
 /include/LuaBridge
+/reference
