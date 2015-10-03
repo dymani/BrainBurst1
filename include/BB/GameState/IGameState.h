@@ -5,6 +5,8 @@
 #include <SFML/Graphics.hpp>
 
 namespace bb {
+    class Entity;
+
     class IGameState {
     public:
         IGameState(Game& game):m_game(game) {
@@ -14,6 +16,7 @@ namespace bb {
         virtual void handleInput() = 0;
     protected:
         Game& m_game;
+        std::vector<Entity*> m_entities;
     };
 }
 

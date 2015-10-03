@@ -1,5 +1,6 @@
 #include "BB/GameState/GameStateInit.h"
 #include "BB/Game.h"
+#include "BB/GameState/GameStateSplash.h"
 
 #if defined (SFML_SYSTEM_WINDOWS)
 #include <windows.h>
@@ -32,13 +33,11 @@ bool setTransparency(HWND hWnd, unsigned char alpha) {
 #endif
 
 namespace bb {
-    GameStateInit::GameStateInit(Game& game):IGameState(game){
+    GameStateInit::GameStateInit(Game& game):IGameState(game) {
         m_windowHandler = new WindowHandler();
         m_graphicsHandler = new GraphicsHandler(*m_windowHandler, m_entities);
         m_resourceHandler = new ResourceHandler(m_game);
         m_scriptHandler = new ScriptHandler(*m_resourceHandler);
-        m_audioHandler = new AudioHandler(*m_resourceHandler);
-        m_guiHandler = new GuiHandler(*m_windowHandler, m_entities);
         m_isRunning = true;
         using namespace luabridge;
         L = luaL_newstate();
@@ -58,14 +57,15 @@ namespace bb {
     }
 
     bool GameStateInit::update() {
-        m_audioHandler->update();
-        if(m_resourceHandler->load())
+        if(m_resourceHandler->load()) {
             LogHandler::log(LogHandler::INF, "Finished loading resources", typeid(*this).name());
-        switch(m_guiHandler->update()) {
-            case -1:
-                break;
+            m_windowHandler->getWindow().close();
+            m_isRunning = false;
         }
-        return m_isRunning;
+        if(!m_isRunning) {
+            m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+        }
+        return true;
     }
 
     void GameStateInit::draw(const double dt) {
@@ -77,7 +77,6 @@ namespace bb {
     void GameStateInit::handleInput() {
         sf::Event windowEvent;
         while(m_windowHandler->getWindow().pollEvent(windowEvent)) {
-            m_guiHandler->handleInput(windowEvent);
             if(windowEvent.type == sf::Event::Closed) {
                 m_windowHandler->getWindow().close();
                 m_isRunning = false;
@@ -88,10 +87,6 @@ namespace bb {
                         m_windowHandler->getWindow().close();
                         m_isRunning = false;
                         return;
-                    case sf::Keyboard::F5:
-                        m_scriptHandler->loadEntities(m_entities, L, "assets/data/gameStateInit.lua");
-                        LogHandler::log(LogHandler::INF, "Finished reloading script", typeid(*this).name());
-                        break;
                     case sf::Keyboard::Pause:
                         LogHandler::log(LogHandler::INF, "Breakpoint", typeid(*this).name());
                         break;

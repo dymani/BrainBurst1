@@ -20,6 +20,8 @@ namespace bb {
             LuaRef luaType = luaDrawable["type"];
             LuaRef luaOffsetX = luaDrawable["offsetX"];
             LuaRef luaOffsetY = luaDrawable["offsetY"];
+            LuaRef luaScaleX = luaDrawable["scaleX"];
+            LuaRef luaScaleY = luaDrawable["scaleY"];
             if(!luaDrawable.isTable()
                 || !luaDName.isString()
                 || !luaType.isNumber()) {
@@ -30,10 +32,29 @@ namespace bb {
             }
             float offsetX = 0;
             float offsetY = 0;
-            if(luaOffsetX.isNumber()
-                && luaOffsetY.isNumber()) {
-                offsetX = luaOffsetX.cast<float>();
-                offsetY = luaOffsetY.cast<float>();
+            if(!luaOffsetX.isNil()
+                && !luaOffsetY.isNil()) {
+                if(luaOffsetX.isNumber()
+                    && luaOffsetY.isNumber()) {
+                    offsetX = luaOffsetX.cast<float>();
+                    offsetY = luaOffsetY.cast<float>();
+                } else {
+                    LogHandler::log(LogHandler::WRN, "Incorrect data format for offset in drawable["
+                        + std::to_string(i) + "]", typeid(*this).name());
+                }
+            }
+            float scaleX = 0;
+            float scaleY = 0;
+            if(!luaScaleX.isNil()
+                && !luaScaleY.isNil()) {
+                if(luaScaleX.isNumber()
+                    && luaScaleY.isNumber()) {
+                    scaleX = luaScaleX.cast<float>();
+                    scaleY = luaScaleY.cast<float>();
+                } else {
+                    LogHandler::log(LogHandler::WRN, "Incorrect data format for scale in drawable["
+                        + std::to_string(i) + "]", typeid(*this).name());
+                }
             }
             if(luaType.cast<int>() == SPRITE) {
                 LuaRef luaTexture = luaDrawable["texture"];
@@ -63,6 +84,7 @@ namespace bb {
                     }
                     sprite->setTextureRect(getTextureRect("default"));
                 }
+                sprite->setScale(scaleX, scaleY);
                 sprite->setPosition(offsetX, offsetY);
             } else if(luaType.cast<int>() == TEXT) {
                 LuaRef luaFont = luaDrawable["font"];
@@ -81,6 +103,7 @@ namespace bb {
                 text->setFont(m_resourceHandler.getFont(luaFont.cast<std::string>()));
                 text->setCharacterSize(luaSize.cast<unsigned int>());
                 setAlign(luaAlign.cast<int>());
+                text->setScale(scaleX, scaleY);
                 text->setPosition(offsetX, offsetY);
             } else {
                 LogHandler::log(LogHandler::WRN, "Incorrect type id "

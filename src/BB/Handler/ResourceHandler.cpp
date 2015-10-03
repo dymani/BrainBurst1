@@ -153,6 +153,7 @@ namespace bb {
             auto& it = m_texturesLoading.begin();
             sf::Texture texture;
             if(texture.loadFromFile("assets/textures/" + it->second)) {
+                texture.setSmooth(true);
                 m_textures[it->first] = texture;
             } else {
                 LogHandler::log(LogHandler::ERR, "Texture \"" + it->second + "\" not found",
