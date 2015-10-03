@@ -3,6 +3,7 @@
 
 #include <SFML/Audio.hpp>
 #include <map>
+#include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class ResourceHandler;

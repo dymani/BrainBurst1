@@ -10,6 +10,7 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class Drawable;

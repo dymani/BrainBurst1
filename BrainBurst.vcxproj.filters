@@ -51,6 +51,9 @@
     <ClCompile Include="src\BB\Handler\GuiHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\BB\Handler\LogHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -95,6 +98,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\Handler\GuiHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\Handler\LogHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

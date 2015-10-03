@@ -10,6 +10,7 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class ResourceHandler;
@@ -27,7 +28,6 @@ namespace bb {
         bool loadEntities(std::vector<Entity*>& entityList, luabridge::lua_State* L,
             luabridge::LuaRef& luaEntities);
         Entity* getEntity(luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
-        void writeError(std::string message);
     };
 }
 

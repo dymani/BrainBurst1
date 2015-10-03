@@ -60,7 +60,7 @@ namespace bb {
     bool GameStateInit::update() {
         m_audioHandler->update();
         if(m_resourceHandler->load())
-            std::cout << "Finished loading resources.\n";
+            LogHandler::log(LogHandler::INF, "Finished loading resources", typeid(*this).name());
         switch(m_guiHandler->update()) {
             case -1:
                 break;
@@ -90,10 +90,10 @@ namespace bb {
                         return;
                     case sf::Keyboard::F5:
                         m_scriptHandler->loadEntities(m_entities, L, "assets/data/gameStateInit.lua");
-                        std::cout << "Script gameStateInit.lua reloaded.\n";
+                        LogHandler::log(LogHandler::INF, "Finished reloading script", typeid(*this).name());
                         break;
                     case sf::Keyboard::Pause:
-                        std::cout << "Breakpoint\n";
+                        LogHandler::log(LogHandler::INF, "Breakpoint", typeid(*this).name());
                         break;
                 }
             }

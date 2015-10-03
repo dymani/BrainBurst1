@@ -38,7 +38,8 @@ namespace bb {
 
     Entity* GuiHandler::getEntity(int id) {
         if(m_guiEntities.find(id) == m_guiEntities.end()) {
-            std::cerr << "Error while getting gui entity with id " + std::to_string(id) + ".\n";
+            LogHandler::log(LogHandler::ERR, "Gui entity id " + std::to_string(id) + " not found",
+                typeid(*this).name());
             return nullptr;
         }
         return m_guiEntities[id];

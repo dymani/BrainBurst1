@@ -45,7 +45,8 @@ namespace bb {
             else if(m_sounds[id]->getStatus() == sf::SoundSource::Paused)
                 m_sounds[id]->play();
         } else {
-            std::cerr << "Error while accessing sounds, wrong id " + std::to_string(id) + ".\n";
+            LogHandler::log(LogHandler::ERR, "Sound id " + std::to_string(id) + " not found",
+                typeid(*this).name());
         }
     }
 
@@ -56,7 +57,8 @@ namespace bb {
             delete m_sounds[id];
             m_sounds.erase(id);
         } else {
-            std::cerr << "Error while accessing sounds, wrong id " + std::to_string(id) + ".\n";
+            LogHandler::log(LogHandler::ERR, "Sound id " + std::to_string(id) + " not found",
+                typeid(*this).name());
         }
     }
 }

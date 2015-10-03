@@ -13,7 +13,7 @@ namespace bb {
         if(!luaType.isNumber()
             || !luaWidth.isNumber()
             || !luaHeight.isNumber()) {
-            std::cerr << "Error while reading GuiComponent.\n";
+            LogHandler::log(LogHandler::ERR, "Incorrect data foramt", typeid(*this).name());
             return false;
         }
         setType(luaType.cast<int>());
@@ -22,7 +22,8 @@ namespace bb {
         } else if(getType() == TEXTBOX) {
             setSize({luaWidth.cast<int>(), luaHeight.cast<int>()});
         } else {
-            std::cerr << "Error while reading type of GuiComponent.\n";
+            LogHandler::log(LogHandler::ERR, "Type id " + std::to_string(getType()) + " not found",
+                typeid(*this).name());
             return false;
         }
         return true;
@@ -32,20 +33,22 @@ namespace bb {
         using namespace luabridge;
         bool error = false;
         if(!luaEntity["id"].isNumber()) {
-            std::cerr << "Error while initializing GuiComponent.\n";
+            LogHandler::log(LogHandler::ERR, "Incorrect data foramt for id", typeid(*this).name());
             return false;
         }
         setId(luaEntity["id"].cast<int>());
         if(m_type == TEXTBOX) {
             if(!luaEntity["characters"].isTable()) {
-                std::cerr << "Error while initializing characters of GuiComponent.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data foramt for characters",
+                    typeid(*this).name());
                 return false;
             }
             m_characters = 0;
             LuaRef luaCharacters = luaEntity["characters"];
             for(int i = 1; i <= luaCharacters.length(); i++) {
                 if(!luaCharacters[i].isString()) {
-                    std::cerr << "Error while initializing characters of GuiComponent.\n";
+                    LogHandler::log(LogHandler::ERR, "Incorrect data foramt for character",
+                        typeid(*this).name());
                     error = true;
                     continue;
                 }

@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class WindowHandler {

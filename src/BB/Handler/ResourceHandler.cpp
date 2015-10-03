@@ -8,26 +8,28 @@ namespace bb {
     void ResourceHandler::load(luabridge::lua_State* L) {
         using namespace luabridge;
         if(luaL_loadfile(L, "assets/data/resource.lua") || lua_pcall(L, 0, 0, 0)) {
-            std::cerr << "Error while loading resource.lua.\n";
+            LogHandler::log(LogHandler::ERR, "File resource.lua not found", typeid(*this).name());
             return;
         }
 
         LuaRef luaTextures = getGlobal(L, "textures");
         if(!luaTextures.isTable()) {
-            std::cerr << "Error while getting \"textures\" in resource.lua.\n";
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for textures", typeid(*this).name());
             return;
         }
         std::string name, file;
         for(int i = 1; i <= luaTextures.length(); i++) {
             LuaRef luaTexture = luaTextures[i];
             if(!luaTexture.isTable()) {
-                std::cerr << "Error while getting \"texture\" " << i << " in resource.lua.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for texture[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 return;
             }
             LuaRef luaName = luaTexture["name"];
             LuaRef luaFile = luaTexture["file"];
             if(!luaName.isString() || !luaFile.isString()) {
-                std::cerr << "Error while getting \"texture\" " << i << " in resource.lua.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for texture[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 return;
             }
             name = luaName.cast<std::string>();
@@ -37,19 +39,21 @@ namespace bb {
 
         LuaRef luaSounds = getGlobal(L, "sounds");
         if(!luaSounds.isTable()) {
-            std::cerr << "Error while getting \"sounds\" in resource.lua.\n";
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for sounds", typeid(*this).name());
             return;
         }
         for(int i = 1; i <= luaSounds.length(); i++) {
             LuaRef luaSound = luaSounds[i];
             if(!luaSound.isTable()) {
-                std::cerr << "Error while getting \"sound\" " << i << " in resource.lua.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for sound[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 return;
             }
             LuaRef luaName = luaSound["name"];
             LuaRef luaFile = luaSound["file"];
             if(!luaName.isString() || !luaFile.isString()) {
-                std::cerr << "Error while getting \"sound\" " << i << " in resource.lua.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for sound[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 return;
             }
             name = luaName.cast<std::string>();
@@ -59,19 +63,21 @@ namespace bb {
 
         LuaRef luaFonts = getGlobal(L, "fonts");
         if(!luaFonts.isTable()) {
-            std::cerr << "Error while getting \"fonts\" in resource.lua.\n";
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for fonts", typeid(*this).name());
             return;
         }
         for(int i = 1; i <= luaFonts.length(); i++) {
             LuaRef luaFont = luaFonts[i];
             if(!luaFont.isTable()) {
-                std::cerr << "Error while getting \"font\" " << i << " in resource.lua.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for font[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 return;
             }
             LuaRef luaName = luaFont["name"];
             LuaRef luaFile = luaFont["file"];
             if(!luaName.isString() || !luaFile.isString()) {
-                std::cerr << "Error while getting \"font\" " << i << " in resource.lua.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for font[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 return;
             }
             name = luaName.cast<std::string>();
@@ -87,13 +93,14 @@ namespace bb {
             if(texture.loadFromFile("assets/textures/" + m_texturesLoading[name])) {
                 m_textures[name] = texture;
             } else {
-                std::cerr << "Error while loading texture " + name + ".\n";
+                LogHandler::log(LogHandler::ERR, "Texture \"" + m_texturesLoading[name] + "\" not found",
+                    typeid(*this).name());
             }
             m_texturesLoading.erase(textureIt);
         } else {
             auto it = m_textures.find(name);
             if(it == m_textures.end()) {
-                std::cerr << "Error while getting texture " + name + ".\n";
+                LogHandler::log(LogHandler::ERR, "Texture \"" + name + "\" not found", typeid(*this).name());
             }
         }
         return m_textures[name];
@@ -106,14 +113,15 @@ namespace bb {
             if(soundBuffer.loadFromFile("assets/sounds/" + m_soundBuffersLoading[name])) {
                 m_soundBuffers[name] = soundBuffer;
             } else {
-                std::cerr << "Error while loading sound " + name + ".\n";
+                LogHandler::log(LogHandler::ERR, "Sound \"" + m_soundBuffersLoading[name] + "\" not found",
+                    typeid(*this).name());
             }
             m_soundBuffersLoading.erase(soundBufferIt);
             return m_soundBuffers[name];
         } else {
             auto it = m_soundBuffers.find(name);
             if(it == m_soundBuffers.end()) {
-                std::cerr << "Error while getting sound " + name + ".\n";
+                LogHandler::log(LogHandler::ERR, "Sound \"" + name + "\" not found", typeid(*this).name());
             }
             return m_soundBuffers[name];
         }
@@ -126,14 +134,15 @@ namespace bb {
             if(font.loadFromFile("assets/fonts/" + m_fontsLoading[name])) {
                 m_fonts[name] = font;
             } else {
-                std::cerr << "Error while loading font " + name + ".\n";
+                LogHandler::log(LogHandler::ERR, "Font \"" + m_fontsLoading[name] + "\" not found",
+                    typeid(*this).name());
             }
             m_fontsLoading.erase(fontIt);
             return m_fonts[name];
         } else {
             auto it = m_fonts.find(name);
             if(it == m_fonts.end()) {
-                std::cerr << "Error while getting font " + name + ".\n";
+                LogHandler::log(LogHandler::ERR, "Font\"" + name + "\" not found", typeid(*this).name());
             }
             return m_fonts[name];
         }
@@ -146,7 +155,8 @@ namespace bb {
             if(texture.loadFromFile("assets/textures/" + it->second)) {
                 m_textures[it->first] = texture;
             } else {
-                std::cerr << "Error while loading texture " + it->second + ".\n";
+                LogHandler::log(LogHandler::ERR, "Texture \"" + it->second + "\" not found",
+                    typeid(*this).name());
             }
             m_texturesLoading.erase(it);
             return false;
@@ -157,7 +167,8 @@ namespace bb {
             if(soundBuffer.loadFromFile("assets/sounds/" + it->second)) {
                 m_soundBuffers[it->first] = soundBuffer;
             } else {
-                std::cerr << "Error while loading sound " + it->second + ".\n";
+                LogHandler::log(LogHandler::ERR, "Sound \"" + it->second + "\" not found",
+                    typeid(*this).name());
             }
             m_soundBuffersLoading.erase(it);
             return false;
@@ -168,7 +179,8 @@ namespace bb {
             if(font.loadFromFile("assets/fonts/" + it->second)) {
                 m_fonts[it->first] = font;
             } else {
-                std::cerr << "Error while loading font " + it->second + ".\n";
+                LogHandler::log(LogHandler::ERR, "Font \"" + it->second + "\" not found",
+                    typeid(*this).name());
             }
             m_fontsLoading.erase(it);
             return false;

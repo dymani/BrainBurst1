@@ -10,7 +10,8 @@ namespace bb {
         using namespace luabridge;
         bool error = false;
         if(!luaGraphicsComponent.isTable()) {
-            std::cerr << "Error while reading GraphicsComponent.\n";
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for GraphicsComponent",
+                typeid(*this).name());
             return false;
         }
         for(int i = 1; i <= luaGraphicsComponent.length(); i++) {
@@ -22,24 +23,24 @@ namespace bb {
             if(!luaDrawable.isTable()
                 || !luaDName.isString()
                 || !luaType.isNumber()) {
-                std::cerr << "Error while reading drawables[" + std::to_string(i)
-                    + "] of GraphicsComponent.\n";
+                LogHandler::log(LogHandler::WRN, "Incorrect data format for drawable["
+                    + std::to_string(i) + "]", typeid(*this).name());
                 error = true;
                 continue;
             }
-            int offsetX = 0;
-            int offsetY = 0;
+            float offsetX = 0;
+            float offsetY = 0;
             if(luaOffsetX.isNumber()
                 && luaOffsetY.isNumber()) {
-                offsetX = luaOffsetX.cast<int>();
-                offsetY = luaOffsetY.cast<int>();
+                offsetX = luaOffsetX.cast<float>();
+                offsetY = luaOffsetY.cast<float>();
             }
             if(luaType.cast<int>() == SPRITE) {
                 LuaRef luaTexture = luaDrawable["texture"];
                 LuaRef luaTextureRects = luaDrawable["textureRects"];
                 if(!luaTexture.isString()) {
-                    std::cerr << "Error while reading sprite[" + std::to_string(i)
-                        + "] of GraphicsComponent.\n";
+                    LogHandler::log(LogHandler::WRN, "Incorrect data format for sprite["
+                        + std::to_string(i) + "]", typeid(*this).name());
                     error = true;
                     continue;
                 }
@@ -47,11 +48,12 @@ namespace bb {
                 sf::Sprite* sprite = getDrawable<sf::Sprite>(luaDName.cast<std::string>());
                 sprite->setTexture(m_resourceHandler.getTexture(luaTexture.cast<std::string>()));
                 if(luaTextureRects.isTable()) {
-                    for(int i = 1; i <= luaTextureRects.length(); i++) {
-                        LuaRef luaTextureRect = luaTextureRects[i];
+                    for(int j = 1; j <= luaTextureRects.length(); j++) {
+                        LuaRef luaTextureRect = luaTextureRects[j];
                         if(!luaTextureRect.isTable()) {
-                            std::cerr << "Error while reading texture rects of sprite[" + std::to_string(i)
-                                + "] of GraphicsComponent.\n";
+                            LogHandler::log(LogHandler::WRN,
+                                "Incorrect data format for texture rects[" + std::to_string(j)
+                                + "] of sprite[" + std::to_string(i) + "]", typeid(*this).name());
                             error = true;
                             continue;
                         }
@@ -69,8 +71,8 @@ namespace bb {
                 if(!luaFont.isString()
                     || !luaSize.isNumber()
                     || !luaAlign.isNumber()) {
-                    std::cerr << "Error while reading textbox[" + std::to_string(i)
-                        + "] of GraphicsComponent.\n";
+                    LogHandler::log(LogHandler::WRN, "Incorrect data format for text[" + std::to_string(i)
+                        + "]", typeid(*this).name());
                     error = true;
                     continue;
                 }
@@ -81,8 +83,9 @@ namespace bb {
                 setAlign(luaAlign.cast<int>());
                 text->setPosition(offsetX, offsetY);
             } else {
-                std::cerr << "Error while reading type of drawables[" + std::to_string(i)
-                    + "] of GraphicsComponent.\n";
+                LogHandler::log(LogHandler::WRN, "Incorrect type id "
+                    + std::to_string(luaType.cast<int>()) + " for drawable[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 error = true;
                 continue;
             }
@@ -95,7 +98,7 @@ namespace bb {
         bool error = false;
         LuaRef luaZ = luaEntity["z"];
         if(!luaZ.isNumber()) {
-            std::cerr << "Error while initializing GraphicsComponent.\n";
+            LogHandler::log(LogHandler::WRN, "Incorrect data format for z", typeid(*this).name());
             setZ(0.0F);
             error = true;
         } else {
@@ -107,7 +110,7 @@ namespace bb {
             if(luaText.isString()) {
                 string = luaText.cast<std::string>();
             } else {
-                std::cerr << "Error while initializing text of GraphicsComponent.\n";
+                LogHandler::log(LogHandler::WRN, "Incorrect data format for text", typeid(*this).name());
                 error = true;
             }
             sf::Text* text = getDrawable<sf::Text>("text");
@@ -152,7 +155,8 @@ namespace bb {
                 break;
             default:
                 drawable = new Drawable(Drawable::SPRITE, new sf::Sprite());
-                std::cerr << "Error while getting type " + std::to_string(type) + ".\n";
+                LogHandler::log(LogHandler::ERR, "Type id " + std::to_string(int(type)) + " not found",
+                    typeid(*this).name());
                 break;
         }
         m_drawables.push_back({name, drawable});
@@ -176,7 +180,8 @@ namespace bb {
 
     sf::IntRect GraphicsComponent::getTextureRect(std::string name) {
         if(m_textureRects.find(name) == m_textureRects.end())
-            std::cerr << "Error while setting texture rect " + name + ".\n";
+            LogHandler::log(LogHandler::ERR, "Texture rect \"" + name + "\" not found",
+                typeid(*this).name());
         return m_textureRects[name];
     }
 
@@ -208,7 +213,8 @@ namespace bb {
                 break;
             default:
                 drawable = new sf::Sprite(*dynamic_cast<sf::Sprite*>(m_drawable));
-                std::cerr << "Error whil copying drawable.\n";
+                LogHandler::log(LogHandler::ERR, "Type id " + std::to_string(int(m_type))
+                    + " not found", typeid(*this).name());
                 break;
         }
         return new Drawable(m_type, drawable);

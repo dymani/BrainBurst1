@@ -2,6 +2,7 @@
 #define GUI_HANDLER_H
 
 #include <SFML/Graphics.hpp>
+#include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class WindowHandler;

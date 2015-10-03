@@ -21,28 +21,27 @@ namespace bb {
 
         using namespace luabridge;
         if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
-            writeError("loading and reading file");
-
+            LogHandler::log(LogHandler::ERR, "File \"" + file + "\" not found", typeid(*this).name());
             return;
         }
 
         LuaRef luaTemplates = getGlobal(L, "templates");
         if(!luaTemplates.isTable()) {
-            writeError("loading templates");
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for templates", typeid(*this).name());
             return;
         }
         if(!loadTemplates(L, luaTemplates)) {
-            writeError("reading templates");
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for templates", typeid(*this).name());
             return;
         }
 
         LuaRef luaEntities = getGlobal(L, "entities");
         if(!luaEntities.isTable()) {
-            writeError("loading entities");
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for entities", typeid(*this).name());
             return;
         }
         if(!loadEntities(entityList, L, luaEntities)) {
-            writeError("reading entities");
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for entities", typeid(*this).name());
             return;
         }
     }
@@ -55,19 +54,22 @@ namespace bb {
             entity = new Entity();
             LuaRef luaTemplate = luaTemplates[i];
             if(!luaTemplate.isTable()) {
-                writeError("reading templates[" + std::to_string(i) + "]");
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for template[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 error = true;
                 continue;
             }
             LuaRef luaName = luaTemplate["name"];
             LuaRef luaComponents = luaTemplate["components"];
             if(!luaName.isString() || !luaComponents.isTable()) {
-                writeError("reading templates[" + std::to_string(i) + "]");
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for name and components in template["
+                    + std::to_string(i) + "]", typeid(*this).name());
                 error = true;
                 continue;
             }
             if(!loadComponents(entity, L, luaComponents)) {
-                writeError("reading components of templates[" + std::to_string(i) + "]");
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for components in template["
+                    + std::to_string(i) + "]", typeid(*this).name());
                 error = true;
                 continue;
             }
@@ -105,7 +107,8 @@ namespace bb {
             LuaRef luaEntity = luaEntities[i];
             Entity* entity = getEntity(L, luaEntity);
             if(!entity) {
-                writeError("reading entities[" + std::to_string(i) + "]");
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for entities[" + std::to_string(i)
+                    + "]", typeid(*this).name());
                 error = true;
             } else {
                 entityList.push_back(entity);
@@ -122,11 +125,12 @@ namespace bb {
         if(!luaName.isString()
             || !luaX.isNumber()
             || !luaY.isNumber()) {
-            writeError("reading entity");
+            LogHandler::log(LogHandler::ERR, "Incorrect data format for entity", typeid(*this).name());
             return nullptr;
         }
         if(m_entityList.find(luaName.cast<std::string>()) == m_entityList.end()) {
-            writeError("loading entity " + luaName.cast<std::string>());
+            LogHandler::log(LogHandler::ERR, "Entity \"" + luaName.cast<std::string>() + "\" not found",
+                typeid(*this).name());
             return nullptr;
         }
 
@@ -135,20 +139,17 @@ namespace bb {
         Entity* entity = new Entity(*m_entityList[luaName.cast<std::string>()]);
         if(entity->get<GraphicsComponent>()) {
             if(!entity->get<GraphicsComponent>()->initFromLua(L, luaEntity)) {
-                std::cerr << "Error while reading entity.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for graphics component in entity",
+                    typeid(*this).name());
             }
         }
         if(entity->get<GuiComponent>()) {
             if(!entity->get<GuiComponent>()->initFromLua(L, luaEntity)) {
-                std::cerr << "Error while reading entity.\n";
+                LogHandler::log(LogHandler::ERR, "Incorrect data format for gui component in entity",
+                    typeid(*this).name());
             }
         }
         entity->setCoord({x, y});
         return entity;
     }
-
-    void ScriptHandler::writeError(std::string message) {
-        std::cerr << "Error while " + message + " in script handler.\n";
-    }
-
 }
