@@ -8,14 +8,9 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include "BB/GameState/IGameState.h"
-#include "BB/Handler/AudioHandler.h"
-#include "BB/Handler/GraphicsHandler.h"
-#include "BB/Handler/GuiHandler.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
-#include "BB/Handler/ScriptHandler.h"
 #include "BB/Handler/WindowHandler.h"
-#include "BB/Entity.h"
 
 namespace bb {
     class Game;
@@ -27,14 +22,10 @@ namespace bb {
         void draw(const double dt);
         void handleInput();
     private:
-        AudioHandler* m_audioHandler;
-        GraphicsHandler* m_graphicsHandler;
-        GuiHandler* m_guiHandler;
         ResourceHandler* m_resourceHandler;
-        ScriptHandler* m_scriptHandler;
         WindowHandler* m_windowHandler;
         luabridge::lua_State* L;
-        int m_ticks;
+        int m_updateCount;
         bool m_isRunning;
     };
 }

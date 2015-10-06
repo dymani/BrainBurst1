@@ -3,9 +3,11 @@
 #include "BB/Entity.h"
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/Component/GuiComponent.h"
+#include "BB/Component/UpdateComponent.h"
 
 namespace bb {
-    ScriptHandler::ScriptHandler(ResourceHandler& resourceHandler):m_resourceHandler(resourceHandler) {
+    ScriptHandler::ScriptHandler(ResourceHandler& resourceHandler, UpdateHandler* updateHandler)
+        :m_resourceHandler(resourceHandler), m_updateHandler(updateHandler) {
     }
 
     void ScriptHandler::loadEntities(std::vector<Entity*>& entityList, luabridge::lua_State* L,
@@ -95,6 +97,13 @@ namespace bb {
             GuiComponent* gc = new GuiComponent();
             if(gc->createFromLua(L, luaGuiComponent))
                 entity->addComponent(std::type_index(typeid(GuiComponent)), gc);
+        }
+
+        LuaRef luaUpdateComponent = luaComponents["UpdateComponent"];
+        if(!luaUpdateComponent.isNil()) {
+            UpdateComponent* uc = new UpdateComponent(*m_updateHandler);
+            if(uc->createFromLua(L, luaUpdateComponent))
+                entity->addComponent(std::type_index(typeid(UpdateComponent)), uc);
         }
         return !error;
     }

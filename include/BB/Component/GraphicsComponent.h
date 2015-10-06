@@ -13,8 +13,18 @@ extern "C" {
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
-    class Drawable;
     class ResourceHandler;
+
+    class Drawable {
+    public:
+        enum Type {
+            SPRITE, TEXT
+        };
+        Drawable(Type type, sf::Drawable* drawable);
+        Drawable* copy();
+        sf::Drawable* m_drawable;
+        Type m_type;
+    };
 
     class GraphicsComponent: public IComponent {
     public:
@@ -31,7 +41,7 @@ namespace bb {
         GraphicsComponent* setZ(float z);
         GraphicsComponent* setAlign(int align);
         sf::IntRect getTextureRect(std::string name);
-        std::vector<std::pair<std::string, Drawable*>>& getDrawables();
+        std::map<std::string, Drawable*>& getDrawables();
         template <typename T>
         T* getDrawable(std::string name) {
             for(auto& it : m_drawables) {
@@ -44,22 +54,21 @@ namespace bb {
         }
         float getZ();
         int getAlign();
+        void setAlpha(int alpha);
+        int getAlpha() const {
+            for(auto& it : m_drawables) {
+                if(it.first == "default"
+                    &&dynamic_cast<sf::Sprite*>(it.second->m_drawable)) {
+                    return dynamic_cast<sf::Sprite*>(it.second->m_drawable)->getColor().a;
+                }
+            }
+            return 255;
+        }
     private:
-        std::vector<std::pair<std::string, Drawable*>> m_drawables;
+        std::map<std::string, Drawable*> m_drawables;
         std::map<std::string, sf::IntRect> m_textureRects;
         float m_z;
         int m_align;
-    };
-
-    class Drawable {
-    public:
-        enum Type {
-            SPRITE, TEXT
-        };
-        Drawable(Type type, sf::Drawable* drawable);
-        Drawable* copy();
-        sf::Drawable* m_drawable;
-        Type m_type;
     };
 }
 

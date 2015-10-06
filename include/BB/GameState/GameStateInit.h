@@ -7,15 +7,11 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
-#include <memory>
+#include <SFML/Graphics.hpp>
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/WindowHandler.h"
-#include "BB/Handler/GraphicsHandler.h"
 #include "BB/Handler/ResourceHandler.h"
-#include "BB/Handler/ScriptHandler.h"
 #include "BB/Handler/LogHandler.h"
-#include "BB/Component/GraphicsComponent.h"
-#include "BB/Entity.h"
 
 namespace bb {
     class GameStateInit: public IGameState {
@@ -27,11 +23,11 @@ namespace bb {
         void handleInput();
     private:
         WindowHandler* m_windowHandler;
-        GraphicsHandler* m_graphicsHandler;
         ResourceHandler* m_resourceHandler;
-        ScriptHandler* m_scriptHandler;
         luabridge::lua_State* L;
         bool m_isRunning;
+        sf::Sprite m_sprite;
+        int m_updateCount;
     };
 }
 

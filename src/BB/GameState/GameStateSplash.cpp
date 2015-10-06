@@ -1,5 +1,7 @@
 #include "BB/GameState/GameStateSplash.h"
 #include "BB/Game.h"
+#include "BB/Component/UpdateComponent.h"
+#include "BB/Component/GraphicsComponent.h"
 
 namespace bb {
     GameStateSplash::GameStateSplash(Game& game, ResourceHandler* resourceHandler,
@@ -9,18 +11,38 @@ namespace bb {
         m_windowHandler = new WindowHandler();
         m_graphicsHandler = new GraphicsHandler(*m_windowHandler, m_entities);
         m_guiHandler = new GuiHandler(*m_windowHandler, m_entities);
-        m_scriptHandler = new ScriptHandler(*m_resourceHandler);
+        m_updateHandler = new UpdateHandler(m_entities, this);
+        m_scriptHandler = new ScriptHandler(*m_resourceHandler, m_updateHandler);
         this->L = L;
         m_windowHandler->createWindow(sf::VideoMode(1024, 576), "Brain Burst 2039", sf::Style::Close);
+        using namespace luabridge;
+        getGlobalNamespace(L)
+            .beginClass<UpdateComponent>("UpdateComponent")
+            .addFunction("remove", &UpdateComponent::remove)
+            .endClass()
+            .beginClass<GraphicsComponent>("GraphicsComponent")
+            .addProperty("alpha", &GraphicsComponent::getAlpha, &GraphicsComponent::setAlpha)
+            .endClass()
+            .beginClass<GameStateSplash>("GameStateSplash")
+            .addData("wait", &GameStateSplash::m_wait)
+            .addData("state", &GameStateSplash::m_animationState)
+            .endClass();
         m_scriptHandler->loadEntities(m_entities, L, "assets/data/gameStateSplash.lua");
         m_isRunning = true;
+        m_wait = 0;
+        m_animationState = 0;
     }
 
     bool GameStateSplash::update() {
         m_audioHandler->update();
+        m_updateHandler->update();
         switch(m_guiHandler->update()) {
             default:
                 break;
+        }
+        if(m_animationState == 3) {
+            m_windowHandler->getWindow().close();
+            m_isRunning = false;
         }
         return m_isRunning;
     }

@@ -14,14 +14,16 @@ extern "C" {
 
 namespace bb {
     class ResourceHandler;
+    class UpdateHandler;
     class Entity;
 
     class ScriptHandler {
     public:
-        ScriptHandler(ResourceHandler& resourceHandler);
+        ScriptHandler(ResourceHandler& resourceHandler, UpdateHandler* updateHandler = nullptr);
         void loadEntities(std::vector<Entity*>& entityList, luabridge::lua_State* L, std::string file);
     private:
         ResourceHandler& m_resourceHandler;
+        UpdateHandler* m_updateHandler;
         std::map<std::string, Entity*> m_entityList;
         bool loadTemplates(luabridge::lua_State* L, luabridge::LuaRef& luaTemplates);
         bool loadComponents(Entity* entity, luabridge::lua_State* L, luabridge::LuaRef& luaComponents);

@@ -159,7 +159,7 @@ namespace bb {
     IComponent* GraphicsComponent::copy() {
         GraphicsComponent* gc = new GraphicsComponent();
         for(auto& drawable : m_drawables) {
-            gc->m_drawables.push_back({drawable.first, drawable.second->copy()});
+            gc->m_drawables[drawable.first] = drawable.second->copy();
         }
         gc->m_textureRects = m_textureRects;
         gc->m_z = m_z;
@@ -182,7 +182,7 @@ namespace bb {
                     typeid(*this).name());
                 break;
         }
-        m_drawables.push_back({name, drawable});
+        m_drawables[name] = drawable;
         return this;
     }
 
@@ -208,7 +208,7 @@ namespace bb {
         return m_textureRects[name];
     }
 
-    std::vector<std::pair<std::string, Drawable*>>& GraphicsComponent::getDrawables() {
+    std::map<std::string, Drawable*>& GraphicsComponent::getDrawables() {
         return m_drawables;
     }
 
@@ -218,6 +218,12 @@ namespace bb {
 
     int GraphicsComponent::getAlign() {
         return m_align;
+    }
+
+    void GraphicsComponent::setAlpha(int alpha) {
+        sf::Color c = getDrawable<sf::Sprite>("default")->getColor();
+        c.a = (alpha >= 0 && alpha <= 255) ? alpha : 255;
+        getDrawable<sf::Sprite>("default")->setColor(c);
     }
 
     Drawable::Drawable(Type type, sf::Drawable* drawable) {

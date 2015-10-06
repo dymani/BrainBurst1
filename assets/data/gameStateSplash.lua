@@ -12,11 +12,11 @@ templates = {
         }
       },
       UpdateComponent = {
-        update = function(this, gs)
+        update = function(this, gc, gs)
           if(gs.state == 0) then
-            this.alpha = this.alpha + 3
-            if(this.alpha >= 255) then
-              this.alpha = 255
+            gc.alpha = gc.alpha + 3
+            if(gc.alpha >= 255) then
+              gc.alpha = 255
               gs.wait = 0
               gs.state = 1
             end
@@ -25,11 +25,12 @@ templates = {
             if (gs.wait >= 851) then
               gs.state = 2
             end
-          else
-            this.alpha = this.alpha - 3
-            if(this.alpha <= 0) then
-              this.alpha = 0
-              this:delete()
+          elseif (gs.state == 2) then
+            gc.alpha = gc.alpha - 3
+            if(gc.alpha <= 0) then
+              gc.alpha = 0
+              gs.state = 3
+              this:remove()
             end
           end
         end

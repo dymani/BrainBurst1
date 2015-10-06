@@ -35,22 +35,37 @@ bool setTransparency(HWND hWnd, unsigned char alpha) {
 namespace bb {
     GameStateInit::GameStateInit(Game& game):IGameState(game) {
         m_windowHandler = new WindowHandler();
-        m_graphicsHandler = new GraphicsHandler(*m_windowHandler, m_entities);
         m_resourceHandler = new ResourceHandler(m_game);
-        m_scriptHandler = new ScriptHandler(*m_resourceHandler);
         m_isRunning = true;
         using namespace luabridge;
         L = luaL_newstate();
         luaL_openlibs(L);
         m_resourceHandler->load(L);
-        m_scriptHandler->loadEntities(m_entities, L, "assets/data/gameStateInit.lua");
-
-        sf::Image init = m_resourceHandler->getTexture("init").copyToImage();
+        using namespace luabridge;
+        if(luaL_loadfile(L, "assets/data/gameStateInit.lua") || lua_pcall(L, 0, 0, 0)) {
+            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStateInit.lua\" not found",
+                typeid(*this).name());
+            return;
+        }
+        LuaRef luaTexture = getGlobal(L, "texture");
+        if(luaTexture.isNil()) {
+            LogHandler::log(LogHandler::ERR, "\"texture\" not found in gameStateInit.lua.",
+                typeid(*this).name());
+            return;
+        }
+        if(!luaTexture.isString()) {
+            LogHandler::log(LogHandler::ERR, "\"texture\" not a string in gameStateInit.lua.",
+                typeid(*this).name());
+            return;
+        }
+        m_sprite.setTexture(m_resourceHandler->getTexture(luaTexture.cast<std::string>()));
+        sf::Image init = m_resourceHandler->getTexture(luaTexture.cast<std::string>()).copyToImage();
         m_windowHandler->createWindow(sf::VideoMode(init.getSize().x, init.getSize().y, 32),
             "Brain Burst 2039", sf::Style::None, sf::ContextSettings());
         m_windowHandler->getWindow().setPosition(sf::Vector2i((sf::VideoMode::getDesktopMode().width - init.getSize().x) / 2, (sf::VideoMode::getDesktopMode().height - init.getSize().y) / 2));
         setShape(m_windowHandler->getWindow().getSystemHandle(), init);
         setTransparency(m_windowHandler->getWindow().getSystemHandle(), 200);
+        m_updateCount = 0;
     }
 
     GameStateInit::~GameStateInit() {
@@ -59,18 +74,20 @@ namespace bb {
     bool GameStateInit::update() {
         if(m_resourceHandler->load()) {
             LogHandler::log(LogHandler::INF, "Finished loading resources", typeid(*this).name());
-            m_windowHandler->getWindow().close();
             m_isRunning = false;
         }
-        if(!m_isRunning) {
-            m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+        if(++m_updateCount >= 50) {
+            if(!m_isRunning) {
+                m_windowHandler->getWindow().close();
+                m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+            }
         }
         return true;
     }
 
     void GameStateInit::draw(const double dt) {
         m_windowHandler->getWindow().clear(sf::Color::Transparent);
-        m_graphicsHandler->draw(dt);
+        m_windowHandler->getWindow().draw(m_sprite);
         m_windowHandler->getWindow().display();
     }
 
@@ -84,7 +101,6 @@ namespace bb {
             } else if(windowEvent.type == sf::Event::KeyPressed) {
                 switch(windowEvent.key.code) {
                     case sf::Keyboard::Escape:
-                        m_windowHandler->getWindow().close();
                         m_isRunning = false;
                         return;
                     case sf::Keyboard::Pause:

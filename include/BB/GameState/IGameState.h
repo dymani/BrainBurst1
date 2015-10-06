@@ -16,7 +16,6 @@ namespace bb {
         virtual void handleInput() = 0;
     protected:
         Game& m_game;
-        std::vector<Entity*> m_entities;
     };
 }
 

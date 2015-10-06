@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
     <ClCompile Include="src\BB\Component\GuiComponent.cpp" />
+    <ClCompile Include="src\BB\Component\UpdateComponent.cpp" />
     <ClCompile Include="src\BB\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="src\BB\Handler\LogHandler.cpp" />
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
     <ClCompile Include="src\BB\Handler\ScriptHandler.cpp" />
+    <ClCompile Include="src\BB\Handler\UpdateHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -164,7 +166,9 @@
     <ClInclude Include="include\BB\Handler\LogHandler.h" />
     <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
     <ClInclude Include="include\BB\Handler\ScriptHandler.h" />
+    <ClInclude Include="include\BB\Handler\UpdateHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
+    <ClInclude Include="include\BB\Component\UpdateComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\test.png" />
