@@ -66,6 +66,7 @@ namespace bb {
         setShape(m_windowHandler->getWindow().getSystemHandle(), init);
         setTransparency(m_windowHandler->getWindow().getSystemHandle(), 200);
         m_updateCount = 0;
+        m_finish = false;
     }
 
     GameStateInit::~GameStateInit() {
@@ -73,8 +74,10 @@ namespace bb {
 
     bool GameStateInit::update() {
         if(m_resourceHandler->load()) {
-            LogHandler::log(LogHandler::INF, "Finished loading resources", typeid(*this).name());
+            if(!m_finish)
+                LogHandler::log(LogHandler::INF, "Finished loading resources ", typeid(*this).name());
             m_isRunning = false;
+            m_finish = true;
         }
         if(++m_updateCount >= 50) {
             if(!m_isRunning) {

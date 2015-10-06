@@ -7,6 +7,7 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include <math.h>
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
@@ -25,7 +26,8 @@ namespace bb {
         ResourceHandler* m_resourceHandler;
         WindowHandler* m_windowHandler;
         luabridge::lua_State* L;
-        int m_updateCount;
+        int m_updateCount, m_splashes, m_duration, m_splashCount;
+        std::vector<sf::Sprite> m_sprites;
         bool m_isRunning;
     };
 }

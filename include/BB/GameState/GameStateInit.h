@@ -28,6 +28,7 @@ namespace bb {
         bool m_isRunning;
         sf::Sprite m_sprite;
         int m_updateCount;
+        bool m_finish;
     };
 }
 
