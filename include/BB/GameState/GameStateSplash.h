@@ -28,7 +28,9 @@ namespace bb {
         luabridge::lua_State* L;
         int m_updateCount, m_splashes, m_duration, m_splashCount;
         std::vector<sf::Sprite> m_sprites;
-        bool m_isRunning;
+        enum State {
+            RUNNING, QUIT, NEXT
+        } m_state;
     };
 }
 

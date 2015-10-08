@@ -1,5 +1,6 @@
 #include "BB/GameState/GameStateSplash.h"
 #include "BB/Game.h"
+#include "BB/GameState/GameStateTitle.h"
 
 namespace bb {
     GameStateSplash::GameStateSplash(Game& game, ResourceHandler* resourceHandler,
@@ -70,14 +71,14 @@ namespace bb {
             m_sprites.push_back(sprite);
             m_splashes++;
         }
-        m_isRunning = true;
+        m_state = RUNNING;
         m_updateCount = int(m_duration * -0.5);
         m_splashCount = 0;
     }
 
     bool GameStateSplash::update() {
         if(m_splashes == 0) {
-            m_isRunning = false;
+            m_state = NEXT;
         } else {
             m_updateCount++;
             if(m_updateCount > 0) {
@@ -85,22 +86,22 @@ namespace bb {
                 if(c >= m_duration) {
                     m_splashCount++;
                     if(m_splashCount >= m_splashes)
-                        m_isRunning = false;
+                        m_state = NEXT;
                 } else {
                     int alpha = int(sin(double(c) / double(m_duration) * 3.14159265) * 255);
                     m_sprites[m_splashCount].setColor({255, 255, 255, sf::Uint8(alpha)});
                 }
             }
         }
-        if(!m_isRunning) {
-            m_windowHandler->getWindow().close();
+        if(m_state == NEXT) {
+            m_game.changeState(new GameStateTitle(m_game, m_resourceHandler, m_windowHandler, L));
         }
-        return m_isRunning;
+        return (m_state != QUIT);
     }
 
     void GameStateSplash::draw(const double dt) {
         m_windowHandler->getWindow().clear(sf::Color::Black);
-        if(m_splashes != 0 && m_isRunning)
+        if(m_splashes != 0 && m_state != QUIT)
             m_windowHandler->getWindow().draw(m_sprites[m_splashCount]);
         m_windowHandler->getWindow().display();
     }
@@ -110,21 +111,13 @@ namespace bb {
         while(m_windowHandler->getWindow().pollEvent(windowEvent)) {
             if(windowEvent.type == sf::Event::Closed) {
                 m_windowHandler->getWindow().close();
-                m_isRunning = false;
+                m_state = QUIT;
                 return;
             } else if(windowEvent.type == sf::Event::KeyPressed) {
                 switch(windowEvent.key.code) {
                     case sf::Keyboard::Escape:
-                        m_windowHandler->getWindow().close();
-                        m_isRunning = false;
+                        m_state = QUIT;
                         return;
-                    case sf::Keyboard::F5:
-                        m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
-                        LogHandler::log(LogHandler::INF, "Restarting splash state", typeid(*this).name());
-                        break;
-                    case sf::Keyboard::Pause:
-                        LogHandler::log(LogHandler::INF, "Breakpoint", typeid(*this).name());
-                        break;
                 }
             }
         }

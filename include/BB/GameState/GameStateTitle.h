@@ -1,5 +1,5 @@
-#ifndef GAME_STATE_INIT_H
-#define GAME_STATE_INIT_H
+#ifndef GAME_STATE_TITLE_H
+#define GAME_STATE_TITLE_H
 
 #include <LuaBridge\LuaBridge.h>
 extern "C" {
@@ -7,28 +7,26 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
-#include <SFML/Graphics.hpp>
 #include "BB/GameState/IGameState.h"
-#include "BB/Handler/WindowHandler.h"
 #include "BB/Handler/ResourceHandler.h"
-#include "BB/Handler/LogHandler.h"
+#include "BB/Handler/WindowHandler.h"
 
 namespace bb {
-    class GameStateInit: public IGameState {
+    class Game;
+
+    class GameStateTitle : public IGameState {
     public:
-        GameStateInit(Game& game);
-        ~GameStateInit();
+        GameStateTitle(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
+            luabridge::lua_State* L);
         bool update();
         void draw(const double dt);
         void handleInput();
     private:
-        WindowHandler* m_windowHandler;
         ResourceHandler* m_resourceHandler;
+        WindowHandler* m_windowHandler;
         luabridge::lua_State* L;
-        sf::Sprite m_sprite;
-        int m_updateCount;
         enum State {
-            RUNNING, QUIT, NEXT
+            RUNNING, QUIT, GAME
         } m_state;
     };
 }

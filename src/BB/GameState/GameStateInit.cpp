@@ -36,7 +36,7 @@ namespace bb {
     GameStateInit::GameStateInit(Game& game):IGameState(game) {
         m_windowHandler = new WindowHandler();
         m_resourceHandler = new ResourceHandler(m_game);
-        m_isRunning = true;
+        m_state = RUNNING;
         using namespace luabridge;
         L = luaL_newstate();
         luaL_openlibs(L);
@@ -66,7 +66,6 @@ namespace bb {
         setShape(m_windowHandler->getWindow().getSystemHandle(), init);
         setTransparency(m_windowHandler->getWindow().getSystemHandle(), 200);
         m_updateCount = 0;
-        m_finish = false;
     }
 
     GameStateInit::~GameStateInit() {
@@ -74,18 +73,19 @@ namespace bb {
 
     bool GameStateInit::update() {
         if(m_resourceHandler->load()) {
-            if(!m_finish)
+            if(m_state != NEXT) {
                 LogHandler::log(LogHandler::INF, "Finished loading resources ", typeid(*this).name());
-            m_isRunning = false;
-            m_finish = true;
-        }
-        if(++m_updateCount >= 50) {
-            if(!m_isRunning) {
-                m_windowHandler->getWindow().close();
-                m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+                m_state = NEXT;
             }
         }
-        return true;
+        if(++m_updateCount >= 50) {
+            if(m_state == NEXT) {
+                m_windowHandler->getWindow().close();
+                m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+                return true;
+            }
+        }
+        return (m_state != QUIT);
     }
 
     void GameStateInit::draw(const double dt) {
@@ -97,18 +97,11 @@ namespace bb {
     void GameStateInit::handleInput() {
         sf::Event windowEvent;
         while(m_windowHandler->getWindow().pollEvent(windowEvent)) {
-            if(windowEvent.type == sf::Event::Closed) {
-                m_windowHandler->getWindow().close();
-                m_isRunning = false;
-                return;
-            } else if(windowEvent.type == sf::Event::KeyPressed) {
+            if(windowEvent.type == sf::Event::KeyPressed) {
                 switch(windowEvent.key.code) {
                     case sf::Keyboard::Escape:
-                        m_isRunning = false;
+                        m_state = QUIT;
                         return;
-                    case sf::Keyboard::Pause:
-                        LogHandler::log(LogHandler::INF, "Breakpoint", typeid(*this).name());
-                        break;
                 }
             }
         }
