@@ -134,6 +134,7 @@
     <ClCompile Include="src\BB\Component\UpdateComponent.cpp" />
     <ClCompile Include="src\BB\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
+    <ClCompile Include="src\BB\GameState\GameStateGame.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateSplash.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateTitle.cpp" />

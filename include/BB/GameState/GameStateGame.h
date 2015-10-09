@@ -1,5 +1,5 @@
-#ifndef GAME_STATE_TITLE_H
-#define GAME_STATE_TITLE_H
+#ifndef GAME_STATE_GAME_H
+#define GAME_STATE_GAME_H
 
 #include <LuaBridge\LuaBridge.h>
 extern "C" {
@@ -10,13 +10,14 @@ extern "C" {
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/WindowHandler.h"
+#include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class Game;
 
-    class GameStateTitle : public IGameState {
+    class GameStateGame: public IGameState {
     public:
-        GameStateTitle(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
+        GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
             luabridge::lua_State* L);
         void handleInput();
         bool update();
@@ -26,7 +27,7 @@ namespace bb {
         WindowHandler* m_windowHandler;
         luabridge::lua_State* L;
         enum State {
-            RUNNING, QUIT, GAME
+            RUNNING, TITLE, QUIT
         } m_state;
     };
 }

@@ -18,9 +18,9 @@ namespace bb {
     public:
         GameStateInit(Game& game);
         ~GameStateInit();
+        void handleInput();
         bool update();
         void draw(const double dt);
-        void handleInput();
     private:
         WindowHandler* m_windowHandler;
         ResourceHandler* m_resourceHandler;

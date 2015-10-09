@@ -71,29 +71,6 @@ namespace bb {
     GameStateInit::~GameStateInit() {
     }
 
-    bool GameStateInit::update() {
-        if(m_resourceHandler->load()) {
-            if(m_state != NEXT) {
-                LogHandler::log(LogHandler::INF, "Finished loading resources ", typeid(*this).name());
-                m_state = NEXT;
-            }
-        }
-        if(++m_updateCount >= 50) {
-            if(m_state == NEXT) {
-                m_windowHandler->getWindow().close();
-                m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
-                return true;
-            }
-        }
-        return (m_state != QUIT);
-    }
-
-    void GameStateInit::draw(const double dt) {
-        m_windowHandler->getWindow().clear(sf::Color::Transparent);
-        m_windowHandler->getWindow().draw(m_sprite);
-        m_windowHandler->getWindow().display();
-    }
-
     void GameStateInit::handleInput() {
         sf::Event windowEvent;
         while(m_windowHandler->getWindow().pollEvent(windowEvent)) {
@@ -105,5 +82,33 @@ namespace bb {
                 }
             }
         }
+    }
+
+    bool GameStateInit::update() {
+        m_updateCount++;
+        switch(m_state) {
+            case RUNNING:
+                if(m_resourceHandler->load()) {
+                    LogHandler::log(LogHandler::INF, "Finished loading resources ", typeid(*this).name());
+                    m_state = NEXT;
+                }
+                break;
+            case QUIT:
+                m_windowHandler->getWindow().close();
+                return false;
+            case NEXT:
+                if(m_updateCount >= 50) {
+                    m_windowHandler->getWindow().close();
+                    m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+                }
+                break;
+        }
+        return true;
+    }
+
+    void GameStateInit::draw(const double dt) {
+        m_windowHandler->getWindow().clear(sf::Color::Transparent);
+        m_windowHandler->getWindow().draw(m_sprite);
+        m_windowHandler->getWindow().display();
     }
 }

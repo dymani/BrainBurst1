@@ -1,11 +1,11 @@
 duration = 2
+width = 1024
+height = 576
 splashes = {
   {
-    texture = "splash0",
-    scale = 0.5333333
+    texture = "splash0"
   },
   {
-    texture = "splash1",
-    scale = 0.5333333
+    texture = "splash1"
   }
 }

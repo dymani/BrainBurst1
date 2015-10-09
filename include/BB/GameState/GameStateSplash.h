@@ -19,9 +19,9 @@ namespace bb {
     class GameStateSplash: public IGameState{
     public:
         GameStateSplash(Game& game, ResourceHandler* resourceHandler, luabridge::lua_State* L);
+        void handleInput();
         bool update();
         void draw(const double dt);
-        void handleInput();
     private:
         ResourceHandler* m_resourceHandler;
         WindowHandler* m_windowHandler;
