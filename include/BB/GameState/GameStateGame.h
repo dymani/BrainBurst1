@@ -11,6 +11,7 @@ extern "C" {
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/WindowHandler.h"
 #include "BB/Handler/LogHandler.h"
+#include "BB/World/Field.h"
 
 namespace bb {
     class Game;
@@ -29,6 +30,7 @@ namespace bb {
         enum State {
             RUNNING, TITLE, QUIT
         } m_state;
+        Field* m_field;
     };
 }
 

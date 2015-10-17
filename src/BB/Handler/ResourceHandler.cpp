@@ -92,6 +92,8 @@ namespace bb {
             sf::Texture texture;
             if(texture.loadFromFile("assets/textures/" + m_texturesLoading[name])) {
                 m_textures[name] = texture;
+                m_textures[name].setSmooth(false);
+                m_textures[name].setRepeated(true);
             } else {
                 LogHandler::log(LogHandler::ERR, "Texture \"" + m_texturesLoading[name] + "\" not found",
                     typeid(*this).name());

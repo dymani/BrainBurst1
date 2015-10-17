@@ -9,52 +9,26 @@ namespace bb {
         m_windowHandler = new WindowHandler();
         this->L = L;
         using namespace luabridge;
-        if(luaL_loadfile(L, "assets/data/gameStateSplash.lua") || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStateSplash.lua\" not found",
+        if(luaL_loadfile(L, "assets/data/gameStates/splash.lua") || lua_pcall(L, 0, 0, 0)) {
+            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStates/splash.lua\" not found",
                 typeid(*this).name());
             return;
         }
         LuaRef luaSplashes = getGlobal(L, "splashes");
         LuaRef luaDuration = getGlobal(L, "duration");
-        LuaRef luaWidth = getGlobal(L, "width");
-        LuaRef luaHeight = getGlobal(L, "height");
-        if(luaSplashes.isNil()) {
-            LogHandler::log(LogHandler::ERR, "\"splashes\" not found in gameStateSplash.lua.",
-                typeid(*this).name());
-            return;
-        }
-        if(luaDuration.isNil()) {
-            LogHandler::log(LogHandler::ERR, "\"duration\" not found in gameStateSplash.lua.",
-                typeid(*this).name());
-            return;
-        }
-        if(luaWidth.isNil()) {
-            LogHandler::log(LogHandler::ERR, "\"width\" not found in gameStateSplash.lua.",
-                typeid(*this).name());
-            return;
-        }
-        if(luaHeight.isNil()) {
-            LogHandler::log(LogHandler::ERR, "\"height\" not found in gameStateSplash.lua.",
-                typeid(*this).name());
-            return;
-        }
+        LuaRef luaResolution = getGlobal(L, "resolution");
         if(!luaSplashes.isTable()) {
-            LogHandler::log(LogHandler::ERR, "\"splashes\" not a table in gameStateSplash.lua.",
+            LogHandler::log(LogHandler::ERR, "\"splashes\" not a table in splash.lua.",
                 typeid(*this).name());
             return;
         }
         if(!luaDuration.isNumber()) {
-            LogHandler::log(LogHandler::ERR, "\"duration\" not a integer in gameStateSplash.lua.",
+            LogHandler::log(LogHandler::ERR, "\"duration\" not a integer in splash.lua.",
                 typeid(*this).name());
             return;
         }
-        if(!luaWidth.isNumber()) {
-            LogHandler::log(LogHandler::ERR, "\"width\" not a integer in gameStateSplash.lua.",
-                typeid(*this).name());
-            return;
-        }
-        if(!luaHeight.isNumber()) {
-            LogHandler::log(LogHandler::ERR, "\"height\" not a integer in gameStateSplash.lua.",
+        if(!luaResolution.isTable()) {
+            LogHandler::log(LogHandler::ERR, "\"resolution\" not a table in splash.lua.",
                 typeid(*this).name());
             return;
         }
@@ -62,25 +36,24 @@ namespace bb {
         m_splashes = 0;
         for(int i = 1; i <= luaSplashes.length(); i++) {
             LuaRef luaSplash = luaSplashes[i];
-            LuaRef luaTexture = luaSplash["texture"];
-            if(luaTexture.isNil()) {
-                LogHandler::log(LogHandler::WRN, "\"texture\" not found in gameStateSplash.lua.",
-                    typeid(*this).name());
+            if(luaSplash.isNil()) {
                 continue;
             }
-            if(!luaTexture.isString()) {
-                LogHandler::log(LogHandler::WRN, "\"texture\" of splash[" + std::to_string(i)
-                    + "] not a string in gameStateSplash.lua.", typeid(*this).name());
+            if(!luaSplash.isString()) {
+                LogHandler::log(LogHandler::WRN, "splash[" + std::to_string(i)
+                    + "] not a string in splash.lua.", typeid(*this).name());
                 continue;
             }
             sf::Sprite sprite;
-            sprite.setTexture(m_resourceHandler->getTexture(luaTexture.cast<std::string>()));
+            sprite.setTexture(m_resourceHandler->getTexture(luaSplash.cast<std::string>()));
             sprite.setColor({255, 255, 255, 0});
-            sprite.setScale(float(luaWidth.cast<float>() / 1920), float(luaHeight.cast<float>() / 1080));
+            sprite.setScale(float(luaResolution[1].cast<float>() / 1920),
+                float(luaResolution[2].cast<float>() / 1080));
             m_sprites.push_back(sprite);
             m_splashes++;
         }
-        m_windowHandler->createWindow(sf::VideoMode(luaWidth.cast<int>(), luaHeight.cast<int>()),
+        m_windowHandler->createWindow(sf::VideoMode(luaResolution[1].cast<int>(),
+            luaResolution[2].cast<int>()),
             "Brain Burst 2039", sf::Style::Close);
         m_state = RUNNING;
         m_updateCount = int(m_duration * -0.5);

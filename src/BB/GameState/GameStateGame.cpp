@@ -3,12 +3,12 @@
 #include "BB/GameState/GameStateTitle.h"
 
 namespace bb {
-    GameStateGame::GameStateGame(Game & game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
-        luabridge::lua_State * L): IGameState(game) {
+    GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler, luabridge::lua_State* L): IGameState(game) {
         m_resourceHandler = resourceHandler;
         m_windowHandler = windowHandler;
         this->L = L;
         m_state = RUNNING;
+        m_field = new Field(m_resourceHandler, L, "test", m_windowHandler->getWindow().getSize(), 1);
     }
 
     void GameStateGame::handleInput() {
@@ -43,6 +43,7 @@ namespace bb {
 
     void GameStateGame::draw(const double dt) {
         m_windowHandler->getWindow().clear();
+        m_windowHandler->getWindow().draw(*m_field);
         m_windowHandler->getWindow().display();
     }
 }

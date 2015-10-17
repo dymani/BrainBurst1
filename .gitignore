@@ -201,3 +201,6 @@ FakesAssemblies/
 /include/LuaBridge/detail
 /include/LuaBridge
 /reference
+/assets/data/gameStates/desktop.ini
+/assets/data/world/desktop.ini
+/assets/data/desktop.ini

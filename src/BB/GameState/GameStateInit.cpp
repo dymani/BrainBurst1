@@ -42,19 +42,14 @@ namespace bb {
         luaL_openlibs(L);
         m_resourceHandler->load(L);
         using namespace luabridge;
-        if(luaL_loadfile(L, "assets/data/gameStateInit.lua") || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStateInit.lua\" not found",
+        if(luaL_loadfile(L, "assets/data/gameStates/init.lua") || lua_pcall(L, 0, 0, 0)) {
+            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStates/init.lua\" not found",
                 typeid(*this).name());
             return;
         }
         LuaRef luaTexture = getGlobal(L, "texture");
-        if(luaTexture.isNil()) {
-            LogHandler::log(LogHandler::ERR, "\"texture\" not found in gameStateInit.lua.",
-                typeid(*this).name());
-            return;
-        }
         if(!luaTexture.isString()) {
-            LogHandler::log(LogHandler::ERR, "\"texture\" not a string in gameStateInit.lua.",
+            LogHandler::log(LogHandler::ERR, "\"texture\" not a string in init.lua.",
                 typeid(*this).name());
             return;
         }
