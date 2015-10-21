@@ -1,9 +1,9 @@
 backgroundTexture = "bakcground_HL06"
 
-objectTexture = "NULL"
+objectTexture = "objects_HL06"
 
 tileSet = "tileSet_HL06"
 
 displayNames = {
-    rock = "Stone Column"
+    {name = "rock", displayName = "Stone Column"}
 }

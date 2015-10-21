@@ -80,7 +80,7 @@ namespace bb {
             case BUTTON:
                 if(m_buttonState == RELEASED_B) {
                     m_buttonState = HOVER_B;
-                    gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
+                    //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
                     return true;
                 }
                 break;
@@ -107,15 +107,15 @@ namespace bb {
                 if(isLeftPressed) {
                     if(m_buttonState == HOVER_B || m_buttonState == LEFT_B) {
                         m_buttonState = PRESSED_B;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("pressed"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("pressed"));
                     }
                 } else {
                     if(m_buttonState == IDLE_B || m_buttonState == LEFT_B) {
                         m_buttonState = HOVER_B;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
                     } else if(m_buttonState == PRESSED_B) {
                         m_buttonState = RELEASED_B;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     }
                 }
                 return true;
@@ -123,15 +123,15 @@ namespace bb {
                 if(isLeftPressed) {
                     if(m_buttonState == HOVER_B) {
                         m_buttonState = IDLE_B;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     } else if(m_buttonState == PRESSED_B) {
                         m_buttonState = LEFT_B;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     }
                 } else {
                     if(m_buttonState == HOVER_B || m_buttonState == LEFT_B) {
                         m_buttonState = IDLE_B;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     }
                 }
                 return false;
@@ -148,30 +148,30 @@ namespace bb {
                 if(isLeftPressed) {
                     if(m_textboxState == HOVER_T || m_textboxState == LEFT_T) {
                         m_textboxState = PRESSED_T;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
                     }
                 } else {
                     if(m_textboxState == IDLE_T || m_textboxState == LEFT_T) {
                         m_textboxState = HOVER_T;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("hover"));
                     } else if(m_textboxState == PRESSED_T) {
                         m_textboxState = FOCUSED_T;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("focused"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("focused"));
                     }
                 }
             } else {
                 if(isLeftPressed) {
                     if(m_textboxState == FOCUSED_T || m_textboxState == HOVER_T) {
                         m_textboxState = IDLE_T;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     } else if(m_textboxState == PRESSED_T) {
                         m_textboxState = LEFT_T;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     }
                 } else {
                     if(m_textboxState == HOVER_T || m_textboxState == LEFT_T) {
                         m_textboxState = IDLE_T;
-                        gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
+                        //gc->getDrawable<sf::Sprite>("sprite")->setTextureRect(gc->getTextureRect("default"));
                     }
                 }
             }

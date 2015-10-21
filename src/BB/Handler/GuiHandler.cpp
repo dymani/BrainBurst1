@@ -1,6 +1,6 @@
 #include "BB/Handler/GuiHandler.h"
 #include "BB/Handler/WindowHandler.h"
-#include "BB/Entity.h"
+#include "BB/World/Entity.h"
 #include "BB/Component/GuiComponent.h"
 #include "BB/Component/GraphicsComponent.h"
 
@@ -12,7 +12,7 @@ namespace bb {
         m_guiEntities.clear();
         int i = -1;
         for(auto& entity : m_entities) {
-            auto gc = entity->get<GuiComponent>();
+            /*auto gc = entity->get<GuiComponent>();
             if(!gc)
                 continue;
             m_guiEntities[gc->getId()] = entity;
@@ -20,19 +20,19 @@ namespace bb {
                 continue;
             if(gc->update(entity->get<GraphicsComponent>())) {
                 i = gc->getId();
-            }
+            }*/
         }
         return i;
     }
 
     void GuiHandler::handleInput(sf::Event& windowEvent) {
         for(auto& entity : m_entities) {
-            auto gc = entity->get<GuiComponent>();
+            /*auto gc = entity->get<GuiComponent>();
             if(!gc)
                 continue;
             if(gc->handleInput(windowEvent, m_windowHandler.getWindow(), entity->getCoord(),
                 entity->get<GraphicsComponent>()))
-                return;
+                return;*/
         }
     }
 

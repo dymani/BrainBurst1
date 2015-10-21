@@ -1,4 +1,5 @@
 #include "BB/World/Field.h"
+#include "BB/Component/GraphicsComponent.h"
 
 namespace bb {
     Field::Field(ResourceHandler* resourceHandler, luabridge::lua_State* L, std::string world,
@@ -30,7 +31,15 @@ namespace bb {
                 rect = {luaTextureRect[1].cast<int>(), luaTextureRect[2].cast<int>(),
                     luaTextureRect[3].cast<int>(), luaTextureRect[4].cast<int>()};
                 size = {luaSize[1].cast<int>(), luaSize[2].cast<int>()};
-                m_objects[luaObject["name"].cast<std::string>()] = new Object(rect, size);
+                sf::Sprite* sprite = new sf::Sprite();
+                sprite->setTextureRect(rect);
+                sprite->setScale({float(size.x) / float(rect.width), float(size.y) / float(rect.height)});
+                Entity* entity = new Entity();
+                GraphicsComponent* gc = new GraphicsComponent(*entity);
+                gc->setSize(size);
+                gc->addDrawable(std::type_index(typeid(*sprite)), sprite, "default");
+                entity->addComponent(std::type_index(typeid(*gc)), gc);
+                m_objects[luaObject["name"].cast<std::string>()] = entity;
             }
         } else {
             LogHandler::log(LogHandler::ERR, "\"object\" not a table in " + file, typeid(*this).name());
@@ -40,9 +49,16 @@ namespace bb {
             for(int i = 1; i <= luaObjects.length(); i++) {
                 LuaRef luaObject = luaObjects[i];
                 if(m_objects.find(luaObject["name"].cast<std::string>()) != m_objects.end()) {
-                    Object* obj = new Object(*m_objects[luaObject["name"].cast<std::string>()]);
-                    obj->setCoord({luaObject["coord"].cast<float>(), float(windowSize.y - 64)});
-                    m_entities.push_back(obj);
+                    Entity* entity = new Entity(*m_objects[luaObject["name"].cast<std::string>()]);
+                    entity->setCoord({luaObject["coord"].cast<float>(), float(windowSize.y - 64)});
+                    for(auto& drawable : entity->getComponent<GraphicsComponent>()->getDrawables()) {
+                        if(drawable.first.name() == "class sf::Sprite")
+                            entity->getComponent<GraphicsComponent>()->getDrawable<sf::Sprite>
+                            (drawable.second.first)->setPosition(float(int(entity->getCoord().x * 64)),
+                                float(int(entity->getCoord().y
+                                    - entity->getComponent<GraphicsComponent>()->getSize().y)));
+                    }
+                    m_entities.push_back(entity);
                 }
             }
         } else {
@@ -106,8 +122,11 @@ namespace bb {
         states.texture = &tex;
         target.draw(m_vertices, states);
         sf::Texture& obj = m_resourceHandler->getTexture(m_objectTexture);
+        obj.setSmooth(false);
         for(auto& entity : m_entities) {
-            entity->draw(target, obj);
+            for(auto& drawable : entity->getComponent<GraphicsComponent>()->getDrawables()) {
+                target.draw(*drawable.second.second);
+            }
         }
     }
 

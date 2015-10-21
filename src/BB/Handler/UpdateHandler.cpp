@@ -1,5 +1,5 @@
 #include "BB/Handler/UpdateHandler.h"
-#include "BB/Entity.h"
+#include "BB/World/Entity.h"
 
 namespace bb {
     UpdateHandler::UpdateHandler(std::vector<Entity*>& entities, IGameState* gameState):m_entities(entities),
@@ -8,7 +8,7 @@ namespace bb {
 
     void UpdateHandler::update() {
         for(unsigned int i = 0; i < m_entities.size(); ) {
-            auto uc = m_entities[i]->get<UpdateComponent>();
+            /*auto uc = m_entities[i]->get<UpdateComponent>();
             if(!uc) {
                 i++;
                 continue;
@@ -17,7 +17,7 @@ namespace bb {
                 delete m_entities[i];
                 m_entities.erase(m_entities.begin() + i);
                 continue;
-            }
+            }*/
             i++;
         }
     }

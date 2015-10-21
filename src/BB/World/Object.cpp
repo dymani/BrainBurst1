@@ -5,7 +5,7 @@ namespace bb {
         m_sprite.setTextureRect(textureRect);
         m_sprite.setScale({float(size.x) / float(textureRect.width),
             float(size.y) / float(textureRect.height)});
-        m_sprite.setPosition(float(coord.x * 64), float(coord.y - size.y));
+        m_sprite.setPosition(float(int(coord.x * 64)), float(int(coord.y - size.y)));
     }
 
     Object::Object(Object & obj) {
@@ -18,6 +18,7 @@ namespace bb {
     }
 
     void Object::setCoord(sf::Vector2f coord) {
-        m_sprite.setPosition(float(coord.x * 64), float(coord.y - m_sprite.getGlobalBounds().height));
+        m_sprite.setPosition(float(int(coord.x * 64)),
+            float(int(coord.y - m_sprite.getGlobalBounds().height)));
     }
 }

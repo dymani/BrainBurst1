@@ -102,6 +102,7 @@ namespace bb {
         } else {
             auto it = m_textures.find(name);
             if(it == m_textures.end()) {
+                return m_textures["NULL"];
                 LogHandler::log(LogHandler::ERR, "Texture \"" + name + "\" not found", typeid(*this).name());
             }
         }

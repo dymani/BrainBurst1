@@ -5,8 +5,6 @@
 #include <SFML/Graphics.hpp>
 
 namespace bb {
-    class Entity;
-
     class IGameState {
     public:
         IGameState(Game& game):m_game(game) {

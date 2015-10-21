@@ -132,7 +132,7 @@
     <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
     <ClCompile Include="src\BB\Component\GuiComponent.cpp" />
     <ClCompile Include="src\BB\Component\UpdateComponent.cpp" />
-    <ClCompile Include="src\BB\Entity.cpp" />
+    <ClCompile Include="src\BB\World\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateGame.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
@@ -159,7 +159,7 @@
     <ClInclude Include="include\BB\Component\GraphicsComponent.h" />
     <ClInclude Include="include\BB\Component\GuiComponent.h" />
     <ClInclude Include="include\BB\Component\IComponent.h" />
-    <ClInclude Include="include\BB\Entity.h" />
+    <ClInclude Include="include\BB\World\Entity.h" />
     <ClInclude Include="include\BB\Game.h" />
     <ClInclude Include="include\BB\GameState\GameStateGame.h" />
     <ClInclude Include="include\BB\GameState\GameStateInit.h" />

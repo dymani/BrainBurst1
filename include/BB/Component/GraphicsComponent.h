@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "BB/Component/IComponent.h"
 #include <iostream>
+#include  <typeindex>
 #include <LuaBridge\LuaBridge.h>
 extern "C" {
 #include <lua/lua.h>
@@ -11,64 +12,40 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include "BB/Handler/LogHandler.h"
+#include "BB/Handler/ResourceHandler.h"
 
 namespace bb {
-    class ResourceHandler;
-
-    class Drawable {
-    public:
-        enum Type {
-            SPRITE, TEXT
-        };
-        Drawable(Type type, sf::Drawable* drawable);
-        Drawable* copy();
-        sf::Drawable* m_drawable;
-        Type m_type;
-    };
+    class Entity;
 
     class GraphicsComponent: public IComponent {
     public:
-        enum Type {
-            SPRITE, TEXT
-        };
-        GraphicsComponent();
-        bool createFromLua(luabridge::lua_State* L, luabridge::LuaRef& luaGraphicsComponent,
-            ResourceHandler& m_resourceHandler);
-        bool initFromLua(luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
+        GraphicsComponent(Entity& entity);
         IComponent* copy();
-        GraphicsComponent* addDrawable(Type type, std::string name);
-        GraphicsComponent* addTextureRect(std::string name, sf::IntRect rect);
-        GraphicsComponent* setZ(float z);
-        GraphicsComponent* setAlign(int align);
-        sf::IntRect getTextureRect(std::string name);
-        std::map<std::string, Drawable*>& getDrawables();
+        void addDrawable(std::type_index type, sf::Drawable* drawable, std::string name);
+        void setZ(float z);
+        void setSize(sf::Vector2i size);
+        std::map<std::type_index, std::pair<std::string, sf::Drawable*>>& getDrawables();
         template <typename T>
         T* getDrawable(std::string name) {
-            for(auto& it : m_drawables) {
-                if(it.first == name
-                    &&dynamic_cast<T*>(it.second->m_drawable)) {
-                    return dynamic_cast<T*>(it.second->m_drawable);
+            auto& it = m_drawables.find(typeid(T));
+            if(it != m_drawables.end()) {
+                if(it->second.first == name) {
+                    if(dynamic_cast<T*>(it->second.second)) {
+                        return dynamic_cast<T*>(it->second.second);
+                    }
                 }
             }
+            LogHandler::log(LogHandler::ERR, std::string(typeid(T).name()) + " " + name
+                + "not found in graphics component", typeid(this).name());
             return nullptr;
         }
         float getZ();
-        int getAlign();
-        void setAlpha(int alpha);
-        int getAlpha() const {
-            for(auto& it : m_drawables) {
-                if(it.first == "default"
-                    &&dynamic_cast<sf::Sprite*>(it.second->m_drawable)) {
-                    return dynamic_cast<sf::Sprite*>(it.second->m_drawable)->getColor().a;
-                }
-            }
-            return 255;
-        }
+        sf::Vector2i getSize();
     private:
-        std::map<std::string, Drawable*> m_drawables;
-        std::map<std::string, sf::IntRect> m_textureRects;
+        Entity& m_entity;
+        std::map<std::type_index, std::pair<std::string, sf::Drawable*>> m_drawables;
+        sf::Vector2i m_size;
         float m_z;
-        int m_align;
     };
 }
 

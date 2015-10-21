@@ -2,7 +2,7 @@
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/Component/GuiComponent.h"
 #include "BB/Handler/WindowHandler.h"
-#include "BB/Entity.h"
+#include "BB/World/Entity.h"
 
 namespace bb {
     GraphicsHandler::GraphicsHandler(WindowHandler& windowHandler, std::vector<Entity*>& entities)
@@ -15,12 +15,12 @@ namespace bb {
         for(auto& entity : m_entities) {
             if(!entity)
                 continue;
-            if(entity->get<GraphicsComponent>())
-                entities.push_back(entity);
+            /*if(entity->get<GraphicsComponent>())
+                entities.push_back(entity);*/
         }
         std::sort(entities.begin(), entities.end(), compareEntities);
         for(auto& entity : entities) {
-            auto gc = entity->get<GraphicsComponent>();
+            /*auto gc = entity->get<GraphicsComponent>();
             if(!gc) {
                 continue;
             }
@@ -28,16 +28,16 @@ namespace bb {
             transform.translate(entity->getCoord());
             for(auto& drawable : gc->getDrawables()) {
                 window.draw(*drawable.second->m_drawable, transform);
-            }
+            }*/
         }
     }
 
     bool compareEntities(Entity* a, Entity* b) {
-        auto gcA = a->get<GraphicsComponent>();
+        /*auto gcA = a->get<GraphicsComponent>();
         auto gcB = b->get<GraphicsComponent>();
         if(gcA && gcB) {
             return (gcA->getZ() < gcB->getZ());
-        }
+        }*/
         return true;
     }
 }

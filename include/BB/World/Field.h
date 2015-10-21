@@ -9,10 +9,10 @@ extern "C" {
 }
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
-#include "BB/World/Object.h"
+#include "BB/World/Entity.h"
 
 namespace bb {
-    class Field: public sf::Drawable, sf::Transformable{
+    class Field: public sf::Drawable, public sf::Transformable{
     public:
         Field(ResourceHandler* resourceHandler, luabridge::lua_State* L, std::string world,
             sf::Vector2u windowSize, int id);
@@ -25,8 +25,8 @@ namespace bb {
         sf::VertexArray m_vertices;
         std::string m_tileSet, m_objectTexture;
         int m_tiles[100];
-        std::map<std::string, Object*> m_objects;
-        std::vector<Object*> m_entities;
+        std::map<std::string, Entity*> m_objects;
+        std::vector<Entity*> m_entities;
     };
 }
 

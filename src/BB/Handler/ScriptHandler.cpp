@@ -1,6 +1,6 @@
 #include "BB/Handler/ScriptHandler.h"
 #include "BB/Handler/ResourceHandler.h"
-#include "BB/Entity.h"
+#include "BB/World/Entity.h"
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/Component/GuiComponent.h"
 #include "BB/Component/UpdateComponent.h"
@@ -87,9 +87,9 @@ namespace bb {
 
         LuaRef luaGraphicsComponent = luaComponents["GraphicsComponent"];
         if(!luaGraphicsComponent.isNil()) {
-            GraphicsComponent* gc = new GraphicsComponent();
-            if(gc->createFromLua(L, luaGraphicsComponent, m_resourceHandler))
-                entity->addComponent(std::type_index(typeid(GraphicsComponent)), gc);
+            /*GraphicsComponent* gc = new GraphicsComponent()*/;
+            /*if(gc->createFromLua(L, luaGraphicsComponent, m_resourceHandler))
+                entity->addComponent(std::type_index(typeid(GraphicsComponent)), gc);*/
         }
 
         LuaRef luaGuiComponent = luaComponents["GuiComponent"];
@@ -146,18 +146,18 @@ namespace bb {
         float x = luaX.cast<float>();
         float y = luaY.cast<float>();
         Entity* entity = new Entity(*m_entityList[luaName.cast<std::string>()]);
-        if(entity->get<GraphicsComponent>()) {
+       /* if(entity->get<GraphicsComponent>()) {
             if(!entity->get<GraphicsComponent>()->initFromLua(L, luaEntity)) {
                 LogHandler::log(LogHandler::ERR, "Incorrect data format for graphics component in entity",
                     typeid(*this).name());
             }
-        }
-        if(entity->get<GuiComponent>()) {
+        }*/
+       /* if(entity->get<GuiComponent>()) {
             if(!entity->get<GuiComponent>()->initFromLua(L, luaEntity)) {
                 LogHandler::log(LogHandler::ERR, "Incorrect data format for gui component in entity",
                     typeid(*this).name());
             }
-        }
+        }*/
         entity->setCoord({x, y});
         return entity;
     }

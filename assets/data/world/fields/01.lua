@@ -1,24 +1,24 @@
 object = {
     {
-        name = "buildingA",
-        textureRect = {0, 0, 32, 64},
-        size = {128, 256}
+        name = "columnA",
+        textureRect = {0, 0, 16, 32},
+        size = {64, 128}
     },
     {
-        name = "buildingB",
-        textureRect = {32, 0, 16, 32},
-        size = {64, 128}
+        name = "columnB",
+        textureRect = {0, 32, 16, 16},
+        size = {64, 64}
     }
 }
 
 objects = {
     {
-        name = "buildingA",
+        name = "columnA",
         coord = 1.5
     },
     {
-        name = "buildingB",
-        coord = 5
+        name = "columnB",
+        coord = 3
     }
 }
 

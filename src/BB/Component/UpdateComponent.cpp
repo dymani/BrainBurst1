@@ -1,7 +1,7 @@
 #include "BB/Component/UpdateComponent.h"
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/Handler/UpdateHandler.h"
-#include "BB/Entity.h"
+#include "BB/World/Entity.h"
 #include "BB/GameState/GameStateSplash.h"
 
 namespace bb {
@@ -41,7 +41,7 @@ namespace bb {
         if(m_updateFunc) {
             try {
                 LogHandler::log(LogHandler::INF, "U", typeid(*this).name());
-                (*m_updateFunc)(this, entity->get<GraphicsComponent>(), dynamic_cast<GameStateSplash*>(m_updateHandler.getGameState()));
+                /*(*m_updateFunc)(this, entity->get<GraphicsComponent>(), dynamic_cast<GameStateSplash*>(m_updateHandler.getGameState()));*/
             } catch(luabridge::LuaException const& e) {
                 LogHandler::log(LogHandler::ERR, e.what(), typeid(*this).name());
             }
