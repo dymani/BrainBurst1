@@ -26,18 +26,10 @@ namespace bb {
             sf::Vector2i size;
             for(int i = 1; i <= luaObjectTemplate.length(); i++) {
                 LuaRef luaObject = luaObjectTemplate[i];
-                LuaRef luaTextureRect = luaObject["textureRect"];
-                LuaRef luaSize = luaObject["size"];
-                rect = {luaTextureRect[1].cast<int>(), luaTextureRect[2].cast<int>(),
-                    luaTextureRect[3].cast<int>(), luaTextureRect[4].cast<int>()};
-                size = {luaSize[1].cast<int>(), luaSize[2].cast<int>()};
-                sf::Sprite* sprite = new sf::Sprite();
-                sprite->setTextureRect(rect);
-                sprite->setScale({float(size.x) / float(rect.width), float(size.y) / float(rect.height)});
+                LuaRef luaName = luaObject["name"];
+                LuaRef luaGC = luaObject["GraphicsComponent"];
                 Entity* entity = new Entity();
-                GraphicsComponent* gc = new GraphicsComponent(*entity);
-                gc->setSize(size);
-                gc->addDrawable(std::type_index(typeid(*sprite)), sprite, "default");
+                GraphicsComponent* gc = GraphicsComponent::create(*entity, L, luaGC);
                 entity->addComponent(std::type_index(typeid(*gc)), gc);
                 m_objects[luaObject["name"].cast<std::string>()] = entity;
             }
@@ -51,12 +43,10 @@ namespace bb {
                 if(m_objects.find(luaObject["name"].cast<std::string>()) != m_objects.end()) {
                     Entity* entity = new Entity(*m_objects[luaObject["name"].cast<std::string>()]);
                     entity->setCoord({luaObject["coord"].cast<float>(), float(windowSize.y - 64)});
-                    for(auto& drawable : entity->getComponent<GraphicsComponent>()->getDrawables()) {
-                        if(drawable.first.name() == "class sf::Sprite")
-                            entity->getComponent<GraphicsComponent>()->getDrawable<sf::Sprite>
-                            (drawable.second.first)->setPosition(float(int(entity->getCoord().x * 64)),
-                                float(int(entity->getCoord().y
-                                    - entity->getComponent<GraphicsComponent>()->getSize().y)));
+                    for(auto& drawable : entity->getComponent<GraphicsComponent>()->getSprites()) {
+                        drawable.second->setPosition(float(int(entity->getCoord().x * 64)),
+                            float(int(entity->getCoord().y - entity->getComponent<GraphicsComponent>()
+                                ->getSize().y)));
                     }
                     m_entities.push_back(entity);
                 }
@@ -109,6 +99,13 @@ namespace bb {
             quad[2].texCoords = {float(m_tiles[i] * 16 + 16), float(16)};
             quad[3].texCoords = {float(m_tiles[i] * 16), float(16)};
         }
+        sf::Texture& obj = m_resourceHandler->getTexture(m_objectTexture);
+        obj.setSmooth(false);
+        for(auto& entity : m_entities) {
+            for(auto& sprite : entity->getComponent<GraphicsComponent>()->getSprites()) {
+                sprite.second->setTexture(obj);
+            }
+        }
     }
 
     void Field::update() {
@@ -121,12 +118,8 @@ namespace bb {
         tex.setSmooth(false);
         states.texture = &tex;
         target.draw(m_vertices, states);
-        sf::Texture& obj = m_resourceHandler->getTexture(m_objectTexture);
-        obj.setSmooth(false);
         for(auto& entity : m_entities) {
-            for(auto& drawable : entity->getComponent<GraphicsComponent>()->getDrawables()) {
-                target.draw(*drawable.second.second);
-            }
+            target.draw(*entity->getComponent<GraphicsComponent>(), states);
         }
     }
 

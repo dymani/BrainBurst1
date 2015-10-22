@@ -179,7 +179,7 @@ namespace bb {
                 if(windowEvent.type == sf::Event::KeyPressed) {
                     if(windowEvent.key.code == sf::Keyboard::BackSpace && m_text.size() != 0) {
                         m_text.pop_back();
-                        gc->getDrawable<sf::Text>("text")->setString(m_text);
+                        //gc->getDrawable<sf::Text>("text")->setString(m_text);
                     } else if(windowEvent.key.code == sf::Keyboard::Return && m_text.size() != 0) {
                         m_textboxState = RETURN_T;
                     }
@@ -200,7 +200,7 @@ namespace bb {
                     }
                     if(canInput) {
                         m_text += (char)unicode;
-                        gc->getDrawable<sf::Text>("text")->setString(m_text);
+                        //gc->getDrawable<sf::Text>("text")->setString(m_text);
                     }
                     return true;
                 }

@@ -1,24 +1,46 @@
 object = {
     {
         name = "columnA",
-        textureRect = {0, 0, 16, 32},
-        size = {64, 128}
+        GraphicsComponent = {
+           size = {64, 128},
+           z = 0,
+           drawables = {
+               {
+                   type = 0,
+                   name = "default",
+                   textureRect = {0, 0, 16, 32}
+               }
+           }
+        }
     },
     {
         name = "columnB",
-        textureRect = {0, 32, 16, 16},
-        size = {64, 64}
+        GraphicsComponent = {
+            size = {64, 64},
+            z = 0,
+            drawables = {
+                {
+                    type = 0,
+                    name = "defalut",
+                    textureRect = {0, 32, 16, 16}
+                }
+            }
+        }
     }
 }
 
 objects = {
     {
         name = "columnA",
-        coord = 1.5
+        coord = 2
     },
     {
         name = "columnB",
         coord = 3
+    },
+    {
+        name = "columnA",
+        coord = 5
     }
 }
 

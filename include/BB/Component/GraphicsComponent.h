@@ -17,32 +17,25 @@ extern "C" {
 namespace bb {
     class Entity;
 
-    class GraphicsComponent: public IComponent {
+    class GraphicsComponent: public IComponent, public sf::Drawable{
     public:
-        static GraphicsComponent* create(Entity& entity, luabridge::lua_state* L, luabridge::LuaRef& luaGC);
+        static GraphicsComponent* create(Entity& entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC);
         GraphicsComponent(Entity& entity);
-        void addSprite(std::string name, sf::Sprite* sprite);
-        template<typename T>
-        T* getDrawable(std::string name);
-        /*
-        template<> sf::Sprite* getDrawable(std::string name) {
-            auto& it = m_sprites.find(name);
-            if(it != m_sprites.end()){
-                return it->second;
-            }
-            LogHandler::log(LogHandler::ERR, "Sprite " + name
-                + "not found in graphics component", typeid(this).name());
-            return nullptr; 
-        }
-        */
         IComponent* copy();
+        void addDrawable(std::string name, sf::Sprite* sprite, int z);
+        void getDrawable(std::string name, sf::Sprite*& sprite);
+        std::map<std::string, sf::Sprite*>& getSprites();
         void setZ(float z);
+        void setSize(sf::Vector2i size);
         float getZ();
+        sf::Vector2i getSize();
     private:
         Entity& m_entity;
         std::map<std::string, sf::Sprite*> m_sprites;
-        std::vector<sf::Drawable*> m_buffer;
+        std::vector<std::pair<int, sf::Drawable*>> m_drawables;
+        sf::Vector2i m_size;
         float m_z;
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
     };
 }
 

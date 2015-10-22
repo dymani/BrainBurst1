@@ -2,25 +2,71 @@
 #include "BB/World/Entity.h"
 
 namespace bb {
+    GraphicsComponent* GraphicsComponent::create(Entity& entity, luabridge::lua_State* L,
+        luabridge::LuaRef& luaGC) {
+        GraphicsComponent* gc = new GraphicsComponent(entity);
+        using namespace luabridge;
+        LuaRef luaSize = luaGC["size"];
+        LuaRef luaZ = luaGC["z"];
+        LuaRef luaDrawables = luaGC["drawables"];
+        gc->setSize({luaSize[1].cast<int>(), luaSize[2].cast<int>()});
+        gc->setZ(luaZ.cast<int>());
+        for(int i = 1; i <= luaDrawables.length(); i++) {
+            LuaRef luaDrawable = luaDrawables[i];
+            LuaRef luaType = luaDrawable["type"];
+            LuaRef luaName = luaDrawable["name"];
+            if(luaType.cast<int>() == 0) {
+                LuaRef luaTextureRect = luaDrawable["textureRect"];
+                sf::IntRect rect = {luaTextureRect[1].cast<int>(), luaTextureRect[2].cast<int>(),
+                    luaTextureRect[3].cast<int>(), luaTextureRect[4].cast<int>()};
+                sf::Sprite* sprite = new sf::Sprite();
+                sf::Vector2i size = gc->getSize();
+                sprite->setTextureRect(rect);
+                sprite->setScale({float(size.x) / float(rect.width), float(size.y) / float(rect.height)});
+                gc->addDrawable(luaName.cast<std::string>(), sprite, i);
+            }
+        }
+        return gc;
+    }
+
     GraphicsComponent::GraphicsComponent(Entity& entity): m_entity(entity) {
     }
 
     IComponent* GraphicsComponent::copy() {
         GraphicsComponent* gc = new GraphicsComponent(m_entity);
-        for(auto& drawable : m_drawables) {
-            std::cout << drawable.first.name() << std::endl;
-            if(drawable.first.name() == "class sf::Sprite") {
-                gc->addDrawable(std::type_index(typeid(sf::Sprite())),
-                    new sf::Sprite(*dynamic_cast<sf::Sprite*>(drawable.second.second)), drawable.second.first);
+        for(auto& it : m_sprites) {
+            sf::Sprite* sprite = new sf::Sprite(*it.second);
+            int z = 0;
+            for(auto& itd : m_drawables) {
+                if(itd.second == it.second)
+                    z = itd.first;
             }
+            gc->addDrawable(it.first, sprite, z);
         }
-        gc->m_z = m_z;
+        gc->setSize(getSize());
+        gc->setZ(getZ());
         return gc;
     }
 
-    void GraphicsComponent::addDrawable(std::type_index type, sf::Drawable* drawable, std::string name) {
-        auto pair = std::make_pair(name, drawable);
-        m_drawables[type] = pair;
+    void GraphicsComponent::addDrawable(std::string name, sf::Sprite* sprite, int z) {
+        m_sprites[name] = sprite;
+        m_drawables.push_back({z, sprite});
+        std::sort(m_drawables.begin(), m_drawables.end());
+    }
+
+    void GraphicsComponent::getDrawable(std::string name, sf::Sprite*& sprite) {
+        auto& it = m_sprites.find(name);
+        if(it != m_sprites.end()) {
+            sprite = it->second;
+            return;
+        }
+        LogHandler::log(LogHandler::ERR, "Sprite " + name + "not found in graphics component",
+            typeid(this).name());
+        sprite = nullptr;
+    }
+
+    std::map<std::string, sf::Sprite*>& GraphicsComponent::getSprites() {
+        return m_sprites;
     }
 
     void GraphicsComponent::setZ(float z) {
@@ -31,15 +77,17 @@ namespace bb {
         m_size = size;
     }
 
-    std::map<std::type_index, std::pair<std::string, sf::Drawable*>>& GraphicsComponent::getDrawables() {
-        return m_drawables;
-    }
-
     float GraphicsComponent::getZ() {
         return m_z;
     }
 
     sf::Vector2i GraphicsComponent::getSize() {
         return m_size;
+    }
+
+    void GraphicsComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+        for(auto& it : m_drawables) {
+            target.draw(*it.second, states);
+        }
     }
 }
