@@ -24,14 +24,17 @@ namespace bb {
         void addSprite(std::string name, sf::Sprite* sprite);
         template<typename T>
         T* getDrawable(std::string name);
-         /*
-                 auto& it = m_sprites.find(name);
-                 if(it != m_sprites.end()){
-                     return dynamic_cast<T*>(it->second);
-                 }
-            LogHandler::log(LogHandler::ERR, std::string(typeid(T).name()) + " " + name
+        /*
+        template<> sf::Sprite* getDrawable(std::string name) {
+            auto& it = m_sprites.find(name);
+            if(it != m_sprites.end()){
+                return it->second;
+            }
+            LogHandler::log(LogHandler::ERR, "Sprite " + name
                 + "not found in graphics component", typeid(this).name());
-            return nullptr; */
+            return nullptr; 
+        }
+        */
         IComponent* copy();
         void setZ(float z);
         float getZ();
