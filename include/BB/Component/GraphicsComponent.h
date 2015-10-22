@@ -19,32 +19,18 @@ namespace bb {
 
     class GraphicsComponent: public IComponent {
     public:
+        static GraphicsComponent* create(Entity& entity, luabridge::lua_state* L, luabridge::LuaRef& luaGC);
         GraphicsComponent(Entity& entity);
+        void addSprite(std::string name, sf::Sprite* sprite);
+        template<typename T>
+        T* getDrawable(std::string name);
         IComponent* copy();
-        void addDrawable(std::type_index type, sf::Drawable* drawable, std::string name);
         void setZ(float z);
-        void setSize(sf::Vector2i size);
-        std::map<std::type_index, std::pair<std::string, sf::Drawable*>>& getDrawables();
-        template <typename T>
-        T* getDrawable(std::string name) {
-            auto& it = m_drawables.find(typeid(T));
-            if(it != m_drawables.end()) {
-                if(it->second.first == name) {
-                    if(dynamic_cast<T*>(it->second.second)) {
-                        return dynamic_cast<T*>(it->second.second);
-                    }
-                }
-            }
-            LogHandler::log(LogHandler::ERR, std::string(typeid(T).name()) + " " + name
-                + "not found in graphics component", typeid(this).name());
-            return nullptr;
-        }
         float getZ();
-        sf::Vector2i getSize();
     private:
         Entity& m_entity;
-        std::map<std::type_index, std::pair<std::string, sf::Drawable*>> m_drawables;
-        sf::Vector2i m_size;
+        std::map<std::string, sf::Sprite*> m_sprites;
+        std::vector<sf::Drawable*> m_buffer;
         float m_z;
     };
 }
