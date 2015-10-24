@@ -17,7 +17,7 @@ namespace bb {
     class GuiComponent: public IComponent {
     public:
         GuiComponent();
-        IComponent* copy();
+        IComponent* copy(Entity& entity);
         bool createFromLua(luabridge::lua_State* L, luabridge::LuaRef& luaGuiComponent);
         bool initFromLua(luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
         bool update(GraphicsComponent* gc);

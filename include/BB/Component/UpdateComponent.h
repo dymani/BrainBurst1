@@ -19,7 +19,7 @@ namespace bb {
     public:
         UpdateComponent(UpdateHandler& updateHandler);
         ~UpdateComponent();
-        UpdateComponent* copy();
+        UpdateComponent* copy(Entity& entity);
         bool createFromLua(luabridge::lua_State* L, luabridge::LuaRef& luaUpdateComponent);
         bool initFromLua(luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
         bool update(Entity* entity);

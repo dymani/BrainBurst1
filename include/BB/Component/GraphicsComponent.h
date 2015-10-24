@@ -17,11 +17,12 @@ extern "C" {
 namespace bb {
     class Entity;
 
-    class GraphicsComponent: public IComponent, public sf::Drawable{
+    class GraphicsComponent: public IComponent{
     public:
         static GraphicsComponent* create(Entity& entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC);
         GraphicsComponent(Entity& entity);
-        IComponent* copy();
+        IComponent* copy(Entity& entity);
+        void draw(sf::RenderWindow& window, sf::Vector2f offset);
         void addDrawable(std::string name, sf::Sprite* sprite, int z);
         void getDrawable(std::string name, sf::Sprite*& sprite);
         std::map<std::string, sf::Sprite*>& getSprites();
@@ -31,11 +32,11 @@ namespace bb {
         sf::Vector2i getSize();
     private:
         Entity& m_entity;
+        sf::Transform m_transform;
         std::map<std::string, sf::Sprite*> m_sprites;
         std::vector<std::pair<int, sf::Drawable*>> m_drawables;
         sf::Vector2i m_size;
         float m_z;
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
     };
 }
 

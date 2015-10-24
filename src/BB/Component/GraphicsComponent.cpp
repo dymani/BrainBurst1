@@ -10,7 +10,7 @@ namespace bb {
         LuaRef luaZ = luaGC["z"];
         LuaRef luaDrawables = luaGC["drawables"];
         gc->setSize({luaSize[1].cast<int>(), luaSize[2].cast<int>()});
-        gc->setZ(luaZ.cast<int>());
+        gc->setZ(luaZ.cast<float>());
         for(int i = 1; i <= luaDrawables.length(); i++) {
             LuaRef luaDrawable = luaDrawables[i];
             LuaRef luaType = luaDrawable["type"];
@@ -22,6 +22,7 @@ namespace bb {
                 sf::Sprite* sprite = new sf::Sprite();
                 sf::Vector2i size = gc->getSize();
                 sprite->setTextureRect(rect);
+                sprite->setOrigin({0, float(rect.height)});
                 sprite->setScale({float(size.x) / float(rect.width), float(size.y) / float(rect.height)});
                 gc->addDrawable(luaName.cast<std::string>(), sprite, i);
             }
@@ -32,8 +33,8 @@ namespace bb {
     GraphicsComponent::GraphicsComponent(Entity& entity): m_entity(entity) {
     }
 
-    IComponent* GraphicsComponent::copy() {
-        GraphicsComponent* gc = new GraphicsComponent(m_entity);
+    IComponent* GraphicsComponent::copy(Entity& entity) {
+        GraphicsComponent* gc = new GraphicsComponent(entity);
         for(auto& it : m_sprites) {
             sf::Sprite* sprite = new sf::Sprite(*it.second);
             int z = 0;
@@ -46,6 +47,17 @@ namespace bb {
         gc->setSize(getSize());
         gc->setZ(getZ());
         return gc;
+    }
+
+    void GraphicsComponent::draw(sf::RenderWindow& window, sf::Vector2f offset) {
+        for(auto& sprite : m_sprites) {
+            sprite.second->setPosition({m_entity.getCoord().x * 64,
+                window.getSize().y - m_entity.getCoord().y * 64 - 64});
+        }
+        m_transform = sf::Transform().translate(offset);
+        for(auto& it : m_drawables) {
+            window.draw(*it.second, m_transform);
+        }
     }
 
     void GraphicsComponent::addDrawable(std::string name, sf::Sprite* sprite, int z) {
@@ -83,11 +95,5 @@ namespace bb {
 
     sf::Vector2i GraphicsComponent::getSize() {
         return m_size;
-    }
-
-    void GraphicsComponent::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-        for(auto& it : m_drawables) {
-            target.draw(*it.second, states);
-        }
     }
 }

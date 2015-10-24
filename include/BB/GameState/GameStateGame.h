@@ -9,6 +9,7 @@ extern "C" {
 }
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/ResourceHandler.h"
+#include "BB/Handler/GraphicsHandler.h"
 #include "BB/Handler/WindowHandler.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/World/Field.h"
@@ -25,6 +26,7 @@ namespace bb {
         void draw(const double dt);
     private:
         ResourceHandler* m_resourceHandler;
+        GraphicsHandler* m_graphicsHandler;
         WindowHandler* m_windowHandler;
         luabridge::lua_State* L;
         enum State {

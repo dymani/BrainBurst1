@@ -4,6 +4,12 @@
 #include <typeindex>
 #include <map>
 #include <SFML/Graphics.hpp>
+#include <LuaBridge\LuaBridge.h>
+extern "C" {
+#include <lua/lua.h>
+#include <lua/lauxlib.h>
+#include <lua/lualib.h>
+}
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
@@ -11,6 +17,7 @@ namespace bb {
 
     class Entity {
     public:
+        static Entity* create(luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
         Entity();
         Entity(const Entity& entity);
         ~Entity();

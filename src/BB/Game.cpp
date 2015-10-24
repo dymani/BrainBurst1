@@ -36,7 +36,7 @@ namespace bb {
                 lag -= MS_PER_UPDATE;
             }
 
-            peekState()->draw(lag / MS_PER_UPDATE);
+            peekState()->draw(double(lag) / double(MS_PER_UPDATE));
         }
     #if _DEBUG
         system("PAUSE");

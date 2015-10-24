@@ -64,7 +64,7 @@ namespace bb {
         return !error;
     }
 
-    IComponent* GuiComponent::copy() {
+    IComponent* GuiComponent::copy(Entity& entity) {
         GuiComponent* gc = new GuiComponent();
         gc->m_buttonState = m_buttonState;
         gc->m_id = m_id;

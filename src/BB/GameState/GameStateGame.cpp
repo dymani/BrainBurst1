@@ -6,9 +6,11 @@ namespace bb {
     GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler, luabridge::lua_State* L): IGameState(game) {
         m_resourceHandler = resourceHandler;
         m_windowHandler = windowHandler;
+        m_graphicsHandler = new GraphicsHandler(*m_windowHandler);
         this->L = L;
         m_state = RUNNING;
-        m_field = new Field(m_resourceHandler, L, "test", m_windowHandler->getWindow().getSize(), 1);
+        m_field = new Field(m_resourceHandler, m_graphicsHandler, L, "test",
+            m_windowHandler->getWindow().getSize().y, 1);
     }
 
     void GameStateGame::handleInput() {
@@ -43,7 +45,8 @@ namespace bb {
 
     void GameStateGame::draw(const double dt) {
         m_windowHandler->getWindow().clear();
-        m_windowHandler->getWindow().draw(*m_field);
+        m_field->draw(m_windowHandler->getWindow());
+        m_graphicsHandler->display(dt);
         m_windowHandler->getWindow().display();
     }
 }

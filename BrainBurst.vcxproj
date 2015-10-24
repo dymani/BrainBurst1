@@ -147,7 +147,6 @@
     <ClCompile Include="src\BB\Handler\UpdateHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\BB\World\Field.cpp" />
-    <ClCompile Include="src\BB\World\Object.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,7 +175,6 @@
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
     <ClInclude Include="include\BB\Component\UpdateComponent.h" />
     <ClInclude Include="include\BB\World\Field.h" />
-    <ClInclude Include="include\BB\World\Object.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\test.png" />

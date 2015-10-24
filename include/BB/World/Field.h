@@ -9,19 +9,22 @@ extern "C" {
 }
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
+#include "BB/Handler/GraphicsHandler.h"
 #include "BB/World/Entity.h"
 
 namespace bb {
-    class Field: public sf::Drawable, public sf::Transformable{
+    class Field{
     public:
-        Field(ResourceHandler* resourceHandler, luabridge::lua_State* L, std::string world,
-            sf::Vector2u windowSize, int id);
+        Field(ResourceHandler* resourceHandler, GraphicsHandler* graphicsHandler, luabridge::lua_State* L,
+            std::string world, int height, int id);
         void update();
+        void draw(sf::RenderWindow& window);
     private:
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         std::string idString(int id);
         luabridge::lua_State* L;
         ResourceHandler* m_resourceHandler;
+        GraphicsHandler* m_graphicsHandler;
+        sf::RenderStates m_states;
         sf::VertexArray m_vertices;
         std::string m_tileSet, m_objectTexture;
         int m_tiles[100];

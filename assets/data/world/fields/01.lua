@@ -1,30 +1,34 @@
 object = {
     {
         name = "columnA",
-        GraphicsComponent = {
-           size = {64, 128},
-           z = 0,
-           drawables = {
-               {
-                   type = 0,
-                   name = "default",
-                   textureRect = {0, 0, 16, 32}
-               }
-           }
-        }
+        components = {
+          GraphicsComponent = {
+             size = {64, 128},
+             z = 0,
+             drawables = {
+                 {
+                     type = 0,
+                     name = "default",
+                     textureRect = {0, 0, 16, 32}
+                 }
+             }
+          }
+      }
     },
     {
         name = "columnB",
-        GraphicsComponent = {
-            size = {64, 64},
-            z = 0,
-            drawables = {
-                {
-                    type = 0,
-                    name = "defalut",
-                    textureRect = {0, 32, 16, 16}
-                }
-            }
+        components = {
+          GraphicsComponent = {
+              size = {64, 64},
+              z = 1,
+              drawables = {
+                  {
+                      type = 0,
+                      name = "defalut",
+                      textureRect = {0, 32, 16, 16}
+                  }
+              }
+          }
         }
     }
 }
@@ -32,11 +36,15 @@ object = {
 objects = {
     {
         name = "columnA",
-        coord = 2
+        coord = 10
     },
     {
         name = "columnB",
-        coord = 3
+        coord = 0
+    },
+    {
+        name = "columnB",
+        coord = 5
     },
     {
         name = "columnA",

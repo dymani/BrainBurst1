@@ -14,7 +14,7 @@ namespace bb {
         delete m_updateFunc.get();
     }
 
-    UpdateComponent * UpdateComponent::copy() {
+    UpdateComponent * UpdateComponent::copy(Entity& entity) {
         UpdateComponent* uc = new UpdateComponent(m_updateHandler);
         uc->m_updateFunc = m_updateFunc;
         return uc;
