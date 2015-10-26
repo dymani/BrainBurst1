@@ -19,13 +19,17 @@ namespace bb {
 
     class GraphicsComponent: public IComponent{
     public:
-        static GraphicsComponent* create(Entity& entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC);
+        static GraphicsComponent* create(Entity& entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC,
+            ResourceHandler* resourceHandler);
         GraphicsComponent(Entity& entity);
         IComponent* copy(Entity& entity);
-        void draw(sf::RenderWindow& window, sf::Vector2f offset);
+        void draw(sf::RenderWindow& window, sf::Vector2f offset = sf::Vector2f());
         void addDrawable(std::string name, sf::Sprite* sprite, int z);
+        void addDrawable(std::string name, sf::Text* text, int z);
         void getDrawable(std::string name, sf::Sprite*& sprite);
+        void getDrawable(std::string name, sf::Text*& text);
         std::map<std::string, sf::Sprite*>& getSprites();
+        std::map<std::string, sf::Text*>& getTexts();
         void setZ(float z);
         void setSize(sf::Vector2i size);
         float getZ();
@@ -34,6 +38,7 @@ namespace bb {
         Entity& m_entity;
         sf::Transform m_transform;
         std::map<std::string, sf::Sprite*> m_sprites;
+        std::map<std::string, sf::Text*> m_texts;
         std::vector<std::pair<int, sf::Drawable*>> m_drawables;
         sf::Vector2i m_size;
         float m_z;

@@ -36,28 +36,13 @@
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\Handler\ScriptHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\BB\Handler\AudioHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Component\GuiComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Handler\GuiHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\Handler\LogHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\GameState\GameStateSplash.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Handler\UpdateHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Component\UpdateComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\GameState\GameStateTitle.cpp">
@@ -70,6 +55,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\World\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BB\Component\PlayerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BB\Component\MovementComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BB\Handler\MovementHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,28 +97,13 @@
     <ClInclude Include="include\BB\Handler\ResourceHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\Handler\ScriptHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BB\Handler\AudioHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Component\GuiComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Handler\GuiHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\Handler\LogHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\GameState\GameStateSplash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Component\UpdateComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Handler\UpdateHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\GameState\GameStateTitle.h">
@@ -137,6 +116,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\World\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\Component\PlayerComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\Component\MovementComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\Handler\MovementHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

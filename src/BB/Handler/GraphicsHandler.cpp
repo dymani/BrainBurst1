@@ -1,8 +1,8 @@
 #include "BB/Handler/GraphicsHandler.h"
 #include "BB/Component/GraphicsComponent.h"
-#include "BB/Component/GuiComponent.h"
 #include "BB/Handler/WindowHandler.h"
 #include "BB/World/Entity.h"
+#include "BB/Component/MovementComponent.h"
 
 namespace bb {
     GraphicsHandler::GraphicsHandler(WindowHandler& windowHandler): m_windowHandler(windowHandler) {
@@ -24,7 +24,13 @@ namespace bb {
         m_entities.clear();
         std::sort(entities.begin(), entities.end(), compareEntities);
         for(auto& entity : entities) {
-            entity->getComponent<GraphicsComponent>()->draw(window, {0, 0});
+            if(entity->getComponent<MovementComponent>()) {
+                entity->getComponent<GraphicsComponent>()->draw(window, {
+                    float(entity->getComponent<MovementComponent>()->getVelocity().x * dt),
+                    float(entity->getComponent<MovementComponent>()->getVelocity().y * dt)});
+            }
+
+            entity->getComponent<GraphicsComponent>()->draw(window);
         }
     }
 

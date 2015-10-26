@@ -1,4 +1,4 @@
-duration = 2
+duration = 1
 
 resolution = {1024, 576}
 

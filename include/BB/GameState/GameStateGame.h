@@ -33,6 +33,7 @@ namespace bb {
             RUNNING, TITLE, QUIT
         } m_state;
         Field* m_field;
+        Entity* m_player;
     };
 }
 

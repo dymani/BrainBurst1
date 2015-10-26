@@ -6,6 +6,7 @@ namespace bb {
         std::string world, int height, int id) {
         m_resourceHandler = resourceHandler;
         m_graphicsHandler = graphicsHandler;
+        m_movementHandler = new MovementHandler();
         this->L = L;
         using namespace luabridge;
         std::string file = "assets/data/world/fields/" + idString(id) + ".lua";
@@ -26,7 +27,7 @@ namespace bb {
             for(int i = 1; i <= luaObjectTemplate.length(); i++) {
                 LuaRef luaObject = luaObjectTemplate[i];
                 LuaRef luaName = luaObject["name"];
-                m_objects[luaName.cast<std::string>()] = Entity::create(L, luaObject);
+                m_objects[luaName.cast<std::string>()] = Entity::create(L, luaObject, m_resourceHandler);
             }
         }
         LuaRef luaObjects = getGlobal(L, "objects");
@@ -54,7 +55,7 @@ namespace bb {
         if(luaEntities.isTable()) {
             for(int i = 1; i <= luaEntities.length(); i++) {
                 LuaRef luaEntity = luaEntities[i];
-                m_entities.push_back(Entity::create(L, luaEntity));
+                m_entities.push_back(Entity::create(L, luaEntity, m_resourceHandler));
             }
         }
         file = "assets/data/world/stages/" + type + ".lua";
@@ -94,7 +95,7 @@ namespace bb {
     }
 
     void Field::update() {
-
+        m_movementHandler->update(m_entities);
     }
 
     void Field::draw(sf::RenderWindow& window) {
@@ -105,6 +106,10 @@ namespace bb {
         for(auto& entity : m_entities) {
             m_graphicsHandler->draw(entity);
         }
+    }
+
+    std::vector<Entity*>& Field::getEntities() {
+        return m_entities;
     }
 
     std::string Field::idString(int id) {

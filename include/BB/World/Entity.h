@@ -10,6 +10,7 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
@@ -17,7 +18,7 @@ namespace bb {
 
     class Entity {
     public:
-        static Entity* create(luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
+        static Entity* create(luabridge::lua_State* L, luabridge::LuaRef& luaEntity, ResourceHandler* resourceHandler);
         Entity();
         Entity(const Entity& entity);
         ~Entity();
@@ -28,8 +29,6 @@ namespace bb {
             if(it != m_components.end()) {
                 return dynamic_cast<T*>(it->second);
             }
-            LogHandler::log(LogHandler::ERR, std::string(typeid(T).name()) + " not found in Entity",
-                typeid(this).name());
             return nullptr;
         }
         template <typename T>

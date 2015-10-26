@@ -1,9 +1,12 @@
 #include "BB/World/Entity.h"
 #include "BB/Component/IComponent.h"
 #include "BB/Component/GraphicsComponent.h"
+#include "BB/Component/MovementComponent.h"
+#include "BB/Component/PlayerComponent.h"
 
 namespace bb {
-    Entity* Entity::create(luabridge::lua_State* L, luabridge::LuaRef& luaEntity) {
+    Entity* Entity::create(luabridge::lua_State* L, luabridge::LuaRef& luaEntity,
+        ResourceHandler* resourceHandler) {
         using namespace luabridge;
         Entity* entity = new Entity();
         LuaRef luaCoord = luaEntity["coord"];
@@ -15,8 +18,18 @@ namespace bb {
         if(luaComponents.isTable()) {
             LuaRef luaGC = luaComponents["GraphicsComponent"];
             if(luaGC.isTable()) {
-                GraphicsComponent* gc = GraphicsComponent::create(*entity, L, luaGC);
+                GraphicsComponent* gc = GraphicsComponent::create(*entity, L, luaGC, resourceHandler);
                 entity->addComponent(std::type_index(typeid(*gc)), gc);
+            }
+            LuaRef luaMC = luaComponents["MovementComponent"];
+            if(luaMC.isTable()) {
+                MovementComponent* mc = MovementComponent::create(*entity, L, luaMC);
+                entity->addComponent(std::type_index(typeid(*mc)), mc);
+            }
+            LuaRef luaPC = luaComponents["PlayerComponent"];
+            if(luaPC.isTable()) {
+                PlayerComponent* pc = PlayerComponent::create(*entity, L, luaMC);
+                entity->addComponent(std::type_index(typeid(*pc)), pc);
             }
         }
         return entity;

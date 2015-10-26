@@ -1,6 +1,7 @@
 #include "BB/GameState/GameStateGame.h"
 #include "BB/Game.h"
 #include "BB/GameState/GameStateTitle.h"
+#include "BB/Component/PlayerComponent.h"
 
 namespace bb {
     GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler, luabridge::lua_State* L): IGameState(game) {
@@ -11,9 +12,19 @@ namespace bb {
         m_state = RUNNING;
         m_field = new Field(m_resourceHandler, m_graphicsHandler, L, "test",
             m_windowHandler->getWindow().getSize().y, 1);
+        for(auto& entity : m_field->getEntities()) {
+            if(entity->getComponent<PlayerComponent>()) {
+                m_player = entity;
+                break;
+            }
+        }
+        m_windowHandler->getWindow().setKeyRepeatEnabled(true);
     }
 
     void GameStateGame::handleInput() {
+        if(m_player && m_player->getComponent<PlayerComponent>()) {
+            m_player->getComponent<PlayerComponent>()->handleInput();
+        }
         sf::Event windowEvent;
         while(m_windowHandler->getWindow().pollEvent(windowEvent)) {
             if(windowEvent.type == sf::Event::Closed) {
@@ -30,6 +41,7 @@ namespace bb {
     }
 
     bool GameStateGame::update() {
+        m_field->update();
         switch(m_state) {
             case RUNNING:
                 break;

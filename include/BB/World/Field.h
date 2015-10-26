@@ -10,6 +10,7 @@ extern "C" {
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/GraphicsHandler.h"
+#include "BB/Handler/MovementHandler.h"
 #include "BB/World/Entity.h"
 
 namespace bb {
@@ -19,11 +20,13 @@ namespace bb {
             std::string world, int height, int id);
         void update();
         void draw(sf::RenderWindow& window);
+        std::vector<Entity*>& getEntities();
     private:
         std::string idString(int id);
         luabridge::lua_State* L;
         ResourceHandler* m_resourceHandler;
         GraphicsHandler* m_graphicsHandler;
+        MovementHandler* m_movementHandler;
         sf::RenderStates m_states;
         sf::VertexArray m_vertices;
         std::string m_tileSet, m_objectTexture;

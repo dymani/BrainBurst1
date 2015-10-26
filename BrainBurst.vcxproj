@@ -129,9 +129,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BB\Component\MovementComponent.cpp" />
     <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
-    <ClCompile Include="src\BB\Component\GuiComponent.cpp" />
-    <ClCompile Include="src\BB\Component\UpdateComponent.cpp" />
+    <ClCompile Include="src\BB\Component\PlayerComponent.cpp" />
+    <ClCompile Include="src\BB\Handler\MovementHandler.cpp" />
     <ClCompile Include="src\BB\World\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateGame.cpp" />
@@ -140,11 +141,8 @@
     <ClCompile Include="src\BB\GameState\GameStateTitle.cpp" />
     <ClCompile Include="src\BB\Handler\AudioHandler.cpp" />
     <ClCompile Include="src\BB\Handler\GraphicsHandler.cpp" />
-    <ClCompile Include="src\BB\Handler\GuiHandler.cpp" />
     <ClCompile Include="src\BB\Handler\LogHandler.cpp" />
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
-    <ClCompile Include="src\BB\Handler\ScriptHandler.cpp" />
-    <ClCompile Include="src\BB\Handler\UpdateHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\BB\World\Field.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -156,8 +154,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BB\Component\GraphicsComponent.h" />
-    <ClInclude Include="include\BB\Component\GuiComponent.h" />
     <ClInclude Include="include\BB\Component\IComponent.h" />
+    <ClInclude Include="include\BB\Component\MovementComponent.h" />
+    <ClInclude Include="include\BB\Component\PlayerComponent.h" />
+    <ClInclude Include="include\BB\Handler\MovementHandler.h" />
     <ClInclude Include="include\BB\World\Entity.h" />
     <ClInclude Include="include\BB\Game.h" />
     <ClInclude Include="include\BB\GameState\GameStateGame.h" />
@@ -167,13 +167,9 @@
     <ClInclude Include="include\BB\GameState\IGameState.h" />
     <ClInclude Include="include\BB\Handler\AudioHandler.h" />
     <ClInclude Include="include\BB\Handler\GraphicsHandler.h" />
-    <ClInclude Include="include\BB\Handler\GuiHandler.h" />
     <ClInclude Include="include\BB\Handler\LogHandler.h" />
     <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
-    <ClInclude Include="include\BB\Handler\ScriptHandler.h" />
-    <ClInclude Include="include\BB\Handler\UpdateHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
-    <ClInclude Include="include\BB\Component\UpdateComponent.h" />
     <ClInclude Include="include\BB\World\Field.h" />
   </ItemGroup>
   <ItemGroup>
