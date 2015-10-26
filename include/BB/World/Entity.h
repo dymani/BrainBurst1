@@ -10,17 +10,17 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
-#include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class IComponent;
+    class GameStateGame;
 
     class Entity {
     public:
-        static Entity* create(luabridge::lua_State* L, luabridge::LuaRef& luaEntity, ResourceHandler* resourceHandler);
-        Entity();
-        Entity(const Entity& entity);
+        static Entity* create(GameStateGame& game, int entity, luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
+        Entity(int id);
+        Entity(Entity& entity, int id);
         ~Entity();
         void addComponent(std::type_index type, IComponent* component);
         template <typename T>
@@ -42,6 +42,7 @@ namespace bb {
         void setCoord(sf::Vector2f coord);
         sf::Vector2f getCoord();
     private:
+        int const m_id;
         std::map<std::type_index, IComponent*> m_components;
         sf::Vector2f m_coord;
     };

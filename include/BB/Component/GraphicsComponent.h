@@ -15,14 +15,11 @@ extern "C" {
 #include "BB/Handler/ResourceHandler.h"
 
 namespace bb {
-    class Entity;
-
-    class GraphicsComponent: public IComponent{
+    class GraphicsComponent: public IComponent {
     public:
-        static GraphicsComponent* create(Entity& entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC,
-            ResourceHandler* resourceHandler);
-        GraphicsComponent(Entity& entity);
-        IComponent* copy(Entity& entity);
+        static GraphicsComponent* create(GameStateGame& game, int entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC);
+        GraphicsComponent(GameStateGame& game, int entity);
+        IComponent* copy(int entity);
         void draw(sf::RenderWindow& window, sf::Vector2f offset = sf::Vector2f());
         void addDrawable(std::string name, sf::Sprite* sprite, int z);
         void addDrawable(std::string name, sf::Text* text, int z);
@@ -35,7 +32,6 @@ namespace bb {
         float getZ();
         sf::Vector2i getSize();
     private:
-        Entity& m_entity;
         sf::Transform m_transform;
         std::map<std::string, sf::Sprite*> m_sprites;
         std::map<std::string, sf::Text*> m_texts;

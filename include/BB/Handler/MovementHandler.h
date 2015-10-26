@@ -4,14 +4,15 @@
 #include <vector>
 
 namespace bb {
+    class GameStateGame;
     class Entity;
 
     class MovementHandler {
     public:
-        MovementHandler();
+        MovementHandler(GameStateGame& game);
         void update(std::vector<Entity*>& entities);
     private:
-
+        GameStateGame& m_game;
     };
 }
 

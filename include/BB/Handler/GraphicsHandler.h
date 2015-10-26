@@ -4,17 +4,16 @@
 #include <SFML/Graphics.hpp>
 
 namespace bb {
-    class WindowHandler;
-    class Entity;
+    class GameStateGame;
 
     class GraphicsHandler {
     public:
-        GraphicsHandler(WindowHandler& windowHandler);
-        void draw(Entity* entity);
+        GraphicsHandler(GameStateGame& game);
+        void draw(int entity);
         void display(const double dt);
     private:
-        WindowHandler& m_windowHandler;
-        std::vector<Entity*> m_entities;
+        GameStateGame& m_game;
+        std::vector<int> m_entities;
     };
     bool compareEntities(Entity* a, Entity* b);
 }

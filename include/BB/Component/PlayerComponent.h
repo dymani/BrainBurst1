@@ -14,12 +14,11 @@ extern "C" {
 namespace bb {
     class PlayerComponent: public IComponent {
     public:
-        static PlayerComponent* create(Entity& entity, luabridge::lua_State* L, luabridge::LuaRef& luaPC);
-        PlayerComponent(Entity& entity);
-        IComponent* copy(Entity& entity);
+        static PlayerComponent* create(GameStateGame& game, luabridge::lua_State* L, luabridge::LuaRef& luaPC);
+        PlayerComponent(GameStateGame& game, int entity);
+        IComponent* copy(int entity);
         void handleInput();
     private:
-        Entity& m_entity;
     };
 }
 

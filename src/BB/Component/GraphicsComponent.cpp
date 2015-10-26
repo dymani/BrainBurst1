@@ -1,10 +1,10 @@
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/World/Entity.h"
+#include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    GraphicsComponent* GraphicsComponent::create(Entity& entity, luabridge::lua_State* L,
-        luabridge::LuaRef& luaGC, ResourceHandler* resourceHandler) {
-        GraphicsComponent* gc = new GraphicsComponent(entity);
+    GraphicsComponent* GraphicsComponent::create(GameStateGame& game, int entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC) {
+        GraphicsComponent* gc = new GraphicsComponent(game, entity);
         using namespace luabridge;
         LuaRef luaSize = luaGC["size"];
         LuaRef luaZ = luaGC["z"];
@@ -32,7 +32,7 @@ namespace bb {
                 LuaRef luaColor = luaDrawable["color"];
                 sf::Text* text = new sf::Text();
                 text->setString(luaText.cast<std::string>());
-                text->setFont(resourceHandler->getFont(luaFont.cast<std::string>()));
+                text->setFont(game.getResourceHandler()->getFont(luaFont.cast<std::string>()));
                 text->setCharacterSize(luaSize.cast<int>());
                 text->setColor({luaColor[1].cast<sf::Uint8>(), luaColor[2].cast<sf::Uint8>(),
                     luaColor[3].cast<sf::Uint8>(), luaColor[4].cast<sf::Uint8>()});
@@ -42,11 +42,11 @@ namespace bb {
         return gc;
     }
 
-    GraphicsComponent::GraphicsComponent(Entity& entity): m_entity(entity) {
+    GraphicsComponent::GraphicsComponent(GameStateGame & game, int entity) : IComponent(game, entity) {
     }
 
-    IComponent* GraphicsComponent::copy(Entity& entity) {
-        GraphicsComponent* gc = new GraphicsComponent(entity);
+    IComponent * GraphicsComponent::copy(int entity) {
+        GraphicsComponent* gc = new GraphicsComponent(m_game, entity);
         for(auto& it : m_sprites) {
             sf::Sprite* sprite = new sf::Sprite(*it.second);
             int z = 0;
@@ -62,13 +62,14 @@ namespace bb {
     }
 
     void GraphicsComponent::draw(sf::RenderWindow& window, sf::Vector2f offset) {
+        auto* entity = m_game.getEntity(m_entity);
         for(auto& sprite : m_sprites) {
-            sprite.second->setPosition({m_entity.getCoord().x * 64,
-                window.getSize().y - m_entity.getCoord().y * 64 - 64});
+            sprite.second->setPosition({entity->getCoord().x * 64,
+                window.getSize().y - entity->getCoord().y * 64 - 64});
         }
-        for(auto& text: m_texts) {
-            text.second->setPosition({m_entity.getCoord().x * 64,
-                window.getSize().y - m_entity.getCoord().y * 64 - 64});
+        for(auto& text : m_texts) {
+            text.second->setPosition({entity->getCoord().x * 64,
+                window.getSize().y - entity->getCoord().y * 64 - 64});
         }
         m_transform = sf::Transform().translate(offset);
         for(auto& it : m_drawables) {

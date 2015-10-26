@@ -1,12 +1,13 @@
 #include "BB/World/Field.h"
+#include "BB/GameState/GameStateGame.h"
 #include "BB/Component/GraphicsComponent.h"
+#include "BB/Handler/ResourceHandler.h"
+#include "BB/Handler/GraphicsHandler.h"
+#include "BB/Handler/MovementHandler.h"
 
 namespace bb {
-    Field::Field(ResourceHandler* resourceHandler, GraphicsHandler* graphicsHandler, luabridge::lua_State* L,
-        std::string world, int height, int id) {
-        m_resourceHandler = resourceHandler;
-        m_graphicsHandler = graphicsHandler;
-        m_movementHandler = new MovementHandler();
+    Field::Field(GameStateGame& game, luabridge::lua_State* L, std::string world, int height, int id)
+    :m_game(game){
         this->L = L;
         using namespace luabridge;
         std::string file = "assets/data/world/fields/" + idString(id) + ".lua";
@@ -27,7 +28,7 @@ namespace bb {
             for(int i = 1; i <= luaObjectTemplate.length(); i++) {
                 LuaRef luaObject = luaObjectTemplate[i];
                 LuaRef luaName = luaObject["name"];
-                m_objects[luaName.cast<std::string>()] = Entity::create(L, luaObject, m_resourceHandler);
+                m_objects[luaName.cast<std::string>()] = Entity::create(m_game, -1, L, luaObject);
             }
         }
         LuaRef luaObjects = getGlobal(L, "objects");
@@ -35,9 +36,10 @@ namespace bb {
             for(int i = 1; i <= luaObjects.length(); i++) {
                 LuaRef luaObject = luaObjects[i];
                 if(m_objects.find(luaObject["name"].cast<std::string>()) != m_objects.end()) {
-                    Entity* entity = new Entity(*m_objects[luaObject["name"].cast<std::string>()]);
+                    Entity* entity = new Entity(*m_objects[luaObject["name"].cast<std::string>()],
+                        m_game.getEntities().size());
                     entity->setCoord({luaObject["coord"].cast<float>(), 0});
-                    m_entities.push_back(entity);
+                    m_game.getEntities().push_back(entity);
                 }
             }
         }
@@ -55,7 +57,8 @@ namespace bb {
         if(luaEntities.isTable()) {
             for(int i = 1; i <= luaEntities.length(); i++) {
                 LuaRef luaEntity = luaEntities[i];
-                m_entities.push_back(Entity::create(L, luaEntity, m_resourceHandler));
+                Entity* entity = Entity::create(m_game, m_game.getEntities().size(), L, luaEntity);
+                m_game.getEntities().push_back(entity);
             }
         }
         file = "assets/data/world/stages/" + type + ".lua";
@@ -85,31 +88,20 @@ namespace bb {
             quad[2].texCoords = {float(m_tiles[i] * 16 + 16), float(16)};
             quad[3].texCoords = {float(m_tiles[i] * 16), float(16)};
         }
-        sf::Texture& obj = m_resourceHandler->getTexture(m_objectTexture);
+        sf::Texture& obj = m_game.getResourceHandler()->getTexture(m_objectTexture);
         obj.setSmooth(false);
-        for(auto& entity : m_entities) {
+        for(auto& entity : m_game.getEntities()) {
             for(auto& sprite : entity->getComponent<GraphicsComponent>()->getSprites()) {
                 sprite.second->setTexture(obj);
             }
         }
     }
 
-    void Field::update() {
-        m_movementHandler->update(m_entities);
-    }
-
-    void Field::draw(sf::RenderWindow& window) {
-        sf::Texture& tex = m_resourceHandler->getTexture(m_tileSet);
+    void Field::draw() {
+        sf::Texture& tex = m_game.getResourceHandler()->getTexture(m_tileSet);
         tex.setSmooth(false);
         m_states.texture = &tex;
-        window.draw(m_vertices, m_states);
-        for(auto& entity : m_entities) {
-            m_graphicsHandler->draw(entity);
-        }
-    }
-
-    std::vector<Entity*>& Field::getEntities() {
-        return m_entities;
+        m_game.getWindowHandler()->getWindow().draw(m_vertices, m_states);
     }
 
     std::string Field::idString(int id) {

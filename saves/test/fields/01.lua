@@ -33,12 +33,12 @@ entities = {
             --},
             --CollisionComponent = {
             --    hitbox = {0, 0, 16, 16}
-            },
-            MovementComponent = {
-                velocity = {0, 0}
-            },
-            PlayerComponent = {
-
+            --},
+            --MovementComponent = {
+            --    velocity = {0, 0}
+            --},
+            --PlayerComponent = {
+--
             }
         }
     }
