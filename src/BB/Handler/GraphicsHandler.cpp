@@ -17,9 +17,9 @@ namespace bb {
         sf::RenderWindow& window = m_game.getWindowHandler()->getWindow();
         std::vector<Entity*> entities;
         for(auto& entity : m_entities) {
-            if(m_game.getEntity(entity))
-                if(m_game.getEntity(entity)->getComponent<GraphicsComponent>())
-                    entities.push_back(m_game.getEntity(entity));
+            if(m_game.getWorld()->getEntity(entity))
+                if(m_game.getWorld()->getEntity(entity)->getComponent<GraphicsComponent>())
+                    entities.push_back(m_game.getWorld()->getEntity(entity));
         }
         m_entities.clear();
         std::sort(entities.begin(), entities.end(), compareEntities);

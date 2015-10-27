@@ -12,26 +12,16 @@ namespace bb {
         m_graphicsHandler = new GraphicsHandler(*this);
         this->L = L;
         m_state = RUNNING;
-        Entity* player = new Entity(0);
-        player->setCoord({0, 0});
-        MovementComponent* mc = new MovementComponent(*this, 0);
-        mc->setVelocity({0, 0});
-        player->addComponent(std::type_index(typeid(*mc)), mc);
-        PlayerComponent* pc = new PlayerComponent(*this, 0);
-        player->addComponent(std::type_index(typeid(*pc)), pc);
-        GraphicsComponent* gc = new GraphicsComponent(*this, 0);
-        gc->addDrawable("default", new sf::Sprite(m_resourceHandler->getTexture("NULL"), {0, 0, 64, 64}), 10);
-        player->addComponent(std::type_index(typeid(*gc)), gc);
-        m_entities.clear();
-        m_entities.push_back(player);
-        m_field = new Field(*this, L, "test", m_windowHandler->getWindow().getSize().y, 1);
+        m_world = new World(*this, "test", L);
+        m_world->createField();
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
     }
 
     void GameStateGame::handleInput() {
-        m_entities[0]->getComponent<PlayerComponent>()->handleInput();
+        m_world->handleInput();
         sf::Event windowEvent;
         while(m_windowHandler->getWindow().pollEvent(windowEvent)) {
+            m_world->handleInput(windowEvent);
             if(windowEvent.type == sf::Event::Closed) {
                 m_state = QUIT;
                 return;
@@ -46,7 +36,7 @@ namespace bb {
     }
 
     bool GameStateGame::update() {
-        m_movementHandler->update(m_entities);
+        m_world->update();
         switch(m_state) {
             case RUNNING:
                 break;
@@ -62,22 +52,13 @@ namespace bb {
 
     void GameStateGame::draw(const double dt) {
         m_windowHandler->getWindow().clear();
-        m_field->draw();
-        for(unsigned int i = 0; i < m_entities.size(); i++) {
-            m_graphicsHandler->draw(int(i));
-        }
+        m_world->draw();
         m_graphicsHandler->display(dt);
         m_windowHandler->getWindow().display();
     }
 
-    Entity* GameStateGame::getEntity(int id) {
-        if(m_entities[id])
-            return m_entities[id];
-        return nullptr;
-    }
-
-    std::vector<Entity*>& GameStateGame::getEntities() {
-        return m_entities;
+    World* GameStateGame::getWorld() {
+        return m_world;
     }
 
     ResourceHandler* GameStateGame::getResourceHandler() {

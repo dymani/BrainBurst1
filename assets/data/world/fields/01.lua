@@ -44,7 +44,7 @@ objects = {
     },
     {
         name = "columnB",
-        coord = 5
+        coord = 4.5
     },
     {
         name = "columnA",

@@ -12,13 +12,14 @@ extern "C" {
 
 namespace bb {
     class GameStateGame;
+
     class Field {
     public:
-        Field(GameStateGame& game, luabridge::lua_State* L, std::string world, int height, int id);
+        Field(GameStateGame& game, luabridge::lua_State* L, std::string id);
         void draw();
     private:
         GameStateGame& m_game;
-        std::string idString(int id);
+        std::string m_id;
         luabridge::lua_State* L;
         sf::RenderStates m_states;
         sf::VertexArray m_vertices;

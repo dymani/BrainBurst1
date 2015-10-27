@@ -24,9 +24,9 @@ namespace bb {
         if(!keyA ^ keyD)
             return;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            m_game.getEntity(0)->getComponent<MovementComponent>()->setVelocity({-2.0F, 0.0F});
+            m_game.getWorld()->getEntity(0)->getComponent<MovementComponent>()->setVelocity({-2.0F, 0.0F});
         } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            m_game.getEntity(0)->getComponent<MovementComponent>()->setVelocity({2.0F, 0.0F});
+            m_game.getWorld()->getEntity(0)->getComponent<MovementComponent>()->setVelocity({2.0F, 0.0F});
         }
     }
 }

@@ -9,11 +9,11 @@ entities = {
                 size = {64, 64},
                 z = 5,
                 drawables = {
-                    --{
-                    --    type = 0,
-                    --    name = "base",
-                    --    textureRect = {0, 32, 16, 16}
-                    --},
+                    {
+                        type = 0,
+                        name = "base",
+                        textureRect = {0, 32, 16, 16}
+                    },
                     {
                         type = 1,
                         name = "text",
@@ -32,13 +32,7 @@ entities = {
                 }
             --},
             --CollisionComponent = {
-            --    hitbox = {0, 0, 16, 16}
-            --},
-            --MovementComponent = {
-            --    velocity = {0, 0}
-            --},
-            --PlayerComponent = {
---
+            --    hitbox = {0, 0, 16, 16}--
             }
         }
     }

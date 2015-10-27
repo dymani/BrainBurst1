@@ -14,7 +14,7 @@ extern "C" {
 #include "BB/Handler/WindowHandler.h"
 #include "BB/Handler/MovementHandler.h"
 #include "BB/Handler/LogHandler.h"
-#include "BB/World/Field.h"
+#include "BB/World/World.h"
 
 namespace bb {
     class Game;
@@ -26,8 +26,7 @@ namespace bb {
         void handleInput();
         bool update();
         void draw(const double dt);
-        Entity* getEntity(int id);
-        std::vector<Entity*>& getEntities();
+        World* getWorld();
         ResourceHandler* getResourceHandler();
         GraphicsHandler* getGraphicsHandler();
         WindowHandler* getWindowHandler();
@@ -41,8 +40,7 @@ namespace bb {
         enum State {
             RUNNING, TITLE, QUIT
         } m_state;
-        Field* m_field;
-        std::vector<Entity*> m_entities;
+        World* m_world;
     };
 }
 

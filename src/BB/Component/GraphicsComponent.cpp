@@ -16,11 +16,17 @@ namespace bb {
             LuaRef luaType = luaDrawable["type"];
             LuaRef luaName = luaDrawable["name"];
             if(luaType.cast<int>() == 0) {
+                LuaRef luaTexture = luaDrawable["texture"];
                 LuaRef luaTextureRect = luaDrawable["textureRect"];
                 sf::IntRect rect = {luaTextureRect[1].cast<int>(), luaTextureRect[2].cast<int>(),
                     luaTextureRect[3].cast<int>(), luaTextureRect[4].cast<int>()};
                 sf::Sprite* sprite = new sf::Sprite();
                 sf::Vector2i size = gc->getSize();
+                if(luaTexture.isString()) {
+                    sf::Texture& tex = game.getResourceHandler()->getTexture(luaTexture.cast<std::string>());
+                    tex.setSmooth(false);
+                    sprite->setTexture(tex);
+                }
                 sprite->setTextureRect(rect);
                 sprite->setOrigin({0, float(rect.height)});
                 sprite->setScale({float(size.x) / float(rect.width), float(size.y) / float(rect.height)});
@@ -62,7 +68,7 @@ namespace bb {
     }
 
     void GraphicsComponent::draw(sf::RenderWindow& window, sf::Vector2f offset) {
-        auto* entity = m_game.getEntity(m_entity);
+        auto* entity = m_game.getWorld()->getEntity(m_entity);
         for(auto& sprite : m_sprites) {
             sprite.second->setPosition({entity->getCoord().x * 64,
                 window.getSize().y - entity->getCoord().y * 64 - 64});

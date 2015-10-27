@@ -23,12 +23,13 @@ namespace bb {
 
     void MovementComponent::update(bool move) {
         if(!m_init) {
-            m_newCoord = m_game.getEntity(m_entity)->getCoord();
+            m_newCoord = m_game.getWorld()->getEntity(m_entity)->getCoord();
             m_init = true;
         }
         if(move) {
-            m_game.getEntity(m_entity)->setCoord(m_newCoord);
-            m_newCoord += sf::Vector2f(m_velocity.x * 0.015625F, m_velocity.y * 0.015625F);
+            m_game.getWorld()->getEntity(m_entity)->setCoord(m_newCoord);
+            m_newCoord.x += m_velocity.x * 0.015625F;
+            m_newCoord.y += m_velocity.y * 0.015625F;
             m_velocity.x = m_velocity.x >= 0.1F ? m_velocity.x - 0.1F : 0;
             m_velocity.x = m_velocity.x <= -0.1F ? m_velocity.x + 0.1F : 0;
             m_velocity.y = m_velocity.y >= 0.1F ? m_velocity.y - 0.1F : 0;
