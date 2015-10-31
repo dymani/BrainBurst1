@@ -42,7 +42,7 @@ namespace bb {
     }
 
     void World::update() {
-        m_game.getMovementHandler()->update(m_entities);
+        m_game.getPhysicsHandler()->update(m_entities);
     }
 
     void World::draw() {

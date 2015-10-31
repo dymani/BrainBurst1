@@ -1,5 +1,5 @@
-#ifndef MOVEMENT_HANDLER_H
-#define MOVEMENT_HANDLER_H
+#ifndef PHYSICS_HANDLER_H
+#define PHYSICS_HANDLER_H
 
 #include <vector>
 
@@ -7,9 +7,9 @@ namespace bb {
     class GameStateGame;
     class Entity;
 
-    class MovementHandler {
+    class PhysicsHandler {
     public:
-        MovementHandler(GameStateGame& game);
+        PhysicsHandler(GameStateGame& game);
         void update(std::vector<Entity*>& entities);
     private:
         GameStateGame& m_game;

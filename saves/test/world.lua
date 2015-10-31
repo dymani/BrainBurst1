@@ -14,14 +14,14 @@ player = {
                     name = "base",
                     texture = "NULL",
                     textureRect = {0, 32, 16, 16}
-                },
-                {
-                    type = 1,
-                    name = "text",
-                    text = "Silver Crow",
-                    font = "default",
-                    size = 10,
-                    color = {255, 255, 255, 255}
+                --},
+                --{
+                --    type = 1,
+                --    name = "text",
+                --    text = "Silver Crow",
+                --    font = "default",
+                --    size = 10,
+                --    color = {255, 255, 255, 255}
                 }
             }
         },

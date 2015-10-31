@@ -20,8 +20,13 @@ namespace bb {
         IComponent* copy(int entity);
         void update(bool move);
         void setVelocity(sf::Vector2f velocity);
-        sf::Vector2f getNewCoord();
+        void setVelocityX(float x);
+        void setVelocityY(float y);
+        void addVelocity(sf::Vector2f velocity);
+        void addVelocity(float x, float y);
+        void setNewCoord(sf::Vector2f newCoord);
         sf::Vector2f getVelocity();
+        sf::Vector2f getNewCoord();
     private:
         bool m_init = false;
         sf::Vector2f m_newCoord;

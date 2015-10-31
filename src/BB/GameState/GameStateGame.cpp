@@ -72,7 +72,8 @@ namespace bb {
     WindowHandler* GameStateGame::getWindowHandler() {
         return m_windowHandler;
     }
-    MovementHandler * GameStateGame::getMovementHandler() {
-        return m_movementHandler;
+
+    PhysicsHandler* GameStateGame::getPhysicsHandler() {
+        return m_physicsHandler;
     }
 }

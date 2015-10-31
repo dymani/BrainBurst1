@@ -3,7 +3,7 @@
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/GraphicsHandler.h"
-#include "BB/Handler/MovementHandler.h"
+#include "BB/Handler/PhysicsHandler.h"
 
 namespace bb {
     Field::Field(GameStateGame& game, luabridge::lua_State* L, std::string id) : m_game(game) {

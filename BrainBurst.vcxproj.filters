@@ -63,10 +63,10 @@
     <ClCompile Include="src\BB\Component\MovementComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\Handler\MovementHandler.cpp">
+    <ClCompile Include="src\BB\World\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\World\World.cpp">
+    <ClCompile Include="src\BB\Handler\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -127,10 +127,10 @@
     <ClInclude Include="include\BB\Component\MovementComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\Handler\MovementHandler.h">
+    <ClInclude Include="include\BB\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\World\World.h">
+    <ClInclude Include="include\BB\Handler\PhysicsHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

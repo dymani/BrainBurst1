@@ -19,6 +19,9 @@ namespace bb {
         IComponent* copy(int entity);
         void handleInput();
     private:
+        enum State {
+            IDLE, JUMPING
+        } m_state;
     };
 }
 

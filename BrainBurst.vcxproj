@@ -132,7 +132,7 @@
     <ClCompile Include="src\BB\Component\MovementComponent.cpp" />
     <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
     <ClCompile Include="src\BB\Component\PlayerComponent.cpp" />
-    <ClCompile Include="src\BB\Handler\MovementHandler.cpp" />
+    <ClCompile Include="src\BB\Handler\PhysicsHandler.cpp" />
     <ClCompile Include="src\BB\World\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateGame.cpp" />
@@ -158,7 +158,7 @@
     <ClInclude Include="include\BB\Component\IComponent.h" />
     <ClInclude Include="include\BB\Component\MovementComponent.h" />
     <ClInclude Include="include\BB\Component\PlayerComponent.h" />
-    <ClInclude Include="include\BB\Handler\MovementHandler.h" />
+    <ClInclude Include="include\BB\Handler\PhysicsHandler.h" />
     <ClInclude Include="include\BB\World\Entity.h" />
     <ClInclude Include="include\BB\Game.h" />
     <ClInclude Include="include\BB\GameState\GameStateGame.h" />

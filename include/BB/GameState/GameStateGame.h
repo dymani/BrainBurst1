@@ -12,7 +12,7 @@ extern "C" {
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/GraphicsHandler.h"
 #include "BB/Handler/WindowHandler.h"
-#include "BB/Handler/MovementHandler.h"
+#include "BB/Handler/PhysicsHandler.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/World/World.h"
 
@@ -30,12 +30,12 @@ namespace bb {
         ResourceHandler* getResourceHandler();
         GraphicsHandler* getGraphicsHandler();
         WindowHandler* getWindowHandler();
-        MovementHandler* getMovementHandler();
+        PhysicsHandler* getPhysicsHandler();
     private:
         ResourceHandler* m_resourceHandler;
         GraphicsHandler* m_graphicsHandler;
         WindowHandler* m_windowHandler;
-        MovementHandler* m_movementHandler;
+        PhysicsHandler* m_physicsHandler;
         luabridge::lua_State* L;
         enum State {
             RUNNING, TITLE, QUIT

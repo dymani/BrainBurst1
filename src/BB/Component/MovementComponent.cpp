@@ -30,10 +30,6 @@ namespace bb {
             m_game.getWorld()->getEntity(m_entity)->setCoord(m_newCoord);
             m_newCoord.x += m_velocity.x * 0.015625F;
             m_newCoord.y += m_velocity.y * 0.015625F;
-            m_velocity.x = m_velocity.x >= 0.1F ? m_velocity.x - 0.1F : 0;
-            m_velocity.x = m_velocity.x <= -0.1F ? m_velocity.x + 0.1F : 0;
-            m_velocity.y = m_velocity.y >= 0.1F ? m_velocity.y - 0.1F : 0;
-            m_velocity.y = m_velocity.y <= -0.1F ? m_velocity.y + 0.1F : 0;
         }
     }
 
@@ -41,9 +37,31 @@ namespace bb {
         m_velocity = velocity;
     }
 
+    void MovementComponent::setVelocityX(float x) {
+        m_velocity.x = x;
+    }
+
+    void MovementComponent::setVelocityY(float y) {
+        m_velocity.y = y;
+    }
+
+    void MovementComponent::addVelocity(sf::Vector2f velocity) {
+        m_velocity += velocity;
+    }
+
+    void MovementComponent::addVelocity(float x, float y) {
+        m_velocity.x += x;
+        m_velocity.y += y;
+    }
+
+    void MovementComponent::setNewCoord(sf::Vector2f newCoord) {
+        m_newCoord = newCoord;
+    }
+
     sf::Vector2f MovementComponent::getNewCoord() {
         return m_newCoord;
     }
+
     sf::Vector2f MovementComponent::getVelocity() {
         return m_velocity;
     }
