@@ -48,10 +48,10 @@ namespace bb {
         return gc;
     }
 
-    GraphicsComponent::GraphicsComponent(GameStateGame & game, int entity) : IComponent(game, entity) {
+    GraphicsComponent::GraphicsComponent(GameStateGame& game, int entity) : IComponent(game, entity) {
     }
 
-    IComponent * GraphicsComponent::copy(int entity) {
+    IComponent* GraphicsComponent::copy(int entity) {
         GraphicsComponent* gc = new GraphicsComponent(m_game, entity);
         for(auto& it : m_sprites) {
             sf::Sprite* sprite = new sf::Sprite(*it.second);

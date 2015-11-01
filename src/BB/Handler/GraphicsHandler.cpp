@@ -25,9 +25,10 @@ namespace bb {
         std::sort(entities.begin(), entities.end(), compareEntities);
         for(auto& entity : entities) {
             if(entity->getComponent<MovementComponent>()) {
-                entity->getComponent<GraphicsComponent>()->draw(window, {
-                    float(entity->getComponent<MovementComponent>()->getVelocity().x * dt),
-                    float(entity->getComponent<MovementComponent>()->getVelocity().y * dt)});
+                //entity->getComponent<GraphicsComponent>()->draw(window, {
+                //    float(entity->getComponent<MovementComponent>()->getVelocity().x * dt),
+                //    float(entity->getComponent<MovementComponent>()->getVelocity().y * dt)});
+                entity->getComponent<GraphicsComponent>()->draw(window, {0, 0});
             }
             entity->getComponent<GraphicsComponent>()->draw(window);
         }

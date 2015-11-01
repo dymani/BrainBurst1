@@ -18,17 +18,22 @@ namespace bb {
             luabridge::LuaRef& luaMC);
         MovementComponent(GameStateGame& game, int entity);
         IComponent* copy(int entity);
-        void update(bool move);
+        void move();
+        void update();
         void setVelocity(sf::Vector2f velocity);
         void setVelocityX(float x);
         void setVelocityY(float y);
-        void addVelocity(sf::Vector2f velocity);
         void addVelocity(float x, float y);
         void setNewCoord(sf::Vector2f newCoord);
+        void setNewCoordX(float x);
+        void setNewCoordY(float y);
         sf::Vector2f getVelocity();
         sf::Vector2f getNewCoord();
+        void isOnGround(bool isOnGround);
+        bool isOnGround();
     private:
         bool m_init = false;
+        bool m_isOnGround;
         sf::Vector2f m_newCoord;
         sf::Vector2f m_velocity;
     };

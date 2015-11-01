@@ -34,22 +34,22 @@ object = {
 }
 
 objects = {
-    {
-        name = "columnA",
-        coord = 10
-    },
-    {
-        name = "columnB",
-        coord = 0
-    },
-    {
-        name = "columnB",
-        coord = 4.5
-    },
-    {
-        name = "columnA",
-        coord = 5
-    }
+    --{
+    --    name = "columnA",
+    --    coord = 10
+    --},
+    --{
+    --    name = "columnB",
+    --    coord = 0
+    --},
+    --{
+    --    name = "columnB",
+    --    coord = 4.5
+    --},
+    --{
+    --    name = "columnA",
+    --    coord = 5
+    --}
 }
 
 tiles = {

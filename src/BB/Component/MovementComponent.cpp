@@ -9,6 +9,7 @@ namespace bb {
         using namespace luabridge;
         LuaRef luaVelocity = luaMC["velocity"];
         mc->m_velocity = {luaVelocity[1].cast<float>(), luaVelocity[2].cast<float>()};
+        mc->m_isOnGround = false;
         return mc;
     }
 
@@ -18,19 +19,24 @@ namespace bb {
     IComponent* MovementComponent::copy(int entity) {
         MovementComponent* mc = new MovementComponent(m_game, entity);
         mc->m_velocity = m_velocity;
+        mc->m_isOnGround = m_isOnGround;
         return mc;
     }
 
-    void MovementComponent::update(bool move) {
-        if(!m_init) {
-            m_newCoord = m_game.getWorld()->getEntity(m_entity)->getCoord();
-            m_init = true;
+    void MovementComponent::move() {
+        m_newCoord = m_game.getWorld()->getEntity(m_entity)->getCoord();
+        m_newCoord.x += m_velocity.x * 0.015625F;
+        m_newCoord.y += m_velocity.y * 0.015625F;
+        m_isOnGround = false;
+        if(m_newCoord.y <= 0) {
+            m_isOnGround = true;
+            m_newCoord.y = 0;
+            m_velocity.y = 0;
         }
-        if(move) {
-            m_game.getWorld()->getEntity(m_entity)->setCoord(m_newCoord);
-            m_newCoord.x += m_velocity.x * 0.015625F;
-            m_newCoord.y += m_velocity.y * 0.015625F;
-        }
+    }
+
+    void MovementComponent::update() {
+        m_game.getWorld()->getEntity(m_entity)->setCoord(m_newCoord);
     }
 
     void MovementComponent::setVelocity(sf::Vector2f velocity) {
@@ -45,10 +51,6 @@ namespace bb {
         m_velocity.y = y;
     }
 
-    void MovementComponent::addVelocity(sf::Vector2f velocity) {
-        m_velocity += velocity;
-    }
-
     void MovementComponent::addVelocity(float x, float y) {
         m_velocity.x += x;
         m_velocity.y += y;
@@ -58,11 +60,27 @@ namespace bb {
         m_newCoord = newCoord;
     }
 
-    sf::Vector2f MovementComponent::getNewCoord() {
-        return m_newCoord;
+    void MovementComponent::setNewCoordX(float x) {
+        m_newCoord.x = x;
+    }
+
+    void MovementComponent::setNewCoordY(float y) {
+        m_newCoord.y = y;
     }
 
     sf::Vector2f MovementComponent::getVelocity() {
         return m_velocity;
+    }
+
+    sf::Vector2f MovementComponent::getNewCoord() {
+        return m_newCoord;
+    }
+
+    void MovementComponent::isOnGround(bool isOnGround) {
+        m_isOnGround = isOnGround;
+    }
+
+    bool MovementComponent::isOnGround() {
+        return m_isOnGround;
     }
 }

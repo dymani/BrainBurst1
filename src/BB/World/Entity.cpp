@@ -4,6 +4,7 @@
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/Component/MovementComponent.h"
 #include "BB/Component/PlayerComponent.h"
+#include "BB/Component/CollisionComponent.h"
 
 namespace bb {
     Entity* Entity::create(GameStateGame& game, int id, luabridge::lua_State* L,
@@ -32,6 +33,11 @@ namespace bb {
                 PlayerComponent* pc = PlayerComponent::create(game, L, luaPC);
                 entity->addComponent(std::type_index(typeid(*pc)), pc);
             }
+            LuaRef luaCC = luaComponents["CollisionComponent"];
+            if(luaCC.isTable()) {
+                CollisionComponent* cc = CollisionComponent::create(game, id, L, luaCC);
+                entity->addComponent(std::type_index(typeid(*cc)), cc);
+            }
         }
         return entity;
     }
@@ -47,6 +53,10 @@ namespace bb {
     }
 
     Entity::~Entity() {
+    }
+
+    int Entity::getId() {
+        return m_id;
     }
 
     void Entity::addComponent(std::type_index type, IComponent* component) {

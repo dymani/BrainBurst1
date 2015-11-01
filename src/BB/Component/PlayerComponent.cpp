@@ -22,6 +22,8 @@ namespace bb {
     void PlayerComponent::handleInput() {
         bool keyA = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool keyD = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+        //bool keyW = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        //bool keyS = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
         bool keySpace = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
         auto* mc = m_game.getWorld()->getEntity(0)->getComponent<MovementComponent>();
         switch(m_state) {
@@ -46,7 +48,7 @@ namespace bb {
                         mc->setVelocityX(3.0F);
                     }
                 }
-                if(mc->getNewCoord().y == 0)
+                if(m_game.getWorld()->getEntity(0)->getComponent<MovementComponent>()->isOnGround())
                     m_state = IDLE;
                 break;
         }

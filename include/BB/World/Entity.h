@@ -22,6 +22,7 @@ namespace bb {
         Entity(int id);
         Entity(Entity& entity, int id);
         ~Entity();
+        int getId();
         void addComponent(std::type_index type, IComponent* component);
         template <typename T>
         T* getComponent() {

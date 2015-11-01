@@ -69,6 +69,9 @@
     <ClCompile Include="src\BB\Handler\PhysicsHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\BB\Component\CollisionComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -131,6 +134,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\Handler\PhysicsHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\Component\CollisionComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

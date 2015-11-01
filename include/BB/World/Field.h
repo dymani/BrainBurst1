@@ -26,6 +26,7 @@ namespace bb {
         std::string m_tileSet, m_objectTexture;
         int m_tiles[100];
         std::map<std::string, Entity*> m_objects;
+        std::vector<int> m_fieldEntities;
     };
 }
 

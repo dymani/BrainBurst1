@@ -19,8 +19,10 @@ namespace bb {
         if(luaEntities.isTable()) {
             for(int i = 1; i <= luaEntities.length(); i++) {
                 LuaRef luaEntity = luaEntities[i];
-                Entity* entity = Entity::create(m_game, m_game.getWorld()->getEntities().size(), L, luaEntity);
+                Entity* entity = Entity::create(m_game, m_game.getWorld()->getEntities().back()->getId() + 1,
+                    L, luaEntity);
                 m_game.getWorld()->getEntities().push_back(entity);
+                m_fieldEntities.push_back(entity->getId());
             }
         }
         std::string file = "assets/data/world/fields/" + m_id + ".lua";
@@ -57,13 +59,6 @@ namespace bb {
         if(luaObjectTexture.isString()) {
             m_objectTexture = luaObjectTexture.cast<std::string>();
         }
-        sf::Texture& obj = m_game.getResourceHandler()->getTexture(m_objectTexture);
-        obj.setSmooth(false);
-        for(auto& entity : m_objects) {
-            for(auto& sprite : entity.second->getComponent<GraphicsComponent>()->getSprites()) {
-                sprite.second->setTexture(obj);
-            }
-        }
         file = "assets/data/world/fields/" + m_id + ".lua";
         if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
             LogHandler::log(LogHandler::ERR, "Field \"" + file + "\" not found", typeid(*this).name());
@@ -75,15 +70,24 @@ namespace bb {
                 LuaRef luaObject = luaObjects[i];
                 if(m_objects.find(luaObject["name"].cast<std::string>()) != m_objects.end()) {
                     Entity* entity = new Entity(*m_objects[luaObject["name"].cast<std::string>()],
-                        m_game.getWorld()->getEntities().size());
+                        m_game.getWorld()->getEntities().back()->getId() + 1);
                     entity->setCoord({luaObject["coord"].cast<float>(), 0});
                     m_game.getWorld()->getEntities().push_back(entity);
+                    m_fieldEntities.push_back(entity->getId());
                 }
+            }
+        }
+        sf::Texture& obj = m_game.getResourceHandler()->getTexture(m_objectTexture);
+        obj.setSmooth(false);
+        for(auto& id : m_fieldEntities) {
+            auto* entity = m_game.getWorld()->getEntity(id);
+            for(auto& sprite : entity->getComponent<GraphicsComponent>()->getSprites()) {
+                sprite.second->setTexture(obj);
             }
         }
         m_vertices.setPrimitiveType(sf::Quads);
         m_vertices.resize(400);
-        int h = m_game.getWindowHandler()->getWindow().getSize().y- 64;
+        int h = m_game.getWindowHandler()->getWindow().getSize().y - 64;
         for(int i = 0; i < 100; i++) {
             sf::Vertex* quad = &m_vertices[i * 4];
             quad[0].position = {float(i * 64), float(h)};
