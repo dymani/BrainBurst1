@@ -7,6 +7,7 @@
 
 namespace bb {
     GraphicsHandler::GraphicsHandler(GameStateGame& game) : m_game(game) {
+        m_view = m_game.getWindowHandler()->getWindow().getDefaultView();
     }
 
     void GraphicsHandler::draw(int entity) {
@@ -21,6 +22,7 @@ namespace bb {
                 if(m_game.getWorld()->getEntity(entity)->getComponent<GraphicsComponent>())
                     entities.push_back(m_game.getWorld()->getEntity(entity));
         }
+        window.setView(m_view);
         m_entities.clear();
         std::sort(entities.begin(), entities.end(), compareEntities);
         for(auto& entity : entities) {
@@ -32,6 +34,29 @@ namespace bb {
             }
             entity->getComponent<GraphicsComponent>()->draw(window);
         }
+    }
+
+    void GraphicsHandler::setViewSize(float width, float height) {
+        m_view.setSize({width, height});
+    }
+
+    void GraphicsHandler::setViewCoord(float x, float y) {
+        m_viewCoord = {x, y};
+        if(x * 64 - m_view.getSize().x / 2 < 0) m_viewCoord.x = m_view.getSize().x / 2 / 64;
+        if(y < 0) m_viewCoord.y = 0;
+        m_view.setCenter(m_viewCoord.x * 64, m_view.getSize().y / 2 - m_viewCoord.y * 64);
+    }
+
+    void GraphicsHandler::setViewCoordX(float x) {
+        setViewCoord(x, m_viewCoord.y);
+    }
+
+    void GraphicsHandler::setViewCoordY(float y) {
+        setViewCoord(m_viewCoord.x, y);
+    }
+
+    sf::Vector2f GraphicsHandler::getViewCoord() {
+        return m_viewCoord;
     }
 
     bool compareEntities(Entity* a, Entity* b) {

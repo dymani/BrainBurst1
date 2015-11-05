@@ -210,5 +210,21 @@ entities = {
                 hitbox = {16, 8, 32, 56}
             }
         }
+    },
+    {
+        name = "boarder",
+        coord = {-1, 0},
+        components = {
+            GraphicsComponent = {
+                size = {64, 576},
+                z = 5,
+                drawables = {
+                }
+            },
+            CollisionComponent = {
+                type = 0,
+                hitbox = {0, 0, 64, 576}
+            }
+        }
     }
 }

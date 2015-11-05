@@ -6,7 +6,7 @@
 #include "BB/Component/MovementComponent.h"
 
 namespace bb {
-    GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler, luabridge::lua_State* L): IGameState(game) {
+    GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler, luabridge::lua_State* L) : IGameState(game) {
         m_resourceHandler = resourceHandler;
         m_windowHandler = windowHandler;
         m_graphicsHandler = new GraphicsHandler(*this);
@@ -30,6 +30,21 @@ namespace bb {
                     case sf::Keyboard::Escape:
                         m_state = TITLE;
                         break;
+                    case sf::Keyboard::LControl:
+                        LogHandler::log(LogHandler::INF, std::to_string(m_world->getEntity(0)->getCoord().x)
+                            + " " + std::to_string(m_world->getEntity(0)->getCoord().y), typeid(*this).name());
+                        break;
+                    case sf::Keyboard::W:
+                        m_world->getEntity(0)->getComponent<MovementComponent>()->setVelocityY(50);
+                        break;
+                    case sf::Keyboard::Q:
+                        m_world->getEntity(0)->setCoord(m_world->getEntity(0)->getCoord()
+                            + sf::Vector2f(-5, 0));
+                        break;
+                    case sf::Keyboard::E:
+                        m_world->getEntity(0)->setCoord(m_world->getEntity(0)->getCoord()
+                            + sf::Vector2f(5, 0));
+                        break;
                 }
             }
         }
@@ -52,6 +67,17 @@ namespace bb {
 
     void GameStateGame::draw(const double dt) {
         m_windowHandler->getWindow().clear();
+        sf::Vector2f playerCoord = m_world->getEntity(0)->getCoord();
+        if(m_graphicsHandler->getViewCoord().x > playerCoord.x + 3) {
+            m_graphicsHandler->setViewCoordX(playerCoord.x + 3);
+        } else if(m_graphicsHandler->getViewCoord().x < playerCoord.x - 3) {
+            m_graphicsHandler->setViewCoordX(playerCoord.x - 3);
+        }
+        if(m_graphicsHandler->getViewCoord().y < playerCoord.y - 5) {
+            m_graphicsHandler->setViewCoordY(playerCoord.y - 5);
+        } else if(m_graphicsHandler->getViewCoord().y > playerCoord.y - 3) {
+            m_graphicsHandler->setViewCoordY(playerCoord.y - 3);
+        }
         m_world->draw();
         m_graphicsHandler->display(dt);
         m_windowHandler->getWindow().display();

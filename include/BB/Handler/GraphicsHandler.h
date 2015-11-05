@@ -11,9 +11,16 @@ namespace bb {
         GraphicsHandler(GameStateGame& game);
         void draw(int entity);
         void display(const double dt);
+        void setViewSize(float width, float height);
+        void setViewCoord(float x, float y);
+        void setViewCoordX(float x);
+        void setViewCoordY(float Y);
+        sf::Vector2f getViewCoord();
     private:
         GameStateGame& m_game;
         std::vector<int> m_entities;
+        sf::Vector2f m_viewCoord;
+        sf::View m_view;
     };
     bool compareEntities(Entity* a, Entity* b);
 }
