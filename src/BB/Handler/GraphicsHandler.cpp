@@ -59,6 +59,10 @@ namespace bb {
         return m_viewCoord;
     }
 
+    sf::Vector2f GraphicsHandler::getViewSize() {
+        return m_view.getSize();
+    }
+
     bool compareEntities(Entity* a, Entity* b) {
         return (a->getComponent<GraphicsComponent>()->getZ() < b->getComponent<GraphicsComponent>()->getZ());
     }

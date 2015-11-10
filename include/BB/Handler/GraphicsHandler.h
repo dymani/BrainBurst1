@@ -16,6 +16,7 @@ namespace bb {
         void setViewCoordX(float x);
         void setViewCoordY(float Y);
         sf::Vector2f getViewCoord();
+        sf::Vector2f getViewSize();
     private:
         GameStateGame& m_game;
         std::vector<int> m_entities;

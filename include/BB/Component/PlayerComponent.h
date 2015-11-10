@@ -20,8 +20,9 @@ namespace bb {
         void handleInput();
     private:
         enum State {
-            IDLE, JUMPING
+            IDLE, JUMPING, CROUCHING
         } m_state;
+        bool m_facingLeft;
     };
 }
 

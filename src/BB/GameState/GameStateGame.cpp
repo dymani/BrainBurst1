@@ -30,12 +30,8 @@ namespace bb {
                     case sf::Keyboard::Escape:
                         m_state = TITLE;
                         break;
-                    case sf::Keyboard::LControl:
-                        LogHandler::log(LogHandler::INF, std::to_string(m_world->getEntity(0)->getCoord().x)
-                            + " " + std::to_string(m_world->getEntity(0)->getCoord().y), typeid(*this).name());
-                        break;
                     case sf::Keyboard::W:
-                        m_world->getEntity(0)->getComponent<MovementComponent>()->setVelocityY(50);
+                        //m_world->getEntity(0)->getComponent<MovementComponent>()->setVelocityY(50);
                         break;
                     case sf::Keyboard::Q:
                         m_world->getEntity(0)->setCoord(m_world->getEntity(0)->getCoord()
