@@ -23,6 +23,11 @@ namespace bb {
             IDLE, JUMPING, CROUCHING
         } m_state;
         bool m_facingLeft;
+        float m_speed;
+        enum Walk {
+            STAND, L_WALKING, R_WALKING, L_PRE, R_PRE, L_SPRINTING, R_SPRINTING
+        } m_walk;
+        int m_sprintCount;
     };
 }
 

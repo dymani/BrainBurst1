@@ -12,6 +12,9 @@ namespace bb {
 
     PlayerComponent::PlayerComponent(GameStateGame& game, int entity) : IComponent(game, 0) {
         m_state = IDLE;
+        m_walk = STAND;
+        m_sprintCount = 0;
+        m_speed = 3.0F;
         m_facingLeft = true;
     }
 
@@ -42,9 +45,29 @@ namespace bb {
         gc->getDrawable("base", sprite);
         if(mousePos.x > playerPos.x) {
             m_facingLeft = false;
-        } else if(mousePos.x < playerPos.x){
+        } else if(mousePos.x < playerPos.x) {
             m_facingLeft = true;
         }
+        if(m_walk == L_PRE || m_walk == R_PRE) {
+            if(m_walk == L_PRE && keyA) {
+                m_walk = L_SPRINTING;
+                m_speed = 6.0F;
+                m_sprintCount = 0;
+            } else if(m_walk == R_PRE && keyD) {
+                m_walk = R_SPRINTING;
+                m_speed = 6.0F;
+                m_sprintCount = 0;
+            } else {
+                m_sprintCount++;
+                if(m_sprintCount >= 50) {
+                    m_sprintCount = 0;
+                    m_walk = STAND;
+                }
+            }
+        }
+        if(mc->getVelocity().x == 0)
+            if(m_speed == 6.0F)
+                m_speed = 3.0F;
         switch(m_state) {
             case IDLE:
                 if(keySpace || keyW) {
@@ -52,19 +75,35 @@ namespace bb {
                     mc->setVelocityY(15.0F);
                 } else if(keyShift || keyS) {
                     m_state = CROUCHING;
+                    m_speed = 1.5F;
                     break;
                 }
-                if(!(keyA && keyD) || !(keyA || keyD)) {
+                if((keyA && keyD) || (!keyA && !keyD)) {
+                    m_speed = 3.0F;
+                    if(m_walk == L_SPRINTING || m_walk == L_WALKING) {
+                        m_walk = L_PRE;
+                        m_sprintCount = 0;
+                    } else if(m_walk == R_SPRINTING || m_walk == R_WALKING) {
+                        m_walk = R_PRE;
+                        m_sprintCount = 0;
+                    }
+                } else {
                     if(keyA) {
-                        if(keyControl)
-                            mc->setVelocityX(-6.0F);
-                        else
-                            mc->setVelocityX(-3.0F);
+                        if(keyControl) {
+                            m_speed = 6.0F;
+                            m_walk = L_SPRINTING;
+                        } else {
+                            m_walk = L_WALKING;
+                        }
+                        mc->setVelocityX(0 - m_speed);
                     } else if(keyD) {
-                        if(keyControl)
-                            mc->setVelocityX(6.0F);
-                        else
-                            mc->setVelocityX(3.0F);
+                        if(keyControl) {
+                            m_speed = 6.0F;
+                            m_walk = R_SPRINTING;
+                        } else {
+                            m_walk = R_WALKING;
+                        }
+                        mc->setVelocityX(m_speed);
                     }
                 }
                 if(mouseLeft) {
@@ -82,17 +121,22 @@ namespace bb {
                 }
                 break;
             case JUMPING:
-                if(!(keyA && keyD) || !(keyA || keyD)) {
+                if((keyA && keyD) || (!keyA && !keyD)) {
+                    m_speed = 3.0F;
+                    if(m_walk == L_SPRINTING || m_walk == L_WALKING) {
+                        m_walk = L_PRE;
+                        m_sprintCount = 0;
+                    } else if(m_walk == R_SPRINTING || m_walk == R_WALKING) {
+                        m_walk = R_PRE;
+                        m_sprintCount = 0;
+                    }
+                } else {
                     if(keyA) {
-                        if(keyControl)
-                            mc->setVelocityX(-6.0F);
-                        else
-                            mc->setVelocityX(-3.0F);
+                        m_walk = L_WALKING;
+                        mc->setVelocityX(0 - m_speed);
                     } else if(keyD) {
-                        if(keyControl)
-                            mc->setVelocityX(6.0F);
-                        else
-                            mc->setVelocityX(3.0F);
+                        m_walk = R_WALKING;
+                        mc->setVelocityX(m_speed);
                     }
                 }
                 if(m_game.getWorld()->getEntity(0)->getComponent<MovementComponent>()->isOnGround())
@@ -112,15 +156,17 @@ namespace bb {
                 }
                 break;
             case CROUCHING:
-                if(!(keyA && keyD) || !(keyA || keyD)) {
+                if(!(keyA && keyD) && !(!keyA && !keyD)) {
                     if(keyA) {
-                        mc->setVelocityX(-1.5F);
+                        mc->setVelocityX(0 - m_speed);
                     } else if(keyD) {
-                        mc->setVelocityX(1.5F);
+                        mc->setVelocityX(m_speed);
                     }
                 }
-                if(!(keyShift || keyS))
+                if(!(keyShift || keyS)) {
                     m_state = IDLE;
+                    m_speed = 3.0F;
+                }
                 if(m_facingLeft) {
                     sprite->setTextureRect({48, 16, 16, 16});
                 } else {
