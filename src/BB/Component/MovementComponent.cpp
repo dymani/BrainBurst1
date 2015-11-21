@@ -3,9 +3,9 @@
 #include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    MovementComponent* MovementComponent::create(GameStateGame& game, int entity,
-        luabridge::lua_State* L, luabridge::LuaRef& luaMC) {
-        MovementComponent* mc = new MovementComponent(game, entity);
+    MovementComponent* MovementComponent::create(GameStateGame& game, luabridge::lua_State* L,
+        luabridge::LuaRef& luaMC) {
+        MovementComponent* mc = new MovementComponent(game, -1);
         using namespace luabridge;
         LuaRef luaVelocity = luaMC["velocity"];
         mc->m_velocity = {luaVelocity[1].cast<float>(), luaVelocity[2].cast<float>()};
@@ -14,6 +14,22 @@ namespace bb {
     }
 
     MovementComponent::MovementComponent(GameStateGame& game, int entity) : IComponent(game, entity) {
+    }
+
+    IComponent* MovementComponent::copy(rapidjson::Value& value) {
+        MovementComponent* mc;
+        if(value.HasMember("id")) {
+            mc = dynamic_cast<MovementComponent*>(copy(value["id"].GetInt()));
+        } else {
+            mc = dynamic_cast<MovementComponent*>(copy(-1));
+        }
+        if(value.HasMember("xVelocity") && value.HasMember("yVelocity")) {
+            mc->m_velocity = {float(value["xVelocity"].GetDouble()), float(value["yVelocity"].GetDouble())};
+        }
+        if(value.HasMember("isOnGround")) {
+            mc->m_isOnGround = value["isOnGround"].GetBool();
+        }
+        return mc;
     }
 
     IComponent* MovementComponent::copy(int entity) {

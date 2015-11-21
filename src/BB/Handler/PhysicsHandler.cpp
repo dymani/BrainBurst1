@@ -7,16 +7,16 @@ namespace bb {
     PhysicsHandler::PhysicsHandler(GameStateGame& game) : m_game(game) {
     }
 
-    void PhysicsHandler::update(std::vector<Entity*>& entities) {
+    void PhysicsHandler::update(std::map<int, Entity*>& entities) {
         std::vector<int> movables;
         for(auto& entity : entities) {
-            if(entity->getComponent<MovementComponent>())
-                movables.push_back(entity->getId());
+            if(entity.second->getComponent<MovementComponent>())
+                movables.push_back(entity.second->getId());
         }
         std::vector<int> collidables;
         for(auto& entity : entities) {
-            if(entity->getComponent<CollisionComponent>())
-                collidables.push_back(entity->getId());
+            if(entity.second->getComponent<CollisionComponent>())
+                collidables.push_back(entity.second->getId());
         }
         for(auto& mEntity : movables) {
             auto* mc = entities[mEntity]->getComponent<MovementComponent>();

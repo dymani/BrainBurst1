@@ -1,0 +1,15 @@
+{
+    "player":{
+        "name":"Silver Crow",
+        "id":0,
+        "field":"01",
+        "xCoord":10,
+        "yCoord":0,
+        "xVeloxity":0,
+        "yVelocity":0,
+        "isOnGround":true,
+        "level":1,
+        "bp":100,
+        "animation":0
+    }
+}

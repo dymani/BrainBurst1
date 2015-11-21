@@ -33,25 +33,45 @@ object = {
     }
 }
 
-objects = {
-    --{
-    --    name = "columnA",
-    --    coord = 10
-    --},
-    --{
-    --    name = "columnB",
-    --    coord = 0
-    --},
-    --{
-    --    name = "columnB",
-    --    coord = 4.5
-    --},
-    --{
-    --    name = "columnA",
-    --    coord = 5
-    --}
-}
-
-tiles = {
-  0, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+entities = {
+  {
+        name = "rockA",
+        components = {
+            GraphicsComponent = {
+                size = {64, 64},
+                z = 5,
+                drawables = {
+                    {
+                        type = 0,
+                        name = "base",
+                        textureRect = {0, 32, 16, 16}
+                    }
+                }
+            },
+            CollisionComponent = {
+                type = 0,
+                hitbox = {16, 8, 32, 56}
+            }
+        }
+    },
+    {
+        name = "rockB",
+        components = {
+            GraphicsComponent = {
+                size = {64, 128},
+                z = 5,
+                drawables = {
+                    {
+                        type = 0,
+                        name = "base",
+                        textureRect = {0, 0, 16, 32}
+                    }
+                }
+            },
+            CollisionComponent = {
+                type = 0,
+                hitbox = {16, 8, 32, 120}
+            }
+        }
+    },
 }

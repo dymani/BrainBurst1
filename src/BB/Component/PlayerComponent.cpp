@@ -6,11 +6,11 @@
 namespace bb {
     PlayerComponent* PlayerComponent::create(GameStateGame& game, luabridge::lua_State* L,
         luabridge::LuaRef& luaPC) {
-        PlayerComponent* pc = new PlayerComponent(game, 0);
+        PlayerComponent* pc = new PlayerComponent(game, -1);
         return pc;
     }
 
-    PlayerComponent::PlayerComponent(GameStateGame& game, int entity) : IComponent(game, 0) {
+    PlayerComponent::PlayerComponent(GameStateGame& game, int entity) : IComponent(game, entity) {
         m_state = IDLE;
         m_walk = STAND;
         m_sprintCount = 0;
@@ -18,8 +18,17 @@ namespace bb {
         m_facingLeft = true;
     }
 
-    IComponent * PlayerComponent::copy(int entity) {
-        PlayerComponent* pc = new PlayerComponent(m_game, 0);
+    IComponent* PlayerComponent::copy(rapidjson::Value& value) {
+        return copy(0);
+    }
+
+    IComponent* PlayerComponent::copy(int entity) {
+        PlayerComponent* pc = new PlayerComponent(m_game, entity);
+        pc->m_state = m_state;
+        pc->m_facingLeft = m_facingLeft;
+        pc->m_speed = m_speed;
+        pc->m_walk = m_walk;
+        pc->m_sprintCount = m_sprintCount;
         return pc;
     }
 

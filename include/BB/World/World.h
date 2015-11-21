@@ -7,8 +7,10 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include <rapidjson/document.h>
 #include <string>
 #include "BB/World/Field.h"
+#include "BB/World/Stage.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/World/Entity.h"
 #include "BB/Component/GraphicsComponent.h"
@@ -26,14 +28,16 @@ namespace bb {
         void handleInput(sf::Event windowEvent);
         void update();
         void draw();
+        Stage* getStage(std::string name);
         Entity* getEntity(int id);
-        std::vector<Entity*>& getEntities();
+        std::map<int, Entity*>& getEntities();
     private:
         GameStateGame& m_game;
         luabridge::lua_State* L;
         std::string m_name, m_fieldId;
         Field* m_field;
-        std::vector<Entity*> m_entities;
+        std::map<std::string, Stage*> m_stages;
+        std::map<int, Entity*> m_entities;
     };
 }
 

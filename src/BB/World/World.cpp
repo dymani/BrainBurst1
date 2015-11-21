@@ -7,30 +7,38 @@ namespace bb {
         m_name = name;
         this->L = L;
         using namespace luabridge;
-        std::string file = "saves/" + m_name + "/world.lua";
+        std::string file = "assets/data/world/world.lua";
         if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
             LogHandler::log(LogHandler::ERR, "World \"" + file + "\" not found", typeid(*this).name());
             return;
         }
         LuaRef luaPlayer = getGlobal(L, "player");
-        if(luaPlayer.isTable()) {
-            Entity* player = Entity::create(m_game, 0, L, luaPlayer);
-            m_entities.push_back(player);
-            LuaRef luaFieldId = luaPlayer["field"];
-            if(luaFieldId.isString()) {
-                m_fieldId = luaFieldId.cast<std::string>();
-            }
+        Entity* player = Entity::create(m_game, L, luaPlayer);
+        file = "saves/" + m_name + "/world.json";
+        std::ifstream fin(file);
+        if(fin.fail()) {
+            LogHandler::log(LogHandler::ERR, "World \"" + file + "\" not found", typeid(*this).name());
+            return;
         }
+        std::stringstream strStream;
+        strStream << fin.rdbuf();
+        std::string fileString = strStream.str();
+        fin.close();
+        using namespace rapidjson;
+        Document document;
+        if(document.Parse<0>(fileString.c_str()).HasParseError()) {
+            LogHandler::log(LogHandler::ERR, "Failed to parse \"" + file + "\"", typeid(*this).name());
+            return;
+        }
+        Value& jsonPlayer = document["player"];
+        Entity* entity = new Entity(*player, jsonPlayer);
+        m_entities[entity->getId()] = entity;
+        m_fieldId = jsonPlayer["field"].GetString();
     }
 
     void World::createField() {
-        using namespace luabridge;
-        std::string file = "saves/" + m_name + "/fields/" + m_fieldId + ".lua";
-        if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "Field \"" + file + "\" not found", typeid(*this).name());
-            return;
-        }
         m_field = new Field(m_game, L, m_fieldId);
+        m_field->load(m_name);
     }
 
     void World::handleInput() {
@@ -47,18 +55,27 @@ namespace bb {
 
     void World::draw() {
         m_field->draw();
-        for(unsigned int i = 0; i < m_entities.size(); i++) {
-            m_game.getGraphicsHandler()->draw(int(i));
+        for(auto& entity : m_entities) {
+            m_game.getGraphicsHandler()->draw(entity.first);
         }
     }
 
+    Stage* World::getStage(std::string name) {
+        if(m_stages.find(name) != m_stages.end())
+            return m_stages[name];
+        Stage* stage = Stage::create(L, name);
+        if(stage)
+            m_stages[name] = stage;
+        return stage;
+    }
+
     Entity* World::getEntity(int id) {
-        if(m_entities[id])
+        if(m_entities.find(id) != m_entities.end())
             return m_entities[id];
         return nullptr;
     }
 
-    std::vector<Entity*>& World::getEntities() {
+    std::map<int, Entity*>& World::getEntities() {
         return m_entities;
     }
 }

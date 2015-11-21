@@ -16,6 +16,7 @@ namespace bb {
     class Field {
     public:
         Field(GameStateGame& game, luabridge::lua_State* L, std::string id);
+        void load(std::string worldName);
         void draw();
     private:
         GameStateGame& m_game;
@@ -23,10 +24,12 @@ namespace bb {
         luabridge::lua_State* L;
         sf::RenderStates m_states;
         sf::VertexArray m_vertices;
-        std::string m_tileSet, m_objectTexture;
+        std::string m_tileSet;
         int m_tiles[100];
-        std::map<std::string, Entity*> m_objects;
-        std::vector<int> m_fieldEntities;
+        std::map<std::string, Entity*> m_objectsTemplate;
+        std::map<std::string, Entity*> m_entitiesTemplate;
+        std::vector<int> m_entities;
+        std::vector<int> m_objects;
     };
 }
 

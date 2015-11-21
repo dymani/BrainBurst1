@@ -1,16 +1,18 @@
 #include "BB/Component/GraphicsComponent.h"
 #include "BB/World/Entity.h"
 #include "BB/GameState/GameStateGame.h"
+#include "BB/World/Stage.h"
 
 namespace bb {
-    GraphicsComponent* GraphicsComponent::create(GameStateGame& game, int entity, luabridge::lua_State* L, luabridge::LuaRef& luaGC) {
-        GraphicsComponent* gc = new GraphicsComponent(game, entity);
+    GraphicsComponent* GraphicsComponent::create(GameStateGame& game, luabridge::lua_State* L, luabridge::LuaRef& luaGC) {
+        GraphicsComponent* gc = new GraphicsComponent(game, -1);
+        gc->L = L;
         using namespace luabridge;
         LuaRef luaSize = luaGC["size"];
-        LuaRef luaZ = luaGC["z"];
-        LuaRef luaDrawables = luaGC["drawables"];
         gc->setSize({luaSize[1].cast<int>(), luaSize[2].cast<int>()});
+        LuaRef luaZ = luaGC["z"];
         gc->setZ(luaZ.cast<float>());
+        LuaRef luaDrawables = luaGC["drawables"];
         for(int i = 1; i <= luaDrawables.length(); i++) {
             LuaRef luaDrawable = luaDrawables[i];
             LuaRef luaType = luaDrawable["type"];
@@ -51,6 +53,23 @@ namespace bb {
     GraphicsComponent::GraphicsComponent(GameStateGame& game, int entity) : IComponent(game, entity) {
     }
 
+    IComponent* GraphicsComponent::copy(rapidjson::Value& value) {
+        GraphicsComponent* gc;
+        if(value.HasMember("id")) {
+            gc = dynamic_cast<GraphicsComponent*>(copy(value["id"].GetInt()));
+        } else {
+            gc = dynamic_cast<GraphicsComponent*>(copy(-1));
+        }
+        if(value.HasMember("stage")) {
+            sf::Texture& texture = m_game.getResourceHandler()->getTexture(m_game.getWorld()->getStage(std::string(value["stage"].GetString()))->getObjectTexture());
+            texture.setSmooth(false);
+            for(auto& sprite : gc->getSprites()) {
+                sprite.second->setTexture(texture);
+            }
+        }
+        return gc;
+    }
+
     IComponent* GraphicsComponent::copy(int entity) {
         GraphicsComponent* gc = new GraphicsComponent(m_game, entity);
         for(auto& it : m_sprites) {
@@ -61,6 +80,15 @@ namespace bb {
                     z = itd.first;
             }
             gc->addDrawable(it.first, sprite, z);
+        }
+        for(auto& it : m_texts) {
+            sf::Text* text = new sf::Text(*it.second);
+            int z = 0;
+            for(auto& itd : m_drawables) {
+                if(itd.second == it.second)
+                    z = itd.first;
+            }
+            gc->addDrawable(it.first, text, z);
         }
         gc->setSize(getSize());
         gc->setZ(getZ());

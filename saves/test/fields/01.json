@@ -1,0 +1,14 @@
+{
+    "objects":[
+        {"name":"columnA", "id":-100, "stage":"HL06", "xCoord":5, "yCoord":0},
+        {"name":"columnB", "id":-101, "stage":"HL06", "xCoord":7, "yCoord":0}
+    ],
+    "entities":[
+        {"name":"rockA", "id":100, "stage":"HL06", "xCoord":9, "yCoord":0, "damage":0},
+        {"name":"rockB", "id":101, "stage":"HL06", "xCoord":13, "yCoord":0, "damage":0}
+    ],
+    "tileSet":"HL06",
+    "tiles":[
+        0, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0
+    ]
+}

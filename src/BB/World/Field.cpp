@@ -4,86 +4,73 @@
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/GraphicsHandler.h"
 #include "BB/Handler/PhysicsHandler.h"
+#include "BB/World/Stage.h"
 
 namespace bb {
     Field::Field(GameStateGame& game, luabridge::lua_State* L, std::string id) : m_game(game) {
         this->L = L;
         m_id = id;
         using namespace luabridge;
-        LuaRef luaType = getGlobal(L, "type");
-        LuaRef luaEntities = getGlobal(L, "entities");
-        std::string type;
-        if(luaType.isString()) {
-            type = luaType.cast<std::string>();
-        }
-        if(luaEntities.isTable()) {
-            for(int i = 1; i <= luaEntities.length(); i++) {
-                LuaRef luaEntity = luaEntities[i];
-                Entity* entity = Entity::create(m_game, m_game.getWorld()->getEntities().back()->getId() + 1,
-                    L, luaEntity);
-                m_game.getWorld()->getEntities().push_back(entity);
-                m_fieldEntities.push_back(entity->getId());
-            }
-        }
         std::string file = "assets/data/world/fields/" + m_id + ".lua";
         if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
             LogHandler::log(LogHandler::ERR, "Field \"" + file + "\" not found", typeid(*this).name());
             return;
         }
-        LuaRef luaTiles = getGlobal(L, "tiles");
-        if(luaTiles.isTable()) {
-            for(int i = 1; i <= luaTiles.length() && i <= 100; i++) {
-                m_tiles[i - 1] = luaTiles[i].cast<int>();
-            }
-        }
-        LuaRef luaObjectTemplate = getGlobal(L, "object");
-        if(luaObjectTemplate.isTable()) {
+        LuaRef luaObjects = getGlobal(L, "object");
+        if(luaObjects.isTable()) {
             sf::IntRect rect;
             sf::Vector2i size;
-            for(int i = 1; i <= luaObjectTemplate.length(); i++) {
-                LuaRef luaObject = luaObjectTemplate[i];
-                LuaRef luaName = luaObject["name"];
-                m_objects[luaName.cast<std::string>()] = Entity::create(m_game, -1, L, luaObject);
+            for(int i = 1; i <= luaObjects.length(); i++) {
+                LuaRef luaObject = luaObjects[i];
+                m_objectsTemplate[luaObject["name"].cast<std::string>()] = Entity::create(m_game, L,
+                    luaObject);
             }
         }
-        file = "assets/data/world/stages/" + type + ".lua";
-        if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "Stage \"" + file + "\" not found", typeid(*this).name());
-            return;
+        LuaRef luaEntities = getGlobal(L, "entities");
+        if(luaEntities.isTable()) {
+            for(int i = 1; i <= luaEntities.length(); i++) {
+                LuaRef luaEntity = luaEntities[i];
+                m_entitiesTemplate[luaEntity["name"].cast<std::string>()] = Entity::create(m_game, L,
+                    luaEntity);
+            }
         }
-        LuaRef luaTileSet = getGlobal(L, "tileSet");
-        if(luaTileSet.isString()) {
-            m_tileSet = luaTileSet.cast<std::string>();
-        }
-        LuaRef luaObjectTexture = getGlobal(L, "objectTexture");
-        if(luaObjectTexture.isString()) {
-            m_objectTexture = luaObjectTexture.cast<std::string>();
-        }
-        file = "assets/data/world/fields/" + m_id + ".lua";
-        if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
+    }
+
+    void Field::load(std::string worldName) {
+        std::string file = "saves/" + worldName + "/fields/" + m_id + ".json";
+        std::ifstream fin(file);
+        if(fin.fail()) {
             LogHandler::log(LogHandler::ERR, "Field \"" + file + "\" not found", typeid(*this).name());
             return;
         }
-        LuaRef luaObjects = getGlobal(L, "objects");
-        if(luaObjects.isTable()) {
-            for(int i = 1; i <= luaObjects.length(); i++) {
-                LuaRef luaObject = luaObjects[i];
-                if(m_objects.find(luaObject["name"].cast<std::string>()) != m_objects.end()) {
-                    Entity* entity = new Entity(*m_objects[luaObject["name"].cast<std::string>()],
-                        m_game.getWorld()->getEntities().back()->getId() + 1);
-                    entity->setCoord({luaObject["coord"].cast<float>(), 0});
-                    m_game.getWorld()->getEntities().push_back(entity);
-                    m_fieldEntities.push_back(entity->getId());
-                }
-            }
+        std::stringstream strStream;
+        strStream << fin.rdbuf();
+        std::string fileString = strStream.str();
+        fin.close();
+        using namespace rapidjson;
+        Document document;
+        if(document.Parse<0>(fileString.c_str()).HasParseError()) {
+            LogHandler::log(LogHandler::ERR, "Failed to parse \"" + file + "\"", typeid(*this).name());
+            return;
         }
-        sf::Texture& obj = m_game.getResourceHandler()->getTexture(m_objectTexture);
-        obj.setSmooth(false);
-        for(auto& id : m_fieldEntities) {
-            auto* entity = m_game.getWorld()->getEntity(id);
-            for(auto& sprite : entity->getComponent<GraphicsComponent>()->getSprites()) {
-                sprite.second->setTexture(obj);
-            }
+        Value& jsonObjects = document["objects"];
+        for(SizeType i = 0; i < jsonObjects.Size(); i++) {
+            Value& jsonObject = jsonObjects[i];
+            Entity* object = new Entity(*m_objectsTemplate[jsonObject["name"].GetString()], jsonObject);
+            m_game.getWorld()->getEntities()[object->getId()] = object;
+            m_objects.push_back(object->getId());
+        }
+        Value& jsonEntities = document["entities"];
+        for(SizeType i = 0; i < jsonEntities.Size(); i++) {
+            Value& jsonEntity = jsonEntities[i];
+            Entity* entity = new Entity(*m_entitiesTemplate[jsonEntity["name"].GetString()], jsonEntity);
+            m_game.getWorld()->getEntities()[entity->getId()] = entity;
+            m_entities.push_back(entity->getId());
+        }
+        m_tileSet = m_game.getWorld()->getStage(document["tileSet"].GetString())->getTileSet();
+        Value& jsonTiles = document["tiles"];
+        for(SizeType i = 0; i < jsonTiles.Size() && i < 100; i++) {
+            m_tiles[i] = jsonTiles[i].GetInt();
         }
         m_vertices.setPrimitiveType(sf::Quads);
         m_vertices.resize(400);

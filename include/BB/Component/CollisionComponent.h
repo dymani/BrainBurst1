@@ -2,21 +2,15 @@
 #define COLLISION_COMPONENT_H
 
 #include <SFML/Graphics.hpp>
-#include <LuaBridge\LuaBridge.h>
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lauxlib.h>
-#include <lua/lualib.h>
-}
 #include "BB/Handler/LogHandler.h"
 #include "BB/Component/IComponent.h"
 
 namespace bb {
     class CollisionComponent : public IComponent {
     public:
-        static CollisionComponent* create(GameStateGame& game, int entity, luabridge::lua_State* L,
-            luabridge::LuaRef& luaCC);
+        static CollisionComponent* create(GameStateGame& game, luabridge::lua_State* L,            luabridge::LuaRef& luaCC);
         CollisionComponent(GameStateGame& game, int entity);
+        IComponent* copy(rapidjson::Value& value);
         IComponent* copy(int entity);
         bool collide(int entity);
         sf::FloatRect getHitbox();

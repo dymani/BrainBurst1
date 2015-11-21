@@ -11,6 +11,7 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include "BB/Handler/LogHandler.h"
+#include <rapidjson/document.h>
 
 namespace bb {
     class IComponent;
@@ -18,9 +19,10 @@ namespace bb {
 
     class Entity {
     public:
-        static Entity* create(GameStateGame& game, int entity, luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
-        Entity(int id);
+        static Entity* create(GameStateGame& game, luabridge::lua_State* L, luabridge::LuaRef& luaEntity);
+        Entity();
         Entity(Entity& entity, int id);
+        Entity(Entity& entity, rapidjson::Value& value);
         ~Entity();
         int getId();
         void addComponent(std::type_index type, IComponent* component);
@@ -43,7 +45,8 @@ namespace bb {
         void setCoord(sf::Vector2f coord);
         sf::Vector2f getCoord();
     private:
-        int const m_id;
+        int m_id;
+        const bool m_isEntity;
         std::map<std::type_index, IComponent*> m_components;
         sf::Vector2f m_coord;
     };

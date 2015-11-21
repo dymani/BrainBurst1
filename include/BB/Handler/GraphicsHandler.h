@@ -5,11 +5,13 @@
 
 namespace bb {
     class GameStateGame;
+    class Entity;
 
     class GraphicsHandler {
     public:
         GraphicsHandler(GameStateGame& game);
         void draw(int entity);
+        void draw(Entity* entity);
         void display(const double dt);
         void setViewSize(float width, float height);
         void setViewCoord(float x, float y);
@@ -19,7 +21,7 @@ namespace bb {
         sf::Vector2f getViewSize();
     private:
         GameStateGame& m_game;
-        std::vector<int> m_entities;
+        std::vector<Entity*> m_entities;
         sf::Vector2f m_viewCoord;
         sf::View m_view;
     };

@@ -146,6 +146,7 @@
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\BB\World\Field.cpp" />
+    <ClCompile Include="src\BB\World\Stage.cpp" />
     <ClCompile Include="src\BB\World\World.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
     <ClInclude Include="include\BB\World\Field.h" />
+    <ClInclude Include="include\BB\World\Stage.h" />
     <ClInclude Include="include\BB\World\World.h" />
   </ItemGroup>
   <ItemGroup>

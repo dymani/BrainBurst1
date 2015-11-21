@@ -1,9 +1,4 @@
 player = {
-    name = "Silver Crow",
-    field = "01",
-    coord = {15, 0},
-    level = 1,
-    bp = 100,
     components = {
         GraphicsComponent = {
             size = {64, 64},

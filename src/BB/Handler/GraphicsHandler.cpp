@@ -11,6 +11,10 @@ namespace bb {
     }
 
     void GraphicsHandler::draw(int entity) {
+        m_entities.push_back(m_game.getWorld()->getEntity(entity));
+    }
+
+    void GraphicsHandler::draw(Entity* entity) {
         m_entities.push_back(entity);
     }
 
@@ -18,9 +22,9 @@ namespace bb {
         sf::RenderWindow& window = m_game.getWindowHandler()->getWindow();
         std::vector<Entity*> entities;
         for(auto& entity : m_entities) {
-            if(m_game.getWorld()->getEntity(entity))
-                if(m_game.getWorld()->getEntity(entity)->getComponent<GraphicsComponent>())
-                    entities.push_back(m_game.getWorld()->getEntity(entity));
+            if(entity)
+                if(entity->getComponent<GraphicsComponent>())
+                    entities.push_back(entity);
         }
         window.setView(m_view);
         m_entities.clear();

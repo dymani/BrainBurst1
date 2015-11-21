@@ -4,9 +4,9 @@
 #include "BB/Component/GraphicsComponent.h"
 
 namespace bb {
-    CollisionComponent* CollisionComponent::create(GameStateGame& game, int entity, luabridge::lua_State* L,
+    CollisionComponent* CollisionComponent::create(GameStateGame& game, luabridge::lua_State* L,
         luabridge::LuaRef& luaCC) {
-        auto* cc = new CollisionComponent(game, entity);
+        auto* cc = new CollisionComponent(game, -1);
         using namespace luabridge;
         LuaRef luaType = luaCC["type"];
         cc->m_type = Type(luaType.cast<int>());
@@ -19,9 +19,19 @@ namespace bb {
     CollisionComponent::CollisionComponent(GameStateGame& game, int entity) : IComponent(game, entity) {
     }
 
+    IComponent* CollisionComponent::copy(rapidjson::Value& value) {
+        CollisionComponent* cc;
+        if(value.HasMember("id"))
+            cc = dynamic_cast<CollisionComponent*>(copy(value["id"].GetInt()));
+        else
+            cc = dynamic_cast<CollisionComponent*>(copy(-1));
+        return cc;
+    }
+
     IComponent* CollisionComponent::copy(int entity) {
         auto* cc = new CollisionComponent(m_game, entity);
         cc->m_type = m_type;
+        cc->m_size = m_size;
         cc->m_hitboxI = m_hitboxI;
         cc->m_hitboxF = m_hitboxF;
         return cc;
@@ -32,6 +42,7 @@ namespace bb {
         if(m_type == MOVABLE) {
             auto* mc = m_game.getWorld()->getEntity(m_entity)->getComponent<MovementComponent>();
             sf::Vector2f coord = mc->getNewCoord();
+            getHitbox();
             sf::FloatRect hitbox = m_game.getWorld()->getEntity(entity)->
                 getComponent<CollisionComponent>()->getHitbox();
             float colT = m_hitboxF.top + m_hitboxF.height - hitbox.top;

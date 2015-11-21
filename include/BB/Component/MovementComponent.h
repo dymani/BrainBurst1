@@ -2,21 +2,16 @@
 #define MOVEMENT_COMPONENT_H
 
 #include "BB/Component/IComponent.h"
-#include <LuaBridge\LuaBridge.h>
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lauxlib.h>
-#include <lua/lualib.h>
-}
 #include <SFML/Graphics.hpp>
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
     class MovementComponent: public IComponent {
     public:
-        static MovementComponent* create(GameStateGame& game, int entity, luabridge::lua_State* L,
+        static MovementComponent* create(GameStateGame& game, luabridge::lua_State* L,
             luabridge::LuaRef& luaMC);
         MovementComponent(GameStateGame& game, int entity);
+        IComponent* copy(rapidjson::Value& value);
         IComponent* copy(int entity);
         void move();
         void update();
