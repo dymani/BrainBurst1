@@ -18,6 +18,7 @@ namespace bb {
         };
         virtual IComponent* copy(rapidjson::Value& value) = 0;
         virtual IComponent* copy(int entity) = 0;
+        virtual bool getUpdate() = 0;
     protected:
         int const m_entity;
         GameStateGame& m_game;

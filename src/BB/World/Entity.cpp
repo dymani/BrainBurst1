@@ -5,6 +5,7 @@
 #include "BB/Component/MovementComponent.h"
 #include "BB/Component/PlayerComponent.h"
 #include "BB/Component/CollisionComponent.h"
+#include "BB/Component/BreakableComponent.h"
 
 namespace bb {
     Entity* Entity::create(GameStateGame& game, luabridge::lua_State* L, luabridge::LuaRef& luaEntity) {
@@ -30,6 +31,11 @@ namespace bb {
         if(luaCC.isTable()) {
             CollisionComponent* cc = CollisionComponent::create(game, L, luaCC);
             entity->addComponent(std::type_index(typeid(*cc)), cc);
+        }
+        LuaRef luaBC = luaComponents["BreakableComponent"];
+        if(luaBC.isTable()) {
+            BreakableComponent* bc = BreakableComponent::create(game, L, luaBC);
+            entity->addComponent(std::type_index(typeid(*bc)), bc);
         }
         return entity;
     }
@@ -72,5 +78,11 @@ namespace bb {
 
     sf::Vector2f Entity::getCoord() {
         return m_coord;
+    }
+    bool Entity::getUpdate() {
+        for(auto& component : m_components) {
+            if(component.second->getUpdate()) return true;
+        }
+        return false;
     }
 }

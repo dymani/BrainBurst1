@@ -51,6 +51,11 @@ entities = {
             CollisionComponent = {
                 type = 0,
                 hitbox = {16, 8, 32, 56}
+            },
+            BreakableComponent = {
+                totalDurability = 4,
+                durability = 4,
+                totalFrames = 4
             }
         }
     },
@@ -71,7 +76,12 @@ entities = {
             CollisionComponent = {
                 type = 0,
                 hitbox = {16, 8, 32, 120}
+            },
+            BreakableComponent = {
+                totalDurability = 4,
+                durability = 4,
+                totalFrames = 4
             }
         }
-    },
+    }
 }

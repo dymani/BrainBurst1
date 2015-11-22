@@ -4,6 +4,7 @@
 #include "BB/Component/IComponent.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
+#include <SFML/Graphics.hpp>
 
 namespace bb {
     class PlayerComponent: public IComponent {
@@ -13,6 +14,8 @@ namespace bb {
         IComponent* copy(rapidjson::Value& value);
         IComponent* copy(int entity);
         void handleInput();
+        void handleInput(sf::Event windowEvent);
+        bool getUpdate();
     private:
         enum State {
             IDLE, JUMPING, CROUCHING

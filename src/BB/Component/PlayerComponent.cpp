@@ -2,6 +2,7 @@
 #include "BB/World/Entity.h"
 #include "BB/GameState/GameStateGame.h"
 #include "BB/Component/MovementComponent.h"
+#include "BB/Component/BreakableComponent.h"
 
 namespace bb {
     PlayerComponent* PlayerComponent::create(GameStateGame& game, luabridge::lua_State* L,
@@ -184,5 +185,33 @@ namespace bb {
                 break;
         }
 
+    }
+
+    void PlayerComponent::handleInput(sf::Event windowEvent) {
+        if(windowEvent.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i mouse = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
+            sf::Vector2f coord = m_game.getWorld()->getEntity(m_entity)->getCoord();
+            sf::Vector2f viewCoord = m_game.getGraphicsHandler()->getViewCoord();
+            sf::Vector2u windowSize = m_game.getWindowHandler()->getWindow().getSize();
+            float mouseX = float(mouse.x) / 64.0F - float(windowSize.x) / 64.0F / 2.0F + viewCoord.x;
+            float mouseY = float(windowSize.y) / 64.0F - float(mouse.y) / 64.0F - 1.0F + viewCoord.y;
+            if(((mouseX > coord.x && mouseX - coord.x <= 3)
+                || (mouseX < coord.x && coord.x - mouseX <= 3))
+                && ((mouseY > coord.y && mouseY - coord.y <= 3)
+                    || (mouseY < coord.y && coord.y - mouseY <= 3))) {
+                for(auto& entity : m_game.getWorld()->getEntities()) {
+                    if(int(entity.second->getCoord().x) == int(mouseX)
+                        && int(entity.second->getCoord().y) == int(mouseY)) {
+                        if(entity.second->getComponent<BreakableComponent>()) {
+                            entity.second->getComponent<BreakableComponent>()->addDurability(-1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bool PlayerComponent::getUpdate() {
+        return false;
     }
 }

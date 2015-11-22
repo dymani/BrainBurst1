@@ -46,11 +46,19 @@ namespace bb {
     }
 
     void World::handleInput(sf::Event windowEvent) {
-
+        m_entities[0]->getComponent<PlayerComponent>()->handleInput(windowEvent);
     }
 
     void World::update() {
         m_game.getPhysicsHandler()->update(m_entities);
+        auto& entity = m_entities.begin();
+        while(entity != m_entities.end()) {
+            if(entity->second->getUpdate()) {
+                entity = m_entities.erase(entity);
+            } else {
+                ++entity;
+            }
+        }
     }
 
     void World::draw() {

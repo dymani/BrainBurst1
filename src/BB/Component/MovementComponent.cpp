@@ -99,4 +99,8 @@ namespace bb {
     bool MovementComponent::isOnGround() {
         return m_isOnGround;
     }
+
+    bool MovementComponent::getUpdate() {
+        return false;
+    }
 }

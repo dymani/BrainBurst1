@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BB\Component\BreakableComponent.cpp" />
     <ClCompile Include="src\BB\Component\CollisionComponent.cpp" />
     <ClCompile Include="src\BB\Component\MovementComponent.cpp" />
     <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
@@ -156,6 +157,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BB\Component\BreakableComponent.h" />
     <ClInclude Include="include\BB\Component\CollisionComponent.h" />
     <ClInclude Include="include\BB\Component\GraphicsComponent.h" />
     <ClInclude Include="include\BB\Component\IComponent.h" />

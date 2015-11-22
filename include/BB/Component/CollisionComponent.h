@@ -14,6 +14,7 @@ namespace bb {
         IComponent* copy(int entity);
         bool collide(int entity);
         sf::FloatRect getHitbox();
+        bool getUpdate();
     private:
         enum Type {
             SOLID, MOVABLE, BREAKABLE
@@ -21,6 +22,7 @@ namespace bb {
         sf::Vector2i m_size;
         sf::IntRect m_hitboxI;
         sf::FloatRect m_hitboxF;
+        bool m_collided;
     };
 }
 

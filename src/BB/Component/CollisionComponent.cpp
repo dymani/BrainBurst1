@@ -17,6 +17,7 @@ namespace bb {
     }
 
     CollisionComponent::CollisionComponent(GameStateGame& game, int entity) : IComponent(game, entity) {
+        m_collided = false;
     }
 
     IComponent* CollisionComponent::copy(rapidjson::Value& value) {
@@ -82,5 +83,9 @@ namespace bb {
             -(coord.y + float(m_size.y - m_hitboxI.top) / 64.0F),
             float(m_hitboxI.width) / 64.0F, float(m_hitboxI.height) / 64.0F);
         return m_hitboxF;
+    }
+
+    bool CollisionComponent::getUpdate() {
+        return m_collided;
     }
 }

@@ -26,6 +26,7 @@ namespace bb {
         sf::Vector2f getNewCoord();
         void isOnGround(bool isOnGround);
         bool isOnGround();
+        bool getUpdate();
     private:
         bool m_init = false;
         bool m_isOnGround;

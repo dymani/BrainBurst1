@@ -2,6 +2,7 @@
 #include "BB/World/Entity.h"
 #include "BB/GameState/GameStateGame.h"
 #include "BB/World/Stage.h"
+#include "BB/Component/BreakableComponent.h"
 
 namespace bb {
     GraphicsComponent* GraphicsComponent::create(GameStateGame& game, luabridge::lua_State* L, luabridge::LuaRef& luaGC) {
@@ -97,7 +98,13 @@ namespace bb {
 
     void GraphicsComponent::draw(sf::RenderWindow& window, sf::Vector2f offset) {
         auto* entity = m_game.getWorld()->getEntity(m_entity);
+        auto* bc = entity->getComponent<BreakableComponent>();
         for(auto& sprite : m_sprites) {
+            if(bc) {
+                auto rect = sprite.second->getTextureRect();
+                rect.left = rect.width * bc->getFrame();
+                sprite.second->setTextureRect(rect);
+            }
             sprite.second->setPosition({entity->getCoord().x * 64,
                 window.getSize().y - entity->getCoord().y * 64 - 64});
         }
@@ -167,5 +174,9 @@ namespace bb {
 
     sf::Vector2i GraphicsComponent::getSize() {
         return m_size;
+    }
+
+    bool GraphicsComponent::getUpdate() {
+        return false;
     }
 }

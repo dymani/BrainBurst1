@@ -44,6 +44,7 @@ namespace bb {
         }
         void setCoord(sf::Vector2f coord);
         sf::Vector2f getCoord();
+        bool getUpdate();
     private:
         int m_id;
         const bool m_isEntity;

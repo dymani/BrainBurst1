@@ -26,6 +26,7 @@ namespace bb {
         void setSize(sf::Vector2i size);
         float getZ();
         sf::Vector2i getSize();
+        bool getUpdate();
     private:
         sf::Transform m_transform;
         std::map<std::string, sf::Sprite*> m_sprites;
