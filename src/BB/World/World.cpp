@@ -68,6 +68,10 @@ namespace bb {
         }
     }
 
+    Field* World::getField() {
+        return m_field;
+    }
+
     Stage* World::getStage(std::string name) {
         if(m_stages.find(name) != m_stages.end())
             return m_stages[name];

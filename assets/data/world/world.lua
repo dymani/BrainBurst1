@@ -14,6 +14,7 @@ player = {
         },
         CollisionComponent = {
             type = 1,
+            size = {64, 64},
             hitbox = {4, 0, 56, 64}
         },
         MovementComponent = {

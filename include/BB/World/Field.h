@@ -1,7 +1,7 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include <LuaBridge\LuaBridge.h>
+#include <LuaBridge/LuaBridge.h>
 extern "C" {
 #include <lua/lua.h>
 #include <lua/lauxlib.h>
@@ -18,6 +18,7 @@ namespace bb {
         Field(GameStateGame& game, luabridge::lua_State* L, std::string id);
         void load(std::string worldName);
         void draw();
+        int getSize();
     private:
         GameStateGame& m_game;
         std::string m_id;
@@ -25,11 +26,12 @@ namespace bb {
         sf::RenderStates m_states;
         sf::VertexArray m_vertices;
         std::string m_tileSet;
-        int m_tiles[100];
+        std::vector<int> m_tiles;
         std::map<std::string, Entity*> m_objectsTemplate;
         std::map<std::string, Entity*> m_entitiesTemplate;
         std::vector<int> m_entities;
         std::vector<int> m_objects;
+        sf::Sprite m_background;
     };
 }
 

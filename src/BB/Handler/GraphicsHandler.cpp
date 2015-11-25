@@ -46,8 +46,12 @@ namespace bb {
 
     void GraphicsHandler::setViewCoord(float x, float y) {
         m_viewCoord = {x, y};
-        if(x * 64 - m_view.getSize().x / 2 < 0) m_viewCoord.x = m_view.getSize().x / 2 / 64;
-        if(y < 0) m_viewCoord.y = 0;
+        if(x * 64 - m_view.getSize().x / 2 < 0)
+            m_viewCoord.x = m_view.getSize().x / 2 / 64;
+        if(x * 64 + m_view.getSize().x / 2 > m_game.getWorld()->getField()->getSize() * 64)
+            m_viewCoord.x = m_game.getWorld()->getField()->getSize() - m_view.getSize().x / 2 / 64;
+        if(y < 0)
+            m_viewCoord.y = 0;
         m_view.setCenter(m_viewCoord.x * 64, m_view.getSize().y / 2 - m_viewCoord.y * 64);
     }
 

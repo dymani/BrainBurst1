@@ -4,11 +4,13 @@
         {"name":"columnB", "id":-101, "stage":"HL06", "xCoord":7, "yCoord":0}
     ],
     "entities":[
-        {"name":"rockA", "id":100, "stage":"HL06", "xCoord":9, "yCoord":0, "durability":4},
+        {"name":"worldBorder", "id":1, "xCoord":-1, "yCoord":0},
+        {"name":"worldBorder", "id":2, "xCoord":30, "yCoord":0},
+        {"name":"rockA", "id":100, "stage":"HL06", "xCoord":9, "yCoord":0, "durability":8},
         {"name":"rockB", "id":101, "stage":"HL06", "xCoord":13, "yCoord":0, "durability":4}
     ],
     "tileSet":"HL06",
     "tiles":[
-        0, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
 }

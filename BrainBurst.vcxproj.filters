@@ -78,11 +78,21 @@
     <ClCompile Include="src\BB\Component\BreakableComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\LuaBridge\LuaHelperFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include=".gitignore" />
     <None Include="assets\data\resource.lua" />
+    <None Include="assets\data\world\fields\01.lua" />
+    <None Include="assets\data\world\stages\Default.lua" />
+    <None Include="assets\data\world\stages\HL06.lua" />
+    <None Include="assets\data\world\world.lua" />
+    <None Include="assets\data\gameStates\init.lua" />
+    <None Include="assets\data\gameStates\splash.lua" />
+    <None Include="assets\data\gameStates\title.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BB\Game.h">
@@ -163,6 +173,39 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\textures\test3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\gui\init.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\gui\splash0.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\gui\splash1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\player.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\player-.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\fields\bakcground_HL06.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\fields\objects.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\fields\objects_HL06.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\fields\tileset.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\world\fields\tileSet_HL06.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\textures\null.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

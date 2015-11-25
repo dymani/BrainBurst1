@@ -4,6 +4,7 @@ textures = {
   { name = "splash1", file = "gui/splash1.png"},
   { name = "tileSet_HL06", file = "world/fields/tileSet_HL06.png"},
   { name = "objects_HL06", file = "world/fields/objects_HL06.png"},
+  { name = "bakcground_HL06", file = "world/fields/bakcground_HL06.png"},
   { name = "player", file = "world/player-.png"},
   { name = "NULL", file = "null.png"}
 }

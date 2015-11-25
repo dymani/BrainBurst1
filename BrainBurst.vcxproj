@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\LuaBridge\LuaHelperFunctions.cpp" />
     <ClCompile Include="src\BB\Component\BreakableComponent.cpp" />
     <ClCompile Include="src\BB\Component\CollisionComponent.cpp" />
     <ClCompile Include="src\BB\Component\MovementComponent.cpp" />
@@ -153,7 +154,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
+    <None Include="assets\data\gameStates\init.lua" />
+    <None Include="assets\data\gameStates\splash.lua" />
+    <None Include="assets\data\gameStates\title.lua" />
     <None Include="assets\data\resource.lua" />
+    <None Include="assets\data\world\fields\01.lua" />
+    <None Include="assets\data\world\stages\Default.lua" />
+    <None Include="assets\data\world\stages\HL06.lua" />
+    <None Include="assets\data\world\world.lua" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -181,10 +189,21 @@
     <ClInclude Include="include\BB\World\World.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\gui\init.png" />
+    <Image Include="assets\textures\gui\splash0.png" />
+    <Image Include="assets\textures\gui\splash1.png" />
+    <Image Include="assets\textures\null.png" />
     <Image Include="assets\textures\test.png" />
     <Image Include="assets\textures\test1.png" />
     <Image Include="assets\textures\test2.png" />
     <Image Include="assets\textures\test3.png" />
+    <Image Include="assets\textures\world\fields\bakcground_HL06.png" />
+    <Image Include="assets\textures\world\fields\objects.png" />
+    <Image Include="assets\textures\world\fields\objects_HL06.png" />
+    <Image Include="assets\textures\world\fields\tileset.png" />
+    <Image Include="assets\textures\world\fields\tileSet_HL06.png" />
+    <Image Include="assets\textures\world\player-.png" />
+    <Image Include="assets\textures\world\player.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

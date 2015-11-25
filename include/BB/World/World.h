@@ -28,6 +28,7 @@ namespace bb {
         void handleInput(sf::Event windowEvent);
         void update();
         void draw();
+        Field* getField();
         Stage* getStage(std::string name);
         Entity* getEntity(int id);
         std::map<int, Entity*>& getEntities();

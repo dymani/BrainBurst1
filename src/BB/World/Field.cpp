@@ -69,13 +69,13 @@ namespace bb {
         }
         m_tileSet = m_game.getWorld()->getStage(document["tileSet"].GetString())->getTileSet();
         Value& jsonTiles = document["tiles"];
-        for(SizeType i = 0; i < jsonTiles.Size() && i < 100; i++) {
-            m_tiles[i] = jsonTiles[i].GetInt();
+        for(SizeType i = 0; i < jsonTiles.Size(); i++) {
+            m_tiles.push_back(jsonTiles[i].GetInt());
         }
         m_vertices.setPrimitiveType(sf::Quads);
-        m_vertices.resize(400);
+        m_vertices.resize(int(m_tiles.size()) * 4);
         int h = m_game.getWindowHandler()->getWindow().getSize().y - 64;
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < int(m_tiles.size()); i++) {
             sf::Vertex* quad = &m_vertices[i * 4];
             quad[0].position = {float(i * 64), float(h)};
             quad[1].position = {float((i + 1) * 64), float(h)};
@@ -86,12 +86,23 @@ namespace bb {
             quad[2].texCoords = {float(m_tiles[i] * 16 + 16), float(16)};
             quad[3].texCoords = {float(m_tiles[i] * 16), float(16)};
         }
+        m_background.setTexture(m_game.getResourceHandler()->getTexture(m_game.getWorld()->getStage(document["tileSet"].GetString())->getBackgroundTexture()));
     }
 
     void Field::draw() {
+        sf::View view = m_game.getWindowHandler()->getWindow().getView();
+        m_game.getWindowHandler()->getWindow().setView(m_game.getWindowHandler()->getWindow().getDefaultView());
+        m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
+            view.getSize().x / m_background.getTexture()->getSize().x);
+        m_game.getWindowHandler()->getWindow().draw(m_background);
+        m_game.getWindowHandler()->getWindow().setView(view);
         sf::Texture& tex = m_game.getResourceHandler()->getTexture(m_tileSet);
         tex.setSmooth(false);
         m_states.texture = &tex;
         m_game.getWindowHandler()->getWindow().draw(m_vertices, m_states);
+    }
+
+    int Field::getSize() {
+        return int(m_tiles.size());
     }
 }

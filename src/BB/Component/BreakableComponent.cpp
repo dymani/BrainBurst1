@@ -6,7 +6,7 @@ namespace bb {
         bc->m_totalDurability = luaBC["totalDurability"].cast<int>();
         bc->m_durability = luaBC["durability"].cast<int>();
         bc->m_totalFrames = luaBC["totalFrames"].cast<int>();
-        bc->m_frame = bc->m_totalFrames - int(bc->m_durability * bc->m_totalFrames / bc->m_totalDurability);
+        bc->m_frame = bc->getFrame();
         return bc;
     }
 
@@ -21,7 +21,7 @@ namespace bb {
             bc = dynamic_cast<BreakableComponent*>(copy(-1));
         if(value.HasMember("durability"))
             bc->m_durability = value["durability"].GetInt();
-        bc->m_frame = bc->m_totalFrames - int(bc->m_durability * bc->m_totalFrames / bc->m_totalDurability);
+        bc->m_frame = bc->getFrame();
         return bc;
     }
 
@@ -30,18 +30,18 @@ namespace bb {
         bc->m_totalDurability = m_totalDurability;
         bc->m_durability = m_durability;
         bc->m_totalFrames = m_totalFrames;
-        bc->m_frame = bc->m_totalFrames - int(bc->m_durability * bc->m_totalFrames / bc->m_totalDurability);
+        bc->m_frame = bc->getFrame();
         return bc;
     }
 
     void BreakableComponent::addDurability(int durability) {
         m_durability += durability;
-        m_frame = m_totalFrames - int(m_durability * m_totalFrames / m_totalDurability);
+        m_frame = getFrame();
     }
 
     void BreakableComponent::setDurability(int durability) {
         m_durability = durability;
-        m_frame = m_totalFrames - int(m_durability * m_totalFrames / m_totalDurability);
+        m_frame = getFrame();
     }
 
     int BreakableComponent::getDurability() {
@@ -53,6 +53,7 @@ namespace bb {
     }
 
     int BreakableComponent::getFrame() {
+        m_frame = int(m_totalFrames - float(m_durability) * float(m_totalFrames) / float(m_totalDurability));
         return m_frame;
     }
 

@@ -10,6 +10,8 @@ namespace bb {
         using namespace luabridge;
         LuaRef luaType = luaCC["type"];
         cc->m_type = Type(luaType.cast<int>());
+        LuaRef luaSize = luaCC["size"];
+        cc->m_size = {luaSize[1].cast<int>(), luaSize[2].cast<int>()};
         LuaRef luaHitbox = luaCC["hitbox"];
         cc->m_hitboxI = {luaHitbox[1].cast<int>(), luaHitbox[2].cast<int>(), luaHitbox[3].cast<int>(),
             luaHitbox[4].cast<int>()};
@@ -39,7 +41,6 @@ namespace bb {
     }
 
     bool CollisionComponent::collide(int entity) {
-        m_size = m_game.getWorld()->getEntity(m_entity)->getComponent<GraphicsComponent>()->getSize();
         if(m_type == MOVABLE) {
             auto* mc = m_game.getWorld()->getEntity(m_entity)->getComponent<MovementComponent>();
             sf::Vector2f coord = mc->getNewCoord();
@@ -73,7 +74,6 @@ namespace bb {
     }
 
     sf::FloatRect CollisionComponent::getHitbox() {
-        m_size = m_game.getWorld()->getEntity(m_entity)->getComponent<GraphicsComponent>()->getSize();
         sf::Vector2f coord;
         if(m_game.getWorld()->getEntity(m_entity)->getComponent<MovementComponent>())
             coord = m_game.getWorld()->getEntity(m_entity)->getComponent<MovementComponent>()->getNewCoord();
