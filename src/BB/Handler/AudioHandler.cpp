@@ -45,8 +45,7 @@ namespace bb {
             else if(m_sounds[id]->getStatus() == sf::SoundSource::Paused)
                 m_sounds[id]->play();
         } else {
-            LogHandler::log(LogHandler::ERR, "Sound id " + std::to_string(id) + " not found",
-                typeid(*this).name());
+            LogHandler::log<AudioHandler>(ERR, "Sound id " + std::to_string(id) + " not found");
         }
     }
 
@@ -57,8 +56,7 @@ namespace bb {
             delete m_sounds[id];
             m_sounds.erase(id);
         } else {
-            LogHandler::log(LogHandler::ERR, "Sound id " + std::to_string(id) + " not found",
-                typeid(*this).name());
+            LogHandler::log<AudioHandler>(ERR, "Sound id " + std::to_string(id) + " not found");
         }
     }
 }

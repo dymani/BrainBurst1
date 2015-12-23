@@ -130,26 +130,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\LuaBridge\LuaHelperFunctions.cpp" />
-    <ClCompile Include="src\BB\Component\BreakableComponent.cpp" />
-    <ClCompile Include="src\BB\Component\CollisionComponent.cpp" />
-    <ClCompile Include="src\BB\Component\MovementComponent.cpp" />
-    <ClCompile Include="src\BB\Component\GraphicsComponent.cpp" />
-    <ClCompile Include="src\BB\Component\PlayerComponent.cpp" />
-    <ClCompile Include="src\BB\Handler\PhysicsHandler.cpp" />
-    <ClCompile Include="src\BB\World\Entity.cpp" />
     <ClCompile Include="src\BB\Game.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateGame.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateSplash.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateTitle.cpp" />
     <ClCompile Include="src\BB\Handler\AudioHandler.cpp" />
-    <ClCompile Include="src\BB\Handler\GraphicsHandler.cpp" />
-    <ClCompile Include="src\BB\Handler\LogHandler.cpp" />
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
+    <ClCompile Include="src\BB\World\EntityTemplate.cpp" />
     <ClCompile Include="src\BB\World\Field.cpp" />
     <ClCompile Include="src\BB\World\Stage.cpp" />
+    <ClCompile Include="src\BB\World\System\GraphicsSystem.cpp" />
     <ClCompile Include="src\BB\World\World.cpp" />
+    <ClCompile Include="src\BB\World\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,14 +159,14 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BB\Component\BreakableComponent.h" />
-    <ClInclude Include="include\BB\Component\CollisionComponent.h" />
-    <ClInclude Include="include\BB\Component\GraphicsComponent.h" />
-    <ClInclude Include="include\BB\Component\IComponent.h" />
-    <ClInclude Include="include\BB\Component\MovementComponent.h" />
-    <ClInclude Include="include\BB\Component\PlayerComponent.h" />
-    <ClInclude Include="include\BB\Handler\PhysicsHandler.h" />
+    <ClInclude Include="include\BB\World\Component\GraphicsComponent.h" />
+    <ClInclude Include="include\BB\World\Component\IComponent.h" />
     <ClInclude Include="include\BB\World\Entity.h" />
+    <ClInclude Include="include\BB\World\EntityTemplate.h" />
+    <ClInclude Include="include\BB\World\Field.h" />
+    <ClInclude Include="include\BB\World\Stage.h" />
+    <ClInclude Include="include\BB\World\System\GraphicsSystem.h" />
+    <ClInclude Include="include\BB\World\System\ISystem.h" />
     <ClInclude Include="include\BB\Game.h" />
     <ClInclude Include="include\BB\GameState\GameStateGame.h" />
     <ClInclude Include="include\BB\GameState\GameStateInit.h" />
@@ -180,12 +174,9 @@
     <ClInclude Include="include\BB\GameState\GameStateTitle.h" />
     <ClInclude Include="include\BB\GameState\IGameState.h" />
     <ClInclude Include="include\BB\Handler\AudioHandler.h" />
-    <ClInclude Include="include\BB\Handler\GraphicsHandler.h" />
     <ClInclude Include="include\BB\Handler\LogHandler.h" />
     <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
-    <ClInclude Include="include\BB\World\Field.h" />
-    <ClInclude Include="include\BB\World\Stage.h" />
     <ClInclude Include="include\BB\World\World.h" />
   </ItemGroup>
   <ItemGroup>

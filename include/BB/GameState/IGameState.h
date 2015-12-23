@@ -9,6 +9,8 @@ namespace bb {
     public:
         IGameState(Game& game):m_game(game) {
         }
+        virtual ~IGameState() {
+        }
         virtual void handleInput() = 0;
         virtual bool update() = 0;
         virtual void draw(const double dt) = 0;

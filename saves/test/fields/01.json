@@ -1,16 +1,11 @@
 {
-    "objects":[
-        {"name":"columnA", "id":-100, "stage":"HL06", "xCoord":5, "yCoord":0},
-        {"name":"columnB", "id":-101, "stage":"HL06", "xCoord":7, "yCoord":0}
-    ],
     "entities":[
-        {"name":"worldBorder", "id":1, "xCoord":-1, "yCoord":0},
-        {"name":"worldBorder", "id":2, "xCoord":30, "yCoord":0},
-        {"name":"rockA", "id":100, "stage":"HL06", "xCoord":9, "yCoord":0, "durability":8},
-        {"name":"rockB", "id":101, "stage":"HL06", "xCoord":13, "yCoord":0, "durability":4}
+        {"name":"rock", "id":100, "coordX":0, "coordY":0, "stage":"HL06"},
+        {"name":"rock", "id":101, "coordX":5, "coordY":0, "stage":"HL06"},
+        {"name":"rock", "id":102, "coordX":6, "coordY":0.5, "stage":"HL06"}
     ],
     "tileSet":"HL06",
     "tiles":[
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ]
 }

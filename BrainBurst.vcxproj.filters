@@ -27,19 +27,10 @@
     <ClCompile Include="src\BB\GameState\GameStateInit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\Component\GraphicsComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Handler\GraphicsHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\Handler\AudioHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Handler\LogHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\GameState\GameStateSplash.cpp">
@@ -51,34 +42,25 @@
     <ClCompile Include="src\BB\GameState\GameStateGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\World\Field.cpp">
+    <ClCompile Include="include\LuaBridge\LuaHelperFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\World\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\Component\PlayerComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Component\MovementComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\BB\World\World.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\Handler\PhysicsHandler.cpp">
+    <ClCompile Include="src\BB\World\Field.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BB\Component\CollisionComponent.cpp">
+    <ClCompile Include="src\BB\World\System\GraphicsSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BB\World\EntityTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\BB\World\Stage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BB\Component\BreakableComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\LuaBridge\LuaHelperFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,15 +89,6 @@
     <ClInclude Include="include\BB\GameState\GameStateInit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\Handler\GraphicsHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Component\IComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Component\GraphicsComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BB\Handler\ResourceHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -134,31 +107,31 @@
     <ClInclude Include="include\BB\GameState\GameStateGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\World\Field.h">
+    <ClInclude Include="include\BB\World\Component\IComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\World\System\ISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\World\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\Component\PlayerComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Component\MovementComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BB\World\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\Handler\PhysicsHandler.h">
+    <ClInclude Include="include\BB\World\Field.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\Component\CollisionComponent.h">
+    <ClInclude Include="include\BB\World\Component\GraphicsComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\World\System\GraphicsSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\World\EntityTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\World\Stage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\Component\BreakableComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

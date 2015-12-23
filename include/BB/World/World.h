@@ -1,6 +1,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include <SFML/Graphics.hpp>
 #include <LuaBridge\LuaBridge.h>
 extern "C" {
 #include <lua/lua.h>
@@ -8,37 +9,29 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include <rapidjson/document.h>
-#include <string>
 #include "BB/World/Field.h"
 #include "BB/World/Stage.h"
-#include "BB/Handler/LogHandler.h"
-#include "BB/World/Entity.h"
-#include "BB/Component/GraphicsComponent.h"
-#include "BB/Component/PlayerComponent.h"
-#include "BB/Component/MovementComponent.h"
+#include "BB/World/System/GraphicsSystem.h"
 
 namespace bb {
     class GameStateGame;
 
     class World {
     public:
-        World(GameStateGame& game, std::string name, luabridge::lua_State* L);
-        void createField();
+        World(GameStateGame& game, std::string name);
         void handleInput();
-        void handleInput(sf::Event windowEvent);
+        void handleInput(sf::Event& windowEvent);
         void update();
-        void draw();
+        void draw(const double dt);
         Field* getField();
         Stage* getStage(std::string name);
-        Entity* getEntity(int id);
-        std::map<int, Entity*>& getEntities();
+        GraphicsSystem& getGraphicsSystem();
     private:
         GameStateGame& m_game;
-        luabridge::lua_State* L;
         std::string m_name, m_fieldId;
         Field* m_field;
         std::map<std::string, Stage*> m_stages;
-        std::map<int, Entity*> m_entities;
+        GraphicsSystem m_graphicsSystem;
     };
 }
 

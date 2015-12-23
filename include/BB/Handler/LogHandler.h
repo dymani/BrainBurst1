@@ -5,12 +5,33 @@
 #include <time.h>
 
 namespace bb {
+    enum LogType {
+        ERR, WRN, INF
+    };
     class LogHandler {
     public:
-        enum Type {
-            ERR, WRN, INF
-        };
-        static void log(Type type, std::string message, std::string sender);
+        template<typename T>
+        static void log(LogType type, std::string message) {
+            time_t now = time(0);
+            struct tm tstruct;
+            char buf[80];
+            localtime_s(&tstruct, &now);
+            strftime(buf, sizeof(buf), "%X", &tstruct);
+            std::cerr << buf << " ";
+            switch(type) {
+                case ERR:
+                    std::cerr << "[ERROR]   ";
+                    break;
+                case WRN:
+                    std::cerr << "[WARNING] ";
+                    break;
+                case INF:
+                    std::cerr << "[INFO]    ";
+                    break;
+            }
+            std::cerr << message.c_str() << ". ";
+            std::cerr << "(" << typeid(T).name() << ")" << std::endl;
+        }
     private:
 
     };

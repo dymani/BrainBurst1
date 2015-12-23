@@ -7,7 +7,7 @@ namespace bb {
         std::string file = "assets/data/world/stages/" + stage->m_name + ".lua";
         using namespace luabridge;
         if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "Stage \"" + file + "\" not found", typeid(*stage).name());
+            LogHandler::log<Stage>(ERR, "Stage \"" + file + "\" not found");
             return nullptr;
         }
         LuaRef luaBackgroundTexture = getGlobal(L, "backgroundTexture");

@@ -1,37 +1,34 @@
 #ifndef FIELD_H
 #define FIELD_H
 
-#include <LuaBridge/LuaBridge.h>
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lauxlib.h>
-#include <lua/lualib.h>
-}
-#include "BB/Handler/LogHandler.h"
 #include "BB/World/Entity.h"
+#include "BB/World/EntityTemplate.h"
+#include "BB/World/Component/GraphicsComponent.h"
 
 namespace bb {
     class GameStateGame;
 
     class Field {
     public:
-        Field(GameStateGame& game, luabridge::lua_State* L, std::string id);
-        void load(std::string worldName);
-        void draw();
+        Field(GameStateGame& game, std::string worldName, std::string id);
+        void load();
+        void draw(const double dt);
         int getSize();
+        Entity* getEntity(int id);
+        IComponent getComponent(std::type_index type, int id);
+        std::map<int, IComponent*>& getComponentList(std::type_index type);
     private:
         GameStateGame& m_game;
-        std::string m_id;
-        luabridge::lua_State* L;
+        std::string m_worldName, m_id;
         sf::RenderStates m_states;
         sf::VertexArray m_vertices;
         std::string m_tileSet;
         std::vector<int> m_tiles;
-        std::map<std::string, Entity*> m_objectsTemplate;
-        std::map<std::string, Entity*> m_entitiesTemplate;
-        std::vector<int> m_entities;
-        std::vector<int> m_objects;
         sf::Sprite m_background;
+        std::map<std::string, EntityTemplate*> m_entityTemplates;
+        std::map<int, Entity*> m_entities;
+        std::map<std::type_index, std::map<int, IComponent*>*> m_componentLists;
+        std::map<int, IComponent*> m_graphicsComponents;
     };
 }
 

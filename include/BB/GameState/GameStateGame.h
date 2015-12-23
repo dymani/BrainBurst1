@@ -7,12 +7,9 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
-#include "BB/World/Entity.h"
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/ResourceHandler.h"
-#include "BB/Handler/GraphicsHandler.h"
 #include "BB/Handler/WindowHandler.h"
-#include "BB/Handler/PhysicsHandler.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/World/World.h"
 
@@ -26,21 +23,18 @@ namespace bb {
         void handleInput();
         bool update();
         void draw(const double dt);
-        World* getWorld();
         ResourceHandler* getResourceHandler();
-        GraphicsHandler* getGraphicsHandler();
         WindowHandler* getWindowHandler();
-        PhysicsHandler* getPhysicsHandler();
+        luabridge::lua_State* getLuaState();
+        World& getWorld();
     private:
         ResourceHandler* m_resourceHandler;
-        GraphicsHandler* m_graphicsHandler;
         WindowHandler* m_windowHandler;
-        PhysicsHandler* m_physicsHandler;
         luabridge::lua_State* L;
         enum State {
             RUNNING, TITLE, QUIT
         } m_state;
-        World* m_world;
+        World m_world;
     };
 }
 

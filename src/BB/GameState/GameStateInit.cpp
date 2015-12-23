@@ -43,14 +43,14 @@ namespace bb {
         m_resourceHandler->load(L);
         using namespace luabridge;
         if(luaL_loadfile(L, "assets/data/gameStates/init.lua") || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStates/init.lua\" not found",
-                typeid(*this).name());
+            LogHandler::log<GameStateInit>(ERR, "File \"assets/data/gameStates/init.lua\" not found");
+            assert(false);
             return;
         }
         LuaRef luaTexture = getGlobal(L, "texture");
         if(!luaTexture.isString()) {
-            LogHandler::log(LogHandler::ERR, "\"texture\" not a string in init.lua.",
-                typeid(*this).name());
+            LogHandler::log<GameStateInit>(ERR, "\"texture\" not a string in init.lua.");
+            assert(false);
             return;
         }
         m_sprite.setTexture(m_resourceHandler->getTexture(luaTexture.cast<std::string>()));
@@ -84,7 +84,7 @@ namespace bb {
         switch(m_state) {
             case RUNNING:
                 if(m_resourceHandler->load()) {
-                    LogHandler::log(LogHandler::INF, "Finished loading resources ", typeid(*this).name());
+                    LogHandler::log<GameStateInit>(INF, "Finished loading resources ");
                     m_state = NEXT;
                 }
                 break;

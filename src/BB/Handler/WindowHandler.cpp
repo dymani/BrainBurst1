@@ -12,7 +12,7 @@ namespace bb {
 
     sf::RenderWindow& WindowHandler::getWindow() {
         if(!m_isCreated) {
-            LogHandler::log(LogHandler::ERR, "Window not created", typeid(*this).name());
+            LogHandler::log<WindowHandler>(ERR, "Window not created");
             createWindow(sf::VideoMode(100, 100), "ERROR");
         }
         return m_window;

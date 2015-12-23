@@ -10,26 +10,26 @@ namespace bb {
         this->L = L;
         using namespace luabridge;
         if(luaL_loadfile(L, "assets/data/gameStates/splash.lua") || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log(LogHandler::ERR, "File \"assets/data/gameStates/splash.lua\" not found",
-                typeid(*this).name());
+            LogHandler::log<GameStateSplash>(ERR, "File \"assets/data/gameStates/splash.lua\" not found");
+            assert(false);
             return;
         }
         LuaRef luaSplashes = getGlobal(L, "splashes");
         LuaRef luaDuration = getGlobal(L, "duration");
         LuaRef luaResolution = getGlobal(L, "resolution");
         if(!luaSplashes.isTable()) {
-            LogHandler::log(LogHandler::ERR, "\"splashes\" not a table in splash.lua.",
-                typeid(*this).name());
+            LogHandler::log<GameStateSplash>(ERR, "\"splashes\" not a table in splash.lua.");
+            assert(false);
             return;
         }
         if(!luaDuration.isNumber()) {
-            LogHandler::log(LogHandler::ERR, "\"duration\" not a integer in splash.lua.",
-                typeid(*this).name());
+            LogHandler::log<GameStateSplash>(ERR, "\"duration\" not a integer in splash.lua.");
+            assert(false);
             return;
         }
         if(!luaResolution.isTable()) {
-            LogHandler::log(LogHandler::ERR, "\"resolution\" not a table in splash.lua.",
-                typeid(*this).name());
+            LogHandler::log<GameStateSplash>(ERR, "\"resolution\" not a table in splash.lua.");
+            assert(false);
             return;
         }
         m_duration = luaDuration.cast<int>() * 50;
@@ -40,8 +40,8 @@ namespace bb {
                 continue;
             }
             if(!luaSplash.isString()) {
-                LogHandler::log(LogHandler::WRN, "splash[" + std::to_string(i)
-                    + "] not a string in splash.lua.", typeid(*this).name());
+                LogHandler::log<GameStateSplash>(WRN, "splash[" + std::to_string(i)
+                    + "] not a string in splash.lua.");
                 continue;
             }
             sf::Sprite sprite;
@@ -52,9 +52,12 @@ namespace bb {
             m_sprites.push_back(sprite);
             m_splashes++;
         }
+        std::string title = "Brain Burst 2039";
+        #ifdef _DEBUG
+        title += " [WIP]";
+        #endif
         m_windowHandler->createWindow(sf::VideoMode(luaResolution[1].cast<int>(),
-            luaResolution[2].cast<int>()),
-            "Brain Burst 2039", sf::Style::Close);
+            luaResolution[2].cast<int>()), title, sf::Style::Close);
         m_state = RUNNING;
         m_updateCount = int(m_duration * -0.5);
         m_splashCount = 0;
