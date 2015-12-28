@@ -7,6 +7,9 @@ entities = {
                 z = 5,
                 type = 0, 
                 textureRect = {0, 0, 32, 32}
+            },
+            MovementComponent = {
+                velocities = {1, 0}
             }
         }
     },

@@ -1,9 +1,12 @@
 #include "BB/World/Field.h"
 #include "BB/GameState/GameStateGame.h"
+#include "BB/World/Component/GraphicsComponent.h"
+#include "BB/World/Component/MovementComponent.h"
 
 namespace bb {
     Field::Field(GameStateGame& game, std::string worldName, std::string id) : m_game(game) {
         m_componentLists[std::type_index(typeid(GraphicsComponent))] = &m_graphicsComponents;
+        m_componentLists[std::type_index(typeid(MovementComponent))] = &m_movementComponents;
         auto* L = m_game.getLuaState();
         m_worldName = worldName;
         m_id = id;
@@ -78,6 +81,16 @@ namespace bb {
         m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
             view.getSize().x / m_background.getTexture()->getSize().x);
         m_game.getWorld().getGraphicsSystem().setViewCoord(0, -1);
+    }
+
+    void Field::handleInput() {
+    }
+
+    void Field::handleInput(sf::Event& windowEvent) {
+    }
+
+    void Field::update() {
+        m_game.getWorld().getPhysicsSystem().update();
     }
 
     void Field::draw(const double dt) {

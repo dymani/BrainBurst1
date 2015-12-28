@@ -1,14 +1,6 @@
 #ifndef GRAPHICS_SYSTEM_H
 #define GRAPHICS_SYSTEM_H
 
-#include <LuaBridge\LuaBridge.h>
-extern "C" {
-#include <lua/lua.h>
-#include <lua/lauxlib.h>
-#include <lua/lualib.h>
-}
-#include "BB/Handler/LogHandler.h"
-#include <rapidjson/document.h>
 #include "BB/World/System/ISystem.h"
 #include "BB/World/Component/GraphicsComponent.h"
 
@@ -35,7 +27,6 @@ namespace bb {
         sf::Vector2f m_viewCoord;
         int m_textureSize;
         float m_tileSize;
-        std::map<std::string, GraphicsComponent> m_graphicsComponent;
     };
 }
 

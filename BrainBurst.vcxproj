@@ -142,6 +142,7 @@
     <ClCompile Include="src\BB\World\Field.cpp" />
     <ClCompile Include="src\BB\World\Stage.cpp" />
     <ClCompile Include="src\BB\World\System\GraphicsSystem.cpp" />
+    <ClCompile Include="src\BB\World\System\PhysicsSystem.cpp" />
     <ClCompile Include="src\BB\World\World.cpp" />
     <ClCompile Include="src\BB\World\Entity.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="include\BB\World\Component\GraphicsComponent.h" />
     <ClInclude Include="include\BB\World\Component\IComponent.h" />
+    <ClInclude Include="include\BB\World\Component\MovementComponent.h" />
     <ClInclude Include="include\BB\World\Entity.h" />
     <ClInclude Include="include\BB\World\EntityTemplate.h" />
     <ClInclude Include="include\BB\World\Field.h" />
@@ -177,6 +179,7 @@
     <ClInclude Include="include\BB\Handler\LogHandler.h" />
     <ClInclude Include="include\BB\Handler\ResourceHandler.h" />
     <ClInclude Include="include\BB\Handler\WindowHandler.h" />
+    <ClInclude Include="include\BB\World\System\PhysicsSystem.h" />
     <ClInclude Include="include\BB\World\World.h" />
   </ItemGroup>
   <ItemGroup>

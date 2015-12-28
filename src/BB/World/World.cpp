@@ -2,17 +2,18 @@
 #include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    World::World(GameStateGame& game, std::string name) : m_game(game), m_graphicsSystem(game) {
+    World::World(GameStateGame& game, std::string name) : m_game(game), m_graphicsSystem(game), m_physicsSystem(game) {
         m_name = name;
         m_field = new Field(m_game, m_name, "01");
         m_field->load();
     }
 
     void World::handleInput() {
-
+        m_field->handleInput();
     }
 
     void World::handleInput(sf::Event& windowEvent) {
+        m_field->handleInput(windowEvent);
         if(windowEvent.type == sf::Event::KeyPressed) {
             auto coord = m_graphicsSystem.getViewCoord();
             if(windowEvent.key.code == sf::Keyboard::Left)
@@ -27,7 +28,7 @@ namespace bb {
     }
 
     void World::update() {
-
+        m_field->update();
     }
 
     void World::draw(const double dt) {
@@ -48,5 +49,9 @@ namespace bb {
     }
     GraphicsSystem& World::getGraphicsSystem() {
         return m_graphicsSystem;
+    }
+
+    PhysicsSystem& World::getPhysicsSystem() {
+        return m_physicsSystem;
     }
 }

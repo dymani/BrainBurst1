@@ -3,7 +3,6 @@
 
 #include "BB/World/Entity.h"
 #include "BB/World/EntityTemplate.h"
-#include "BB/World/Component/GraphicsComponent.h"
 
 namespace bb {
     class GameStateGame;
@@ -12,6 +11,9 @@ namespace bb {
     public:
         Field(GameStateGame& game, std::string worldName, std::string id);
         void load();
+        void handleInput();
+        void handleInput(sf::Event& windowEvent);
+        void update();
         void draw(const double dt);
         int getSize();
         Entity* getEntity(int id);
@@ -29,6 +31,7 @@ namespace bb {
         std::map<int, Entity*> m_entities;
         std::map<std::type_index, std::map<int, IComponent*>*> m_componentLists;
         std::map<int, IComponent*> m_graphicsComponents;
+        std::map<int, IComponent*> m_movementComponents;
     };
 }
 

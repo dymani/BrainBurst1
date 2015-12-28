@@ -12,6 +12,7 @@ extern "C" {
 #include "BB/World/Field.h"
 #include "BB/World/Stage.h"
 #include "BB/World/System/GraphicsSystem.h"
+#include "BB/World/System/PhysicsSystem.h"
 
 namespace bb {
     class GameStateGame;
@@ -26,12 +27,14 @@ namespace bb {
         Field* getField();
         Stage* getStage(std::string name);
         GraphicsSystem& getGraphicsSystem();
+        PhysicsSystem& getPhysicsSystem();
     private:
         GameStateGame& m_game;
         std::string m_name, m_fieldId;
         Field* m_field;
         std::map<std::string, Stage*> m_stages;
         GraphicsSystem m_graphicsSystem;
+        PhysicsSystem m_physicsSystem;
     };
 }
 
