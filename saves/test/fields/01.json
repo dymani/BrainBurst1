@@ -1,8 +1,9 @@
 {
     "entities":[
-        {"name":"rock", "id":100, "coordX":0, "coordY":0, "stage":"HL06", "velocityX":0, "velocityY":0},
+        {"name":"rock", "id":100, "coordX":0, "coordY":0, "stage":"HL06", "velocityX":0, "velocityY":3},
         {"name":"rock", "id":101, "coordX":5, "coordY":0, "stage":"HL06"},
-        {"name":"rock", "id":102, "coordX":6, "coordY":0.5, "stage":"HL06"}
+        {"name":"rock", "id":102, "coordX":6, "coordY":0.5, "stage":"HL06"},
+        {"name":"player", "id":0, "coordX":1, "coordY":0, "velocityX":0, "velocityY":0}
     ],
     "tileSet":"HL06",
     "tiles":[

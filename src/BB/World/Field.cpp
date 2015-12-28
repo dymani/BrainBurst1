@@ -7,24 +7,9 @@ namespace bb {
     Field::Field(GameStateGame& game, std::string worldName, std::string id) : m_game(game) {
         m_componentLists[std::type_index(typeid(GraphicsComponent))] = &m_graphicsComponents;
         m_componentLists[std::type_index(typeid(MovementComponent))] = &m_movementComponents;
-        auto* L = m_game.getLuaState();
+        m_componentLists[std::type_index(typeid(PlayerComponent))] = &m_playerComponents;
         m_worldName = worldName;
         m_id = id;
-        using namespace luabridge;
-        std::string file = "assets/data/world/fields/" + m_id + ".lua";
-        if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
-            LogHandler::log<Field>(ERR, "Field \"" + file + "\" not found");
-            assert(false);
-            return;
-        }
-        luabridge::LuaRef& luaEntities = getGlobal(L, "entities");
-        if(luaEntities.isTable()) {
-            for(int i = 1; i <= luaEntities.length(); i++) {
-                luabridge::LuaRef luaEntity = luaEntities[i];
-                EntityTemplate* et = new EntityTemplate(m_game, luaEntity);
-                m_entityTemplates[et->getName()] = et;
-            }
-        }
     }
 
     void Field::load() {
@@ -48,7 +33,8 @@ namespace bb {
         for(SizeType i = 0; i < jsonEntities.Size(); i++) {
             Value& jsonEntity = jsonEntities[i];
             Value& jsonName = jsonEntity["name"];
-            Entity* entity = m_entityTemplates[jsonName.GetString()]->createEntity(m_game, jsonEntity);
+            Entity* entity = m_game.getWorld().getEntityTemplate(jsonName.GetString())->createEntity(m_game,
+                jsonEntity);
             m_entities[entity->getId()] = entity;
         }
         m_tileSet = m_game.getWorld().getStage(document["tileSet"].GetString())->getTileSet();
@@ -83,12 +69,6 @@ namespace bb {
         m_game.getWorld().getGraphicsSystem().setViewCoord(0, -1);
     }
 
-    void Field::handleInput() {
-    }
-
-    void Field::handleInput(sf::Event& windowEvent) {
-    }
-
     void Field::update() {
         m_game.getWorld().getPhysicsSystem().update();
     }
@@ -111,11 +91,11 @@ namespace bb {
         return m_entities[id];
     }
 
-    IComponent Field::getComponent(std::type_index type, int id) {
-        return *((*m_componentLists[type])[id]);
-    }
+    //IComponent* Field::getComponent(std::type_index type, int id) {
+    //    return (*m_componentLists[type])[id];
+    //}
 
-    std::map<int, IComponent*>& Field::getComponentList(std::type_index type) {
-        return *m_componentLists[type];
+    std::map<int, IComponent*>* Field::getComponentList(std::type_index type) {
+        return m_componentLists[type];
     }
 }

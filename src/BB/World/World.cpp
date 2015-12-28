@@ -2,18 +2,34 @@
 #include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    World::World(GameStateGame& game, std::string name) : m_game(game), m_graphicsSystem(game), m_physicsSystem(game) {
+    World::World(GameStateGame& game, std::string name) : m_game(game), m_graphicsSystem(game), m_physicsSystem(game), m_controlSystem(game) {
         m_name = name;
+        auto* L = m_game.getLuaState();
+        using namespace luabridge;
+        std::string file = "assets/data/world/world.lua";
+        if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
+            LogHandler::log<Field>(ERR, "World \"" + file + "\" not found");
+            assert(false);
+            return;
+        }
+        luabridge::LuaRef& luaEntities = getGlobal(L, "entities");
+        if(luaEntities.isTable()) {
+            for(int i = 1; i <= luaEntities.length(); i++) {
+                luabridge::LuaRef luaEntity = luaEntities[i];
+                EntityTemplate* et = new EntityTemplate(m_game, luaEntity);
+                m_entityTemplates[et->getName()] = et;
+            }
+        }
         m_field = new Field(m_game, m_name, "01");
         m_field->load();
     }
 
     void World::handleInput() {
-        m_field->handleInput();
+        m_controlSystem.handleInput();
     }
 
     void World::handleInput(sf::Event& windowEvent) {
-        m_field->handleInput(windowEvent);
+        m_controlSystem.handleInput(windowEvent);
         if(windowEvent.type == sf::Event::KeyPressed) {
             auto coord = m_graphicsSystem.getViewCoord();
             if(windowEvent.key.code == sf::Keyboard::Left)
@@ -47,11 +63,18 @@ namespace bb {
             m_stages[name] = stage;
         return stage;
     }
+    EntityTemplate* World::getEntityTemplate(std::string name) {
+        return m_entityTemplates[name];
+    }
     GraphicsSystem& World::getGraphicsSystem() {
         return m_graphicsSystem;
     }
 
     PhysicsSystem& World::getPhysicsSystem() {
         return m_physicsSystem;
+    }
+
+    ControlSystem& World::getControlSystem() {
+        return m_controlSystem;
     }
 }

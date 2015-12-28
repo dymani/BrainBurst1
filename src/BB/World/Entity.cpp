@@ -23,13 +23,13 @@ namespace bb {
     }
 
     void Entity::addComponent(GameStateGame& game, std::type_index type, IComponent* component) {
-        auto& list = game.getWorld().getField()->getComponentList(type);
+        auto& list = *game.getWorld().getField()->getComponentList(type);
         list[m_id] = component;
         m_components.push_back(std::type_index(typeid(*component)));
     }
 
     void Entity::removeComponent(GameStateGame& game, std::type_index type) {
-        auto& list = game.getWorld().getField()->getComponentList(type);
+        auto& list = *game.getWorld().getField()->getComponentList(type);
         list.erase(m_id);
         auto& it = m_components.begin();
         while(it != m_components.end()) {

@@ -47,8 +47,7 @@ namespace bb {
     }
 
     void GraphicsSystem::draw(const double dt) {
-        auto& cList = m_game.getWorld().getField()->getComponentList(std::type_index(
-            typeid(GraphicsComponent)));
+        auto& cList = *m_game.getWorld().getField()->getComponentList<GraphicsComponent>();
         for(auto& c : cList) {
             auto& gc = *dynamic_cast<GraphicsComponent*>(c.second);
             gc.m_sprite.setPosition(mapCoordsToPixel(m_game.getWorld().getField()->getEntity(c.first)
