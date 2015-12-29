@@ -26,7 +26,7 @@ entities = {
                 textureRect = {0, 0, 32, 32}
             },
             MovementComponent = {
-                velocities = {1, 0}
+                velocities = {0, 0}
             }
         }
     },

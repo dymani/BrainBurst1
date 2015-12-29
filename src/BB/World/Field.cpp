@@ -44,8 +44,8 @@ namespace bb {
         }
         m_vertices.setPrimitiveType(sf::Quads);
         m_vertices.resize(int(m_tiles.size()) * 4);
-        int textureSize = m_game.getWorld().getGraphicsSystem().getTextureSize();
-        float tileSize = m_game.getWorld().getGraphicsSystem().getTileSize();
+        int textureSize = m_game.getWorld().getSystem<GraphicsSystem>().getTextureSize();
+        float tileSize = m_game.getWorld().getSystem<GraphicsSystem>().getTileSize();
         int h = m_game.getWindowHandler()->getWindow().getSize().y;
         for(int i = 0; i < int(m_tiles.size()); i++) {
             sf::Vertex* quad = &m_vertices[i * 4];
@@ -66,21 +66,21 @@ namespace bb {
         sf::View view = m_game.getWindowHandler()->getWindow().getDefaultView();
         m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
             view.getSize().x / m_background.getTexture()->getSize().x);
-        m_game.getWorld().getGraphicsSystem().setViewCoord(0, -1);
+        m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(0, -1);
     }
 
     void Field::update() {
-        m_game.getWorld().getPhysicsSystem().update();
+        m_game.getWorld().getSystem<PhysicsSystem>().update();
     }
 
     void Field::draw(const double dt) {
-        sf::View view = m_game.getWorld().getGraphicsSystem().getView();
+        sf::View view = m_game.getWorld().getSystem<GraphicsSystem>().getView();
         m_game.getWindowHandler()->getWindow().setView(m_game.getWindowHandler()->getWindow()
             .getDefaultView());
         m_game.getWindowHandler()->getWindow().draw(m_background);
         m_game.getWindowHandler()->getWindow().setView(view);
         m_game.getWindowHandler()->getWindow().draw(m_vertices, m_states);
-        m_game.getWorld().getGraphicsSystem().draw(dt);
+        m_game.getWorld().getSystem<GraphicsSystem>().draw(dt);
     }
 
     int Field::getSize() {

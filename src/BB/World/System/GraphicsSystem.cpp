@@ -8,12 +8,14 @@ namespace bb {
         m_textureSize = 32;
     }
 
-    IComponent* GraphicsSystem::createComponent(luabridge::LuaRef& luaE) {
-        auto* gc = new GraphicsComponent();
+    void GraphicsSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
+        IComponent*>& list) {
         using namespace luabridge;
         LuaRef luaSize = luaE["size"];
         LuaRef luaComponents = luaE["components"];
         LuaRef luaGC = luaComponents["GraphicsComponent"];
+        if(luaGC.isNil()) return;
+        auto* gc = new GraphicsComponent();
         LuaRef luaTexture = luaGC["texture"];
         LuaRef luaTextureRect = luaGC["textureRect"];
         gc->m_z = luaGC["z"].cast<float>();
@@ -31,10 +33,13 @@ namespace bb {
         gc->m_sprite.setOrigin({0, float(rect.height)});
         gc->m_sprite.setScale({float(size.x * m_tileSize) / float(rect.width),
             float(size.y * m_tileSize) / float(rect.height)});
-        return gc;
+        list[std::type_index(typeid(GraphicsComponent))] = gc;
     }
 
-    IComponent* GraphicsSystem::createComponent(IComponent* component, rapidjson::Value& jsonE) {
+    void GraphicsSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
+        Entity* entity) {
+        auto* component = list[std::type_index(typeid(GraphicsComponent))];
+        if(!component) return;
         auto* gc = new GraphicsComponent(*dynamic_cast<GraphicsComponent*>(component));
         if(!gc->hasTexture) {
             gc->m_stageObjectTexture = m_game.getWorld().getStage(jsonE["stage"].GetString())
@@ -43,7 +48,7 @@ namespace bb {
             tex.setSmooth(false);
             gc->m_sprite.setTexture(tex);
         }
-        return gc;
+        entity->addComponent(m_game, std::type_index(typeid(GraphicsComponent)), gc);
     }
 
     void GraphicsSystem::draw(const double dt) {

@@ -8,15 +8,24 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include <rapidjson/document.h>
+#include <map>
+#include <typeindex>
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
+    class IComponent;
+    class Entity;
+
     class ISystem {
     public:
         ISystem() {
         }
         virtual ~ISystem() {
         }
+        virtual void createComponent(luabridge::LuaRef& luaE,
+            std::map<std::type_index, IComponent*>& list) = 0;
+        virtual void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
+            Entity* entity) = 0;
     protected:
 
     };

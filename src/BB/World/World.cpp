@@ -2,8 +2,11 @@
 #include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    World::World(GameStateGame& game, std::string name) : m_game(game), m_graphicsSystem(game), m_physicsSystem(game), m_controlSystem(game) {
+    World::World(GameStateGame& game, std::string name) : m_game(game){
         m_name = name;
+        addSystem(new GraphicsSystem(m_game));
+        addSystem(new PhysicsSystem(m_game));
+        addSystem(new ControlSystem(m_game));
         auto* L = m_game.getLuaState();
         using namespace luabridge;
         std::string file = "assets/data/world/world.lua";
@@ -25,21 +28,21 @@ namespace bb {
     }
 
     void World::handleInput() {
-        m_controlSystem.handleInput();
+        getSystem<ControlSystem>().handleInput();
     }
 
     void World::handleInput(sf::Event& windowEvent) {
-        m_controlSystem.handleInput(windowEvent);
+        getSystem<ControlSystem>().handleInput(windowEvent);
         if(windowEvent.type == sf::Event::KeyPressed) {
-            auto coord = m_graphicsSystem.getViewCoord();
+            auto coord = getSystem<GraphicsSystem>().getViewCoord();
             if(windowEvent.key.code == sf::Keyboard::Left)
-                m_graphicsSystem.setViewCoord(coord.x - 0.1, coord.y);
+                getSystem<GraphicsSystem>().setViewCoord(coord.x - 0.1, coord.y);
             else if(windowEvent.key.code == sf::Keyboard::Right)
-                m_graphicsSystem.setViewCoord(coord.x + 0.1, coord.y);
+                getSystem<GraphicsSystem>().setViewCoord(coord.x + 0.1, coord.y);
             else if(windowEvent.key.code == sf::Keyboard::Up)
-                m_graphicsSystem.setViewCoord(coord.x, coord.y + 0.1);
+                getSystem<GraphicsSystem>().setViewCoord(coord.x, coord.y + 0.1);
             else if(windowEvent.key.code == sf::Keyboard::Down)
-                m_graphicsSystem.setViewCoord(coord.x, coord.y - 0.1);
+                getSystem<GraphicsSystem>().setViewCoord(coord.x, coord.y - 0.1);
         }
     }
 
@@ -63,18 +66,12 @@ namespace bb {
             m_stages[name] = stage;
         return stage;
     }
+
     EntityTemplate* World::getEntityTemplate(std::string name) {
         return m_entityTemplates[name];
     }
-    GraphicsSystem& World::getGraphicsSystem() {
-        return m_graphicsSystem;
-    }
 
-    PhysicsSystem& World::getPhysicsSystem() {
-        return m_physicsSystem;
-    }
-
-    ControlSystem& World::getControlSystem() {
-        return m_controlSystem;
+    std::map<std::type_index, ISystem*>& World::getSystems() {
+        return m_systems;
     }
 }

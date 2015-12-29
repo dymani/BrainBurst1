@@ -6,17 +6,25 @@ namespace bb {
 
     }
 
-    IComponent* ControlSystem::createComponent(luabridge::LuaRef& luaE) {
+    void ControlSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
+        IComponent*>& list) {
+        using namespace luabridge;
+        LuaRef luaComponents = luaE["components"];
+        LuaRef luaPC = luaComponents["PlayerComponent"];
+        if(luaPC.isNil()) return;
         auto* pc = new PlayerComponent();
         pc->m_state = pc->IDLE;
         pc->m_facingLeft = true;
         pc->m_movingLeft = true;
-        return pc;
+        list[std::type_index(typeid(PlayerComponent))] = pc;
     }
 
-    IComponent* ControlSystem::createComponent(IComponent* component, rapidjson::Value& jsonE) {
+    void ControlSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
+        Entity* entity) {
+        auto* component = list[std::type_index(typeid(PlayerComponent))];
+        if(!component) return;
         auto* pc = new PlayerComponent(*dynamic_cast<PlayerComponent*>(component));
-        return pc;
+        entity->addComponent(m_game, std::type_index(typeid(PlayerComponent)), pc);
     }
 
     void ControlSystem::handleInput() {
@@ -34,7 +42,7 @@ namespace bb {
             auto& pc = *dynamic_cast<PlayerComponent*>(c.second);
             auto& mc = *m_game.getWorld().getField()->getComponent<MovementComponent>(c.first);
             auto* pE = m_game.getWorld().getField()->getEntity(c.first);
-            sf::Vector2f playerPos = m_game.getWorld().getGraphicsSystem().mapCoordsToPixel(pE->getCoord());
+            sf::Vector2f playerPos = m_game.getWorld().getSystem<GraphicsSystem>().mapCoordsToPixel(pE->getCoord());
             if(mousePos.x > playerPos.x)
                 pc.m_facingLeft = false;
             else if(mousePos.x < playerPos.x)
@@ -75,7 +83,10 @@ namespace bb {
                         mc.m_velocities.x = 0.0F;
                     }
                     if(mc.m_isOnGround)
-                        pc.m_state = PlayerComponent::IDLE;
+                        if(mc.m_velocities.x == 0)
+                            pc.m_state = PlayerComponent::IDLE;
+                        else
+                            pc.m_state = PlayerComponent::WALKING;
                     break;
                 case PlayerComponent::CROUCHING:
                     break;

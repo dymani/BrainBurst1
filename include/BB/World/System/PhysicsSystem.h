@@ -10,8 +10,9 @@ namespace bb {
     class PhysicsSystem : public ISystem {
     public:
         PhysicsSystem(GameStateGame& game);
-        IComponent* createComponent(luabridge::LuaRef& luaE);
-        IComponent* createComponent(IComponent* component, rapidjson::Value& jsonE);
+        void createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, IComponent*>& list);
+        void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
+            Entity* entity);
         void update();
     private:
         GameStateGame& m_game;

@@ -6,24 +6,29 @@ namespace bb {
 
     }
 
-    IComponent* PhysicsSystem::createComponent(luabridge::LuaRef& luaE) {
-        auto* mc = new MovementComponent();
+    void PhysicsSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
+        IComponent*>& list) {
         using namespace luabridge;
         LuaRef luaComponents = luaE["components"];
         LuaRef luaMC = luaComponents["MovementComponent"];
+        if(luaMC.isNil()) return;
         LuaRef luaVelocities = luaMC["velocities"];
+        auto* mc = new MovementComponent();
         mc->m_velocities = {luaVelocities[1].cast<float>(), luaVelocities[2].cast<float>()};
         mc->m_isOnGround = false;
-        return mc;
+        list[std::type_index(typeid(MovementComponent))] = mc;
     }
 
-    IComponent* PhysicsSystem::createComponent(IComponent* component, rapidjson::Value& jsonE) {
+    void PhysicsSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
+        Entity* entity) {
+        auto* component = list[std::type_index(typeid(MovementComponent))];
+        if(!component) return;
         auto* mc = new MovementComponent(*dynamic_cast<MovementComponent*>(component));
         if(jsonE.HasMember("velocityX"))
             mc->m_velocities.x = jsonE["velocityX"].GetDouble();
         if(jsonE.HasMember("velocityY"))
             mc->m_velocities.y = jsonE["velocityY"].GetDouble();
-        return mc;
+        entity->addComponent(m_game, std::type_index(typeid(MovementComponent)), mc);
     }
 
     void PhysicsSystem::update() {
