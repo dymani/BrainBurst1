@@ -5,9 +5,9 @@
 
 namespace bb {
     Field::Field(GameStateGame& game, std::string worldName, std::string id) : m_game(game) {
-        m_componentLists[std::type_index(typeid(GraphicsComponent))] = &m_graphicsComponents;
-        m_componentLists[std::type_index(typeid(MovementComponent))] = &m_movementComponents;
-        m_componentLists[std::type_index(typeid(PlayerComponent))] = &m_playerComponents;
+        for(auto& system : m_game.getWorld().getSystems()) {
+            system.second->createList(m_componentLists);
+        }
         m_worldName = worldName;
         m_id = id;
     }

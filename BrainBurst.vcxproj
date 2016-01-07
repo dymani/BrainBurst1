@@ -161,6 +161,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BB\World\Component\CollisionComponent.h" />
     <ClInclude Include="include\BB\World\Component\GraphicsComponent.h" />
     <ClInclude Include="include\BB\World\Component\IComponent.h" />
     <ClInclude Include="include\BB\World\Component\MovementComponent.h" />

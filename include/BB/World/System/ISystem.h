@@ -22,6 +22,7 @@ namespace bb {
         }
         virtual ~ISystem() {
         }
+        virtual void createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) = 0;
         virtual void createComponent(luabridge::LuaRef& luaE,
             std::map<std::type_index, IComponent*>& list) = 0;
         virtual void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,

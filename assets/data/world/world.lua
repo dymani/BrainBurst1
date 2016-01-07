@@ -13,6 +13,12 @@ entities = {
                 velocities = {0, 0}
             },
             PlayerComponent = {
+            },
+            CollisionComponent = {
+                hitbox = {0.25, 0.25, 0.5, 0.5},
+                collide = function()
+                    return false
+                end
             }
         }
     },
@@ -25,8 +31,11 @@ entities = {
                 type = 0, 
                 textureRect = {0, 0, 32, 32}
             },
-            MovementComponent = {
-                velocities = {0, 0}
+            CollisionComponent = {
+                hitbox = {0, 0, 1, 1},
+                collide = function()
+                    return false
+                end
             }
         }
     },
@@ -38,6 +47,12 @@ entities = {
                 z = 5,
                 type = 0, 
                 textureRect = {0, 0, 32, 32}
+            },
+            CollisionComponent = {
+                hitbox = {0, 0, 1, 1},
+                collide = function()
+                    return false
+                end
             }
         }
     }

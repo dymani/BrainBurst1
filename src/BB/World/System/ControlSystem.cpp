@@ -6,6 +6,10 @@ namespace bb {
 
     }
 
+    void ControlSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
+        lists[std::type_index(typeid(PlayerComponent))] = new std::map<int, IComponent*>;
+    }
+
     void ControlSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
         IComponent*>& list) {
         using namespace luabridge;
@@ -32,6 +36,12 @@ namespace bb {
         bool keyA = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
         bool keyS = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
         bool keyD = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+
+        bool keyW2 = sf::Keyboard::isKeyPressed(sf::Keyboard::T);
+        bool keyA2 = sf::Keyboard::isKeyPressed(sf::Keyboard::F);
+        bool keyS2 = sf::Keyboard::isKeyPressed(sf::Keyboard::G);
+        bool keyD2 = sf::Keyboard::isKeyPressed(sf::Keyboard::H);
+
         bool keySpace = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
         bool keyControl = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl);
         bool keyShift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
@@ -91,6 +101,18 @@ namespace bb {
                 case PlayerComponent::CROUCHING:
                     break;
             }
+            //if(keyW2 || keyS2) {
+            //    if(keyW2) mc.m_velocities.y = 3.0F;
+            //    if(keyS2) mc.m_velocities.y = -3.0F;
+            //} else {
+            //    mc.m_velocities.y = 0;
+            //}
+            //if(keyA2 || keyD2) {
+            //    if(keyA2) mc.m_velocities.x = -3.0F;
+            //    if(keyD2) mc.m_velocities.x = 3.0F;
+            //} else {
+            //    mc.m_velocities.x = 0;
+            //}
         }
     }
 

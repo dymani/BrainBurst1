@@ -12,6 +12,7 @@ namespace bb {
     class ControlSystem : public ISystem {
     public:
         ControlSystem(GameStateGame& game);
+        void createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists);
         void createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, IComponent*>& list);
         void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
             Entity* entity);

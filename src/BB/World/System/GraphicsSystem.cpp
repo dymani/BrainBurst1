@@ -8,6 +8,10 @@ namespace bb {
         m_textureSize = 32;
     }
 
+    void GraphicsSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
+        lists[std::type_index(typeid(GraphicsComponent))] = new std::map<int, IComponent*>;
+    }
+
     void GraphicsSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
         IComponent*>& list) {
         using namespace luabridge;
