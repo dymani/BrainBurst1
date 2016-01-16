@@ -5,9 +5,46 @@ entities = {
         components = {
             GraphicsComponent = {
                 z = 0,
-                type = 0,
+                type = 1,
                 texture = "player",
-                textureRect = {0, 0, 32, 32}
+                animations = {
+                    {
+                        name = "idleL",
+                        frameStrip = {32, 32, 32, 32},
+                        frames = 1,
+                        speed = 0
+                    },
+                    {
+                        name = "idleR",
+                        frameStrip = {32, 0, 32, 32},
+                        frames = 1,
+                        speed = 0
+                    },
+                    {
+                        name = "walkL",
+                        frameStrip = {0, 32, 128, 32},
+                        frames = 4,
+                        speed = 10
+                    },
+                    {
+                        name = "walkR",
+                        frameStrip = {0, 0, 128, 32},
+                        frames = 4,
+                        speed = 10
+                    },
+                    {
+                        name = "crouchL",
+                        frameStrip = {128, 32, 32, 32},
+                        frames = 1,
+                        speed = 0
+                    },
+                    {
+                        name = "crouchR",
+                        frameStrip = {128, 0, 128, 32},
+                        frames = 1,
+                        speed = 0
+                    }
+                }
             },
             MovementComponent = {
                 velocities = {0, 0}
@@ -15,7 +52,7 @@ entities = {
             PlayerComponent = {
             },
             CollisionComponent = {
-                hitbox = {0.25, 0.25, 0.5, 0.5},
+                hitbox = {0.3, 0.06, 0.4, 0.94},
                 collide = function()
                     return false
                 end

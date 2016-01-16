@@ -71,6 +71,7 @@ namespace bb {
 
     void Field::update() {
         m_game.getWorld().getSystem<PhysicsSystem>().update();
+        m_game.getWorld().getSystem<GraphicsSystem>().update();
     }
 
     void Field::draw(const double dt) {

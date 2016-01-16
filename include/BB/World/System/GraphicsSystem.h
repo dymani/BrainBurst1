@@ -14,6 +14,7 @@ namespace bb {
         void createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, IComponent*>& list);
         void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
             Entity* entity);
+        void update();
         void draw(const double dt);
         void setViewCoord(float x, float y);
         sf::Vector2f getViewCoord();
@@ -23,6 +24,7 @@ namespace bb {
         int getTextureSize();
         float getTileSize();
         sf::View& getView();
+        void setAnimation(GraphicsComponent* gc, std::string name, int frame = 0);
     private:
         GameStateGame& m_game;
         sf::View m_view;

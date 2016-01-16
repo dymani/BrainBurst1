@@ -79,7 +79,7 @@ namespace bb {
                 } else {
                     mc.m_isOnGround = false;
                 }
-            }else{
+            } else {
                 auto& ccA = *dynamic_cast<CollisionComponent*>(ccList[mcI.first]);
                 if(e->getCoord().y + ccA.m_hitbox.top >= 0 && coord.y + ccA.m_hitbox.top <= 0) {
                     mc.m_isOnGround = true;
@@ -115,7 +115,7 @@ namespace bb {
 
                     if(tCol < bCol && tCol < lCol && tCol < rCol) { //Top collision
                         coord.y = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
-                            0, hitboxB.top + hitboxB.height + hitboxA.height}).y + ccA.m_hitbox.top;
+                            0, bottomB + hitboxA.height}).y - ccA.m_hitbox.top;
                         mc.m_velocities.y = 0.0F;
                     } else if(bCol < tCol && bCol < lCol && bCol < rCol) { //bottom collision
                         coord.y = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
@@ -124,7 +124,7 @@ namespace bb {
                         mc.m_isOnGround = true;
                     } else if(lCol < rCol && lCol < tCol && lCol < bCol) { //Left collision
                         coord.x = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
-                            hitboxB.left + hitboxB.width, 0}).x - ccA.m_hitbox.left;
+                            rightB, 0}).x - ccA.m_hitbox.left;
                     } else if(rCol < lCol && rCol < tCol && rCol < bCol) { //Right collision
                         coord.x = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
                             hitboxB.left - hitboxA.width, 0}).x - ccA.m_hitbox.left;
