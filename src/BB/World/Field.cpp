@@ -67,6 +67,7 @@ namespace bb {
         m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
             view.getSize().x / m_background.getTexture()->getSize().x);
         m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(0, -1);
+        m_playerId = m_componentLists[std::type_index(typeid(PlayerComponent))]->begin()->first;
     }
 
     void Field::update() {
@@ -75,13 +76,25 @@ namespace bb {
     }
 
     void Field::draw(const double dt) {
-        sf::View view = m_game.getWorld().getSystem<GraphicsSystem>().getView();
-        m_game.getWindowHandler()->getWindow().setView(m_game.getWindowHandler()->getWindow()
-            .getDefaultView());
-        m_game.getWindowHandler()->getWindow().draw(m_background);
-        m_game.getWindowHandler()->getWindow().setView(view);
-        m_game.getWindowHandler()->getWindow().draw(m_vertices, m_states);
-        m_game.getWorld().getSystem<GraphicsSystem>().draw(dt);
+        auto gs = m_game.getWorld().getSystem<GraphicsSystem>();
+        sf::Vector2f playerCoord = m_entities[m_playerId]->getCoord();
+        if(gs.getViewCoord().x > playerCoord.x + 3) {
+            gs.setViewCoord(playerCoord.x + 3, gs.getViewCoord().y);
+        } else if(gs.getViewCoord().x < playerCoord.x - 3) {
+            gs.setViewCoord(playerCoord.x - 3, gs.getViewCoord().y);
+        }
+        if(gs.getViewCoord().y < playerCoord.y - 5) {
+            gs.setViewCoord(gs.getViewCoord().x, playerCoord.y - 5);
+        } else if(gs.getViewCoord().y > playerCoord.y - 3) {
+            gs.setViewCoord(gs.getViewCoord().x, playerCoord.y - 3);
+        }
+        sf::View view = gs.getView();
+        auto& window = m_game.getWindowHandler()->getWindow();
+        window.setView(window.getDefaultView());
+        window.draw(m_background);
+        window.setView(view);
+        window.draw(m_vertices, m_states);
+        gs.draw(dt);
     }
 
     int Field::getSize() {

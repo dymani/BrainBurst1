@@ -35,6 +35,7 @@ namespace bb {
         sf::Sprite m_background;
         std::map<int, Entity*> m_entities;
         std::map<std::type_index, std::map<int, IComponent*>*> m_componentLists;
+        int m_playerId;
     };
 }
 

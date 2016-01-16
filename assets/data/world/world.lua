@@ -60,16 +60,16 @@ entities = {
         }
     },
     {
-        name = "rock",
-        size = {1, 1},
+        name = "rock1",
+        size = {1, 2},
         components = {
             GraphicsComponent = {
                 z = 5,
                 type = 0, 
-                textureRect = {0, 0, 32, 32}
+                textureRect = {0, 0, 32, 64}
             },
             CollisionComponent = {
-                hitbox = {0, 0, 1, 1},
+                hitbox = {0.22, 0, 0.56, 2},
                 collide = function()
                     return false
                 end
@@ -77,16 +77,16 @@ entities = {
         }
     },
     {
-        name = "rock1",
-        size = {1, 1},
+        name = "rock2",
+        size = {1, 1.09},
         components = {
             GraphicsComponent = {
                 z = 5,
                 type = 0, 
-                textureRect = {0, 0, 32, 32}
+                textureRect = {32, 29, 32, 35}
             },
             CollisionComponent = {
-                hitbox = {0, 0, 1, 1},
+                hitbox = {0.28, 0, 0.47, 1},
                 collide = function()
                     return false
                 end

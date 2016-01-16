@@ -60,8 +60,10 @@ namespace bb {
         for(auto& mcI : mcList) {
             auto& mc = *dynamic_cast<MovementComponent*>(mcI.second);
             e = m_game.getWorld().getField()->getEntity(mcI.first);
-            if(!mc.m_isOnGround)
-                mc.m_velocities.y -= 1.0F;
+            if(!mc.m_isOnGround) {
+                if(mc.m_velocities.y > -30.0F)
+                    mc.m_velocities.y -= 1.0F;
+            }
             if(mc.m_velocities.x > 0) {
                 mc.m_velocities.x -= 0.5F;
                 if(mc.m_velocities.x < 0) mc.m_velocities.x = 0;

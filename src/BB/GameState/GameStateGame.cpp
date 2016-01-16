@@ -4,8 +4,8 @@
 
 namespace bb {
     GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
-        luabridge::lua_State* L2) : IGameState(game), m_windowHandler(windowHandler),
-        m_resourceHandler(resourceHandler), L(L2), m_world(*this, "test") {
+        luabridge::lua_State* L) : IGameState(game), m_windowHandler(windowHandler),
+        m_resourceHandler(resourceHandler), L(L), m_world(*this, "test") {
         m_state = RUNNING;
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
     }

@@ -28,7 +28,7 @@ namespace bb {
             LuaRef luaTextureRect = luaGC["textureRect"];
             sf::IntRect rect = {luaTextureRect[1].cast<int>(), luaTextureRect[2].cast<int>(),
                 luaTextureRect[3].cast<int>(), luaTextureRect[4].cast<int>()};
-            sf::Vector2i size = {luaSize[1].cast<int>(), luaSize[2].cast<int>()};
+            sf::Vector2f size = {luaSize[1].cast<float>(), luaSize[2].cast<float>()};
             gc->m_hasTexture = false;
             if(luaTexture.isString()) {
                 sf::Texture& tex = m_game.getResourceHandler()->getTexture(luaTexture.cast<std::string>());
