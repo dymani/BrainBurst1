@@ -7,6 +7,7 @@ namespace bb {
         addSystem(new GraphicsSystem(m_game));
         addSystem(new PhysicsSystem(m_game));
         addSystem(new ControlSystem(m_game));
+        addSystem(new HealthSystem(m_game));
         auto* L = m_game.getLuaState();
         using namespace luabridge;
         std::string file = "assets/data/world/world.lua";
@@ -47,7 +48,12 @@ namespace bb {
     }
 
     void World::update() {
+        getSystem<PhysicsSystem>().update();
+        getSystem<GraphicsSystem>().update();
+        getSystem<HealthSystem>().update();
         m_field->update();
+        m_field->deleteComponents();
+        m_field->deleteEntities();
     }
 
     void World::draw(const double dt) {

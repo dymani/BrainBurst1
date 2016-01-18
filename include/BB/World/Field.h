@@ -14,7 +14,13 @@ namespace bb {
         void draw(const double dt);
         int getSize();
         Entity* getEntity(int id);
-        //IComponent* getComponent(std::type_index type, int id);
+        void addDeleteEntity(int id);
+        void deleteEntities();
+        template<typename T>
+        void addDeleteComponent(int id) {
+            m_deletingComponents.push_back({std::type_index(typeid(T)), id});
+        }
+        void deleteComponents();
         template<typename T>
         T* getComponent(int id) {
             auto& list = *m_componentLists[std::type_index(typeid(T))];
@@ -36,6 +42,8 @@ namespace bb {
         std::map<int, Entity*> m_entities;
         std::map<std::type_index, std::map<int, IComponent*>*> m_componentLists;
         int m_playerId;
+        std::vector<int> m_deletingEntities;
+        std::vector<std::pair<std::type_index, int>> m_deletingComponents;
     };
 }
 

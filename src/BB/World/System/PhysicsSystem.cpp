@@ -3,7 +3,6 @@
 
 namespace bb {
     PhysicsSystem::PhysicsSystem(GameStateGame& game) : m_game(game) {
-
     }
 
     void PhysicsSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
@@ -44,12 +43,12 @@ namespace bb {
                 mc->m_velocities.x = jsonE["velocityX"].GetDouble();
             if(jsonE.HasMember("velocityY"))
                 mc->m_velocities.y = jsonE["velocityY"].GetDouble();
-            entity->addComponent(m_game, std::type_index(typeid(MovementComponent)), mc);
+            entity->addComponent(std::type_index(typeid(MovementComponent)), mc);
         }
         component = list[std::type_index(typeid(CollisionComponent))];
         if(component) {
             auto* cc = new CollisionComponent(*dynamic_cast<CollisionComponent*>(component));
-            entity->addComponent(m_game, std::type_index(typeid(CollisionComponent)), cc);
+            entity->addComponent(std::type_index(typeid(CollisionComponent)), cc);
         }
     }
 
@@ -131,12 +130,11 @@ namespace bb {
                         coord.x = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
                             hitboxB.left - hitboxA.width, 0}).x - ccA.m_hitbox.left;
                     }
-
                     try {
                         if((*ccA.m_collideFunc)().cast<bool>())
-                            std::cout << "Delete A\n" ;
+                            m_game.getWorld().getField()->addDeleteEntity(mcI.first);
                         if((*ccB.m_collideFunc)().cast<bool>())
-                            std::cout << "Delete B\n" ;
+                            m_game.getWorld().getField()->addDeleteEntity(ccI.first);
                     } catch(luabridge::LuaException const& e) {
                         LogHandler::log<PhysicsSystem>(ERR, "LuaException: ");
                         std::cout << "                " << e.what() << std::endl;
@@ -146,5 +144,10 @@ namespace bb {
             }
             e->setCoord(coord);
         }
+    }
+
+    void PhysicsSystem::damage(int entity, int damage) {
+        m_game.getWorld().getField()->getEntity(entity)->addComponent(std::type_index(typeid(DamageComponent)),
+            new DamageComponent(damage));
     }
 }

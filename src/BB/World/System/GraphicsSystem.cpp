@@ -86,9 +86,14 @@ namespace bb {
         if(gc->m_type == 0) {
 
         } else if(gc->m_type == 1) {
-            setAnimation(gc, jsonE["animation"].GetString(), jsonE["frame"].GetInt());
+            if(jsonE.HasMember("animation")) {
+                if(jsonE.HasMember("frame"))
+                    setAnimation(gc, jsonE["animation"].GetString(), jsonE["frame"].GetInt());
+                else
+                    setAnimation(gc, jsonE["animation"].GetString());
+            }
         }
-        entity->addComponent(m_game, std::type_index(typeid(GraphicsComponent)), gc);
+        entity->addComponent(std::type_index(typeid(GraphicsComponent)), gc);
     }
 
     void GraphicsSystem::update() {
@@ -96,6 +101,7 @@ namespace bb {
         for(auto& c : cList) {
             auto& gc = *dynamic_cast<GraphicsComponent*>(c.second);
             if(gc.m_type == 1) {
+                if(gc.m_animations[gc.m_currentAnimation].speed == -1) continue;
                 gc.m_frameInterval++;
                 if(gc.m_frameInterval >= gc.m_animations[gc.m_currentAnimation].speed) {
                     gc.m_frameInterval = 0;
@@ -170,7 +176,9 @@ namespace bb {
         gc->m_currentAnimation = name == "" ? gc->m_currentAnimation : name;
         auto& animation = gc->m_animations[gc->m_currentAnimation];
         gc->m_currentFrame = frame >= animation.frames ? 0 : frame;
-        sf::IntRect rect = {animation.frameStrip.left + animation.frameStrip.width / animation.frames * gc->m_currentFrame, animation.frameStrip.top, animation.frameStrip.width / animation.frames, animation.frameStrip.height};
+        sf::IntRect rect = {animation.frameStrip.left + animation.frameStrip.width / animation.frames
+            * gc->m_currentFrame, animation.frameStrip.top, animation.frameStrip.width / animation.frames,
+            animation.frameStrip.height};
         gc->m_sprite.setTextureRect(rect);
     }
 }

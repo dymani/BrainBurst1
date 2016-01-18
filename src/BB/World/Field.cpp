@@ -71,8 +71,6 @@ namespace bb {
     }
 
     void Field::update() {
-        m_game.getWorld().getSystem<PhysicsSystem>().update();
-        m_game.getWorld().getSystem<GraphicsSystem>().update();
     }
 
     void Field::draw(const double dt) {
@@ -105,9 +103,24 @@ namespace bb {
         return m_entities[id];
     }
 
-    //IComponent* Field::getComponent(std::type_index type, int id) {
-    //    return (*m_componentLists[type])[id];
-    //}
+    void Field::addDeleteEntity(int id) {
+        m_deletingEntities.push_back(id);
+    }
+
+    void Field::deleteEntities() {
+        for(int id : m_deletingEntities) {
+            delete m_entities[id];
+            m_entities.erase(id);
+        }
+        m_deletingEntities.clear();
+    }
+
+    void Field::deleteComponents() {
+        for(auto& c : m_deletingComponents) {
+            m_entities[c.second]->removeComponent(c.first);
+        }
+        m_deletingEntities.clear();
+    }
 
     std::map<int, IComponent*>* Field::getComponentList(std::type_index type) {
         return m_componentLists[type];

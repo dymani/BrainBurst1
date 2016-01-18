@@ -28,7 +28,7 @@ namespace bb {
         auto* component = list[std::type_index(typeid(PlayerComponent))];
         if(!component) return;
         auto* pc = new PlayerComponent(*dynamic_cast<PlayerComponent*>(component));
-        entity->addComponent(m_game, std::type_index(typeid(PlayerComponent)), pc);
+        entity->addComponent(std::type_index(typeid(PlayerComponent)), pc);
     }
 
     void ControlSystem::handleInput() {

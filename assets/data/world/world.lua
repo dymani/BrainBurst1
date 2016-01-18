@@ -52,7 +52,7 @@ entities = {
             PlayerComponent = {
             },
             CollisionComponent = {
-                hitbox = {0.3, 0.06, 0.4, 0.94},
+                hitbox = {0.3, 0, 0.4, 0.94},
                 collide = function()
                     return false
                 end
@@ -65,13 +65,46 @@ entities = {
         components = {
             GraphicsComponent = {
                 z = 5,
-                type = 0, 
-                textureRect = {0, 0, 32, 64}
+                type = 1,
+                animations = {
+                    {
+                        name = "full",
+                        frameStrip = {0, 0, 32, 64},
+                        frames = 1,
+                        speed = -1
+                    },
+                    {
+                        name = "slight",
+                        frameStrip = {32, 0, 32, 64},
+                        frames = 1,
+                        speed = -1
+                    },
+                    {
+                        name = "more",
+                        frameStrip = {64, 0, 32, 64},
+                        frames = 1,
+                        speed = -1
+                    },
+                    {
+                        name = "broken",
+                        frameStrip = {96, 0, 32, 64},
+                        frames = 1,
+                        speed = -1
+                    }
+                }
             },
             CollisionComponent = {
                 hitbox = {0.22, 0, 0.56, 2},
                 collide = function()
                     return false
+                end
+            },
+            HealthComponent = {
+                maxHealth = 100,
+                health = 100,
+                frames = {"full", "slight", "more", "broken"},
+                death = function()
+                    return true
                 end
             }
         }
@@ -83,7 +116,7 @@ entities = {
             GraphicsComponent = {
                 z = 5,
                 type = 0, 
-                textureRect = {32, 29, 32, 35}
+                textureRect = {0, 93, 32, 35}
             },
             CollisionComponent = {
                 hitbox = {0.28, 0, 0.47, 1},

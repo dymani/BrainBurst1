@@ -8,6 +8,11 @@ namespace bb {
         m_resourceHandler(resourceHandler), L(L), m_world(*this, "test") {
         m_state = RUNNING;
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
+        /*using namespace luabridge;
+        getGlobalNamespace(L)
+            .beginClass<PhysicsSystem>("PhysicsSystem")
+            .addFunction("damage", &PhysicsSystem::damage)
+            .endClass();*/
     }
 
     void GameStateGame::handleInput() {

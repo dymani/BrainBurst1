@@ -12,9 +12,11 @@ extern "C" {
 #include "BB/World/EntityTemplate.h"
 #include "BB/World/Field.h"
 #include "BB/World/Stage.h"
+#include "BB/World/System/ISystem.h"
 #include "BB/World/System/GraphicsSystem.h"
 #include "BB/World/System/PhysicsSystem.h"
 #include "BB/World/System/ControlSystem.h"
+#include "BB/World/System/HealthSystem.h"
 
 namespace bb {
     class GameStateGame;

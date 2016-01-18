@@ -143,6 +143,7 @@
     <ClCompile Include="src\BB\World\Stage.cpp" />
     <ClCompile Include="src\BB\World\System\ControlSystem.cpp" />
     <ClCompile Include="src\BB\World\System\GraphicsSystem.cpp" />
+    <ClCompile Include="src\BB\World\System\HealthSystem.cpp" />
     <ClCompile Include="src\BB\World\System\PhysicsSystem.cpp" />
     <ClCompile Include="src\BB\World\World.cpp" />
     <ClCompile Include="src\BB\World\Entity.cpp" />
@@ -162,7 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BB\World\Component\CollisionComponent.h" />
+    <ClInclude Include="include\BB\World\Component\DamageComponent.h" />
     <ClInclude Include="include\BB\World\Component\GraphicsComponent.h" />
+    <ClInclude Include="include\BB\World\Component\HealthComponent.h" />
     <ClInclude Include="include\BB\World\Component\IComponent.h" />
     <ClInclude Include="include\BB\World\Component\MovementComponent.h" />
     <ClInclude Include="include\BB\World\Component\PlayerComponent.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="include\BB\World\Stage.h" />
     <ClInclude Include="include\BB\World\System\ControlSystem.h" />
     <ClInclude Include="include\BB\World\System\GraphicsSystem.h" />
+    <ClInclude Include="include\BB\World\System\HealthSystem.h" />
     <ClInclude Include="include\BB\World\System\ISystem.h" />
     <ClInclude Include="include\BB\Game.h" />
     <ClInclude Include="include\BB\GameState\GameStateGame.h" />

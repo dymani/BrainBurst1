@@ -18,7 +18,7 @@ namespace bb {
     }
 
     Entity* EntityTemplate::createEntity(GameStateGame& game, rapidjson::Value& jsonE) {
-        Entity* entity = new Entity();
+        Entity* entity = new Entity(game);
         entity->setId(jsonE["id"].GetInt());
         entity->setCoord({float(jsonE["coordX"].GetDouble()), float(jsonE["coordY"].GetDouble())});
         for(auto& system : game.getWorld().getSystems()) {
