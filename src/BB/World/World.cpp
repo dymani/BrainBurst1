@@ -2,7 +2,7 @@
 #include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    World::World(GameStateGame& game, std::string name) : m_game(game){
+    World::World(GameStateGame& game, std::string name) : m_game(game) {
         m_name = name;
         addSystem(new GraphicsSystem(m_game));
         addSystem(new PhysicsSystem(m_game));

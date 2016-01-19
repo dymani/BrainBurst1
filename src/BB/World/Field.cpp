@@ -119,7 +119,7 @@ namespace bb {
         for(auto& c : m_deletingComponents) {
             m_entities[c.second]->removeComponent(c.first);
         }
-        m_deletingEntities.clear();
+        m_deletingComponents.clear();
     }
 
     std::map<int, IComponent*>* Field::getComponentList(std::type_index type) {

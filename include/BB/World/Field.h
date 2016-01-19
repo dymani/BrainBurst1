@@ -24,6 +24,7 @@ namespace bb {
         template<typename T>
         T* getComponent(int id) {
             auto& list = *m_componentLists[std::type_index(typeid(T))];
+            if(list.find(id) == list.end()) return nullptr;
             return dynamic_cast<T*>(list[id]);
         }
         std::map<int, IComponent*>* getComponentList(std::type_index type);

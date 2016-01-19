@@ -1,6 +1,7 @@
 #include "BB/World/System/HealthSystem.h"
 #include "BB/GameState/GameStateGame.h"
 #include "BB/World/Component/GraphicsComponent.h"
+#include "BB/World/LuaEntity.h"
 
 namespace bb {
     HealthSystem::HealthSystem(GameStateGame& game) : m_game(game) {
@@ -34,24 +35,25 @@ namespace bb {
         } else if(luaFrames.length() == 3) {
             hc->m_frames[hc->m_maxHealth] = luaFrames[1].cast<std::string>();
             hc->m_frames[0] = luaFrames[3].cast<std::string>();
-            for(int i = 1; i < hc->m_maxHealth; i++)
+            hc->m_frames[1] = luaFrames[3].cast<std::string>();
+            for(int i = 2; i < hc->m_maxHealth; i++)
                 hc->m_frames[i] = luaFrames[2].cast<std::string>();
         } else {
             hc->m_frames[0] = luaFrames[luaFrames.length()].cast<std::string>();
+            hc->m_frames[1] = luaFrames[luaFrames.length()].cast<std::string>();
             hc->m_frames[hc->m_maxHealth] = luaFrames[1].cast<std::string>();
-            int interval = (hc->m_maxHealth - 1) / (luaFrames.length() - 1);
-            int remainder = (hc->m_maxHealth - 1) % (luaFrames.length() - 1);
+            int interval = (hc->m_maxHealth - 2) / (luaFrames.length() - 2);
+            int remainder = (hc->m_maxHealth - 2) % (luaFrames.length() - 2);
             int group = luaFrames.length() - 1;
             int counter = 0;
-            for(int i = 1; i < hc->m_maxHealth; i++) {
-                hc->m_frames[i] = luaFrames[group].cast<std::string>();
-                if(counter == interval + (remainder > 0)) {
+            for(int i = 2; i < hc->m_maxHealth; i++) {
+                if(counter == interval + (remainder >= group)) {
                     group -= 1;
                     counter = 0;
-                    remainder--;
                 } else {
                     counter++;
                 }
+                hc->m_frames[i] = luaFrames[group].cast<std::string>();
             }
         }
         hc->m_deathFunc = std::make_shared<LuaRef>(luaDeathFunc);
@@ -88,7 +90,7 @@ namespace bb {
             auto& hc = *dynamic_cast<HealthComponent*>(c.second);
             if(hc.m_health <= 0) {
                 try {
-                    if((*hc.m_deathFunc)().cast<bool>()) {
+                    if((*hc.m_deathFunc)(new LuaEntity(m_game, c.first)).cast<bool>()) {
                         m_game.getWorld().getField()->addDeleteEntity(c.first);
                     }
                 } catch(luabridge::LuaException const& e) {
@@ -100,5 +102,9 @@ namespace bb {
                 gs.setAnimation(gc, hc.m_frames[hc.m_health]);
             }
         }
+    }
+
+    void HealthSystem::addDamage(DamageComponent* dc, int damage) {
+        dc->m_damage += damage;
     }
 }

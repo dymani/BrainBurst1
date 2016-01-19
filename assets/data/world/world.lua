@@ -53,7 +53,7 @@ entities = {
             },
             CollisionComponent = {
                 hitbox = {0.3, 0, 0.4, 0.94},
-                collide = function()
+                collide = function(e)
                     return false
                 end
             }
@@ -95,15 +95,16 @@ entities = {
             },
             CollisionComponent = {
                 hitbox = {0.22, 0, 0.56, 2},
-                collide = function()
+                collide = function(e)
+                    e:setDamage(1)
                     return false
                 end
             },
             HealthComponent = {
-                maxHealth = 100,
-                health = 100,
+                maxHealth = 40,
+                health = 40,
                 frames = {"full", "slight", "more", "broken"},
-                death = function()
+                death = function(e)
                     return true
                 end
             }
@@ -120,7 +121,7 @@ entities = {
             },
             CollisionComponent = {
                 hitbox = {0.28, 0, 0.47, 1},
-                collide = function()
+                collide = function(e)
                     return false
                 end
             }

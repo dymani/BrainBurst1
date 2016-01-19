@@ -3,6 +3,7 @@
 
 namespace bb {
     Entity::Entity(GameStateGame& game) : m_game(game) {
+        m_components.clear();
     }
 
     Entity::~Entity() {

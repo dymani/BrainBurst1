@@ -47,7 +47,7 @@ namespace bb {
         bool keyShift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
         bool mouseLeft = sf::Mouse::isButtonPressed(sf::Mouse::Left);
         sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
-        mousePos = sf::Vector2i(m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos));
+        sf::Vector2f mouseCoord = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
         auto& cList = *m_game.getWorld().getField()->getComponentList<PlayerComponent>();
         for(auto& c : cList) {
             auto& pc = *dynamic_cast<PlayerComponent*>(c.second);
@@ -55,7 +55,7 @@ namespace bb {
             auto gc = m_game.getWorld().getField()->getComponent<GraphicsComponent>(c.first);
             auto* pE = m_game.getWorld().getField()->getEntity(c.first);
             sf::Vector2f playerPos = m_game.getWorld().getSystem<GraphicsSystem>().mapCoordsToPixel(pE->getCoord());
-            if(mousePos.x > playerPos.x && pc.m_facingLeft == true) {
+            if(mouseCoord.x > playerPos.x && pc.m_facingLeft == true) {
                 if(pc.m_state == PlayerComponent::IDLE)
                     m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleR");
                 else if(pc.m_state == PlayerComponent::WALKING)
@@ -63,7 +63,7 @@ namespace bb {
                 else if(pc.m_state == PlayerComponent::CROUCHING)
                     m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
                 pc.m_facingLeft = false;
-            } else if(mousePos.x < playerPos.x && pc.m_facingLeft == false) {
+            } else if(mouseCoord.x < playerPos.x && pc.m_facingLeft == false) {
                 if(pc.m_state == PlayerComponent::IDLE)
                     m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleL");
                 else if(pc.m_state == PlayerComponent::WALKING)
@@ -96,7 +96,7 @@ namespace bb {
                             m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchL");
                         else
                             m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
-                    }else if(keySpace || keyW) {
+                    } else if(keySpace || keyW) {
                         pc.m_state = PlayerComponent::JUMPING;
                         mc.m_velocities.y = 15.0F;
                         mc.m_isOnGround = false;
@@ -126,7 +126,7 @@ namespace bb {
                             m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchL");
                         else
                             m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
-                    }else if(keySpace || keyW) {
+                    } else if(keySpace || keyW) {
                         pc.m_state = PlayerComponent::JUMPING;
                         mc.m_velocities.y = 15.0F;
                         mc.m_isOnGround = false;
@@ -209,6 +209,17 @@ namespace bb {
     }
 
     void ControlSystem::handleInput(sf::Event& windowEvent) {
-
+        if(windowEvent.type == sf::Event::MouseButtonPressed) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
+            sf::Vector2f mousePixel = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
+            sf::Vector2f mouseCoord = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords(mousePixel);
+            auto& list = *m_game.getWorld().getField()->getComponentList<HealthComponent>();
+            for(auto& hc : list) {
+                auto* entity = m_game.getWorld().getField()->getEntity(hc.first);
+                if(m_game.getWorld().getSystem<PhysicsSystem>().contain(entity, mouseCoord)) {
+                    entity->addComponent(std::type_index(typeid(DamageComponent)), new DamageComponent(1));
+                }
+            }
+        }
     }
 }

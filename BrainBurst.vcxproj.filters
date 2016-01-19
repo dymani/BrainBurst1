@@ -72,6 +72,9 @@
     <ClCompile Include="src\BB\World\System\HealthSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\BB\World\LuaEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
@@ -165,6 +168,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\World\Component\DamageComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\World\LuaEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #include "BB/GameState/GameStateGame.h"
 #include "BB/Game.h"
 #include "BB/GameState/GameStateTitle.h"
+#include "BB/World/LuaEntity.h"
 
 namespace bb {
     GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
@@ -8,11 +9,10 @@ namespace bb {
         m_resourceHandler(resourceHandler), L(L), m_world(*this, "test") {
         m_state = RUNNING;
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
-        /*using namespace luabridge;
-        getGlobalNamespace(L)
-            .beginClass<PhysicsSystem>("PhysicsSystem")
-            .addFunction("damage", &PhysicsSystem::damage)
-            .endClass();*/
+        luabridge::getGlobalNamespace(L)
+            .beginClass<LuaEntity>("LuaEntity")
+            .addFunction("setDamage", &LuaEntity::setDamage)
+            .endClass();
     }
 
     void GameStateGame::handleInput() {

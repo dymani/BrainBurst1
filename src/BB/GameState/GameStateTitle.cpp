@@ -39,7 +39,9 @@ namespace bb {
                 m_windowHandler->getWindow().close();
                 return false;
             case GAME:
-                m_game.changeState(new GameStateGame(m_game, m_resourceHandler, m_windowHandler, L));
+                luabridge::lua_State* L2 = luabridge::luaL_newstate();
+                luaL_openlibs(L2);
+                m_game.changeState(new GameStateGame(m_game, m_resourceHandler, m_windowHandler, L2));
                 break;
         }
         return true;

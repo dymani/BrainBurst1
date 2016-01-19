@@ -1,5 +1,6 @@
 #include "BB/World/System/PhysicsSystem.h"
 #include "BB/GameState/GameStateGame.h"
+#include "BB/World/LuaEntity.h"
 
 namespace bb {
     PhysicsSystem::PhysicsSystem(GameStateGame& game) : m_game(game) {
@@ -131,9 +132,9 @@ namespace bb {
                             hitboxB.left - hitboxA.width, 0}).x - ccA.m_hitbox.left;
                     }
                     try {
-                        if((*ccA.m_collideFunc)().cast<bool>())
+                        if((*ccA.m_collideFunc)(new LuaEntity(m_game, mcI.first)).cast<bool>())
                             m_game.getWorld().getField()->addDeleteEntity(mcI.first);
-                        if((*ccB.m_collideFunc)().cast<bool>())
+                        if((*ccB.m_collideFunc)(new LuaEntity(m_game, ccI.first)).cast<bool>())
                             m_game.getWorld().getField()->addDeleteEntity(ccI.first);
                     } catch(luabridge::LuaException const& e) {
                         LogHandler::log<PhysicsSystem>(ERR, "LuaException: ");
@@ -149,5 +150,17 @@ namespace bb {
     void PhysicsSystem::damage(int entity, int damage) {
         m_game.getWorld().getField()->getEntity(entity)->addComponent(std::type_index(typeid(DamageComponent)),
             new DamageComponent(damage));
+    }
+
+    bool PhysicsSystem::contain(Entity* e, sf::Vector2f pointCoord) {
+        auto* cc = m_game.getWorld().getField()->getComponent<CollisionComponent>(e->getId());
+        sf::Vector2f coord = e->getCoord();
+        sf::Vector2f ltCoord = {coord.x + cc->m_hitbox.left, coord.y + cc->m_hitbox.top
+            + cc->m_hitbox.height};
+        auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
+        sf::Vector2f size = {cc->m_hitbox.width, cc->m_hitbox.height};
+        sf::FloatRect hitbox = {gs.mapCoordsToPixel(ltCoord), size * float(gs.getTileSize())};
+        sf::Vector2f pointPixel = gs.mapCoordsToPixel(pointCoord);
+        return hitbox.contains(pointPixel);
     }
 }

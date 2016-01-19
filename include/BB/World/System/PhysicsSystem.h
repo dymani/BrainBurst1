@@ -17,6 +17,7 @@ namespace bb {
             Entity* entity);
         void update();
         void damage(int Entity, int damage);
+        bool contain(Entity* e, sf::Vector2f coord);
     private:
         GameStateGame& m_game;
     };
