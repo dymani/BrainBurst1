@@ -8,6 +8,7 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/WindowHandler.h"
 #include "BB/Handler/ResourceHandler.h"
@@ -22,8 +23,8 @@ namespace bb {
         bool update();
         void draw(const double dt);
     private:
-        WindowHandler* m_windowHandler;
-        ResourceHandler* m_resourceHandler;
+        std::unique_ptr<WindowHandler> m_windowHandler;
+        std::unique_ptr<ResourceHandler> m_resourceHandler;
         luabridge::lua_State* L;
         sf::Sprite m_sprite;
         int m_updateCount;

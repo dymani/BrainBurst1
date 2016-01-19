@@ -8,12 +8,12 @@ namespace bb {
         m_textureSize = 32;
     }
 
-    void GraphicsSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
-        lists[std::type_index(typeid(GraphicsComponent))] = new std::map<int, IComponent*>;
+    void GraphicsSystem::createList(std::map<std::type_index, std::unique_ptr<CList>>& lists) {
+        lists[std::type_index(typeid(GraphicsComponent))] = std::unique_ptr<CList>(new CList());
     }
 
     void GraphicsSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
-        IComponent*>& list) {
+        std::unique_ptr<IComponent>>& list) {
         using namespace luabridge;
         LuaRef luaSize = luaE["size"];
         LuaRef luaComponents = luaE["components"];
@@ -68,12 +68,12 @@ namespace bb {
             gc->m_sprite.setScale({float(size.x * m_tileSize) / float(animation.frameStrip.width /
                 animation.frames), float(size.y * m_tileSize) / float(animation.frameStrip.height)});
         }
-        list[std::type_index(typeid(GraphicsComponent))] = gc;
+        list[std::type_index(typeid(GraphicsComponent))] = std::unique_ptr<GraphicsComponent>(gc);
     }
 
-    void GraphicsSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
-        Entity* entity) {
-        auto* component = list[std::type_index(typeid(GraphicsComponent))];
+    void GraphicsSystem::createComponent(rapidjson::Value& jsonE,
+        std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity) {
+        auto* component = list[std::type_index(typeid(GraphicsComponent))].get();
         if(!component) return;
         auto* gc = new GraphicsComponent(*dynamic_cast<GraphicsComponent*>(component));
         if(!gc->m_hasTexture) {
@@ -98,8 +98,8 @@ namespace bb {
 
     void GraphicsSystem::update() {
         auto& cList = *m_game.getWorld().getField()->getComponentList<GraphicsComponent>();
-        for(auto& c : cList) {
-            auto& gc = *dynamic_cast<GraphicsComponent*>(c.second);
+        for(auto& c : cList.m_list) {
+            auto& gc = *dynamic_cast<GraphicsComponent*>(c.second.get());
             if(gc.m_type == 1) {
                 if(gc.m_animations[gc.m_currentAnimation].speed == -1) continue;
                 gc.m_frameInterval++;
@@ -112,9 +112,9 @@ namespace bb {
     }
 
     void GraphicsSystem::draw(const double dt) {
-        auto& cList = *m_game.getWorld().getField()->getComponentList<GraphicsComponent>();
+        auto& cList = m_game.getWorld().getField()->getComponentList<GraphicsComponent>()->m_list;
         for(auto& c : cList) {
-            auto& gc = *dynamic_cast<GraphicsComponent*>(c.second);
+            auto& gc = *dynamic_cast<GraphicsComponent*>(c.second.get());
             gc.m_sprite.setPosition(mapCoordsToPixel(m_game.getWorld().getField()->getEntity(c.first)
                 ->getCoord()));
             m_game.getWindowHandler()->getWindow().draw(gc.m_sprite);

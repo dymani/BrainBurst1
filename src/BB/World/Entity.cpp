@@ -7,7 +7,7 @@ namespace bb {
     }
 
     Entity::~Entity() {
-        while(!m_components.empty()){
+        while(!m_components.empty()) {
             removeComponent(*m_components.begin());
         }
     }
@@ -29,15 +29,14 @@ namespace bb {
     }
 
     void Entity::addComponent(std::type_index type, IComponent* component) {
-        auto& list = *m_game.getWorld().getField()->getComponentList(type);
-        list[m_id] = component;
+        auto& list = m_game.getWorld().getField()->getComponentList(type)->m_list;
+        list[m_id] = std::unique_ptr<IComponent>(component);
         m_components.push_back(std::type_index(typeid(*component)));
     }
 
     void Entity::removeComponent(std::type_index type) {
-        auto& list = *m_game.getWorld().getField()->getComponentList(type);
-        delete list[m_id];
-        list.erase(m_id);
+        auto* list = m_game.getWorld().getField()->getComponentList(type);
+        if(list)list->m_list.erase(m_id);
         auto& it = m_components.begin();
         while(it != m_components.end()) {
             if(*it == type) {

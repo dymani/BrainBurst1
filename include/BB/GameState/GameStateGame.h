@@ -7,9 +7,11 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include <memory>
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/WindowHandler.h"
+#include "BB/Handler/AudioHandler.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/World/World.h"
 
@@ -18,8 +20,7 @@ namespace bb {
 
     class GameStateGame: public IGameState {
     public:
-        GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
-            luabridge::lua_State* L);
+        GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler);
         void handleInput();
         bool update();
         void draw(const double dt);
@@ -28,8 +29,9 @@ namespace bb {
         luabridge::lua_State* getLuaState();
         World& getWorld();
     private:
-        ResourceHandler* m_resourceHandler;
-        WindowHandler* m_windowHandler;
+        std::unique_ptr<ResourceHandler> m_resourceHandler;
+        std::unique_ptr<WindowHandler> m_windowHandler;
+        std::unique_ptr<AudioHandler> m_audioHandler;
         luabridge::lua_State* L;
         enum State {
             RUNNING, TITLE, QUIT

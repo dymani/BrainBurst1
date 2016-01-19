@@ -10,10 +10,11 @@ namespace bb {
     class GraphicsSystem : public ISystem {
     public:
         GraphicsSystem(GameStateGame& game);
-        void createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists);
-        void createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, IComponent*>& list);
-        void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
-            Entity* entity);
+        void createList(std::map<std::type_index, std::unique_ptr<CList>>& lists);
+        void createComponent(luabridge::LuaRef& luaE,
+            std::map<std::type_index, std::unique_ptr<IComponent>>& list);
+        void createComponent(rapidjson::Value& jsonE,
+            std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
         void draw(const double dt);
         void setViewCoord(float x, float y);

@@ -8,6 +8,7 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include <math.h>
+#include <memory>
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/LogHandler.h"
 #include "BB/Handler/ResourceHandler.h"
@@ -18,13 +19,13 @@ namespace bb {
 
     class GameStateSplash: public IGameState{
     public:
-        GameStateSplash(Game& game, ResourceHandler* resourceHandler, luabridge::lua_State* L);
+        GameStateSplash(Game& game, ResourceHandler* resourceHandler);
         void handleInput();
         bool update();
         void draw(const double dt);
     private:
-        ResourceHandler* m_resourceHandler;
-        WindowHandler* m_windowHandler;
+        std::unique_ptr<ResourceHandler> m_resourceHandler;
+        std::unique_ptr<WindowHandler> m_windowHandler;
         luabridge::lua_State* L;
         int m_updateCount, m_splashes, m_duration, m_splashCount;
         std::vector<sf::Sprite> m_sprites;

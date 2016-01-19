@@ -35,7 +35,7 @@ namespace bb {
             Value& jsonName = jsonEntity["name"];
             Entity* entity = m_game.getWorld().getEntityTemplate(jsonName.GetString())->createEntity(m_game,
                 jsonEntity);
-            m_entities[entity->getId()] = entity;
+            m_entities[entity->getId()] = std::unique_ptr<Entity>(entity);
         }
         m_tileSet = m_game.getWorld().getStage(document["tileSet"].GetString())->getTileSet();
         Value& jsonTiles = document["tiles"];
@@ -67,7 +67,7 @@ namespace bb {
         m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
             view.getSize().x / m_background.getTexture()->getSize().x);
         m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(0, -1);
-        m_playerId = m_componentLists[std::type_index(typeid(PlayerComponent))]->begin()->first;
+        m_playerId = m_componentLists[std::type_index(typeid(PlayerComponent))].get()->m_list.begin()->first;
     }
 
     void Field::update() {
@@ -100,7 +100,7 @@ namespace bb {
     }
 
     Entity* Field::getEntity(int id) {
-        return m_entities[id];
+        return m_entities[id].get();
     }
 
     void Field::addDeleteEntity(int id) {
@@ -109,7 +109,6 @@ namespace bb {
 
     void Field::deleteEntities() {
         for(int id : m_deletingEntities) {
-            delete m_entities[id];
             m_entities.erase(id);
         }
         m_deletingEntities.clear();
@@ -122,7 +121,9 @@ namespace bb {
         m_deletingComponents.clear();
     }
 
-    std::map<int, IComponent*>* Field::getComponentList(std::type_index type) {
-        return m_componentLists[type];
+    CList* Field::getComponentList(std::type_index type){
+        if(m_componentLists.empty()) return nullptr;
+        if(m_componentLists.find(type) == m_componentLists.end()) return nullptr;
+        return m_componentLists[type].get();
     }
 }

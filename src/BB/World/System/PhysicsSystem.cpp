@@ -6,13 +6,13 @@ namespace bb {
     PhysicsSystem::PhysicsSystem(GameStateGame& game) : m_game(game) {
     }
 
-    void PhysicsSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
-        lists[std::type_index(typeid(MovementComponent))] = new std::map<int, IComponent*>;
-        lists[std::type_index(typeid(CollisionComponent))] = new std::map<int, IComponent*>;
+    void PhysicsSystem::createList(std::map<std::type_index, std::unique_ptr<CList>>& lists) {
+        lists[std::type_index(typeid(MovementComponent))] = std::unique_ptr<CList>(new CList());
+        lists[std::type_index(typeid(CollisionComponent))] = std::unique_ptr<CList>(new CList());
     }
 
     void PhysicsSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
-        IComponent*>& list) {
+        std::unique_ptr<IComponent>>& list) {
         using namespace luabridge;
         LuaRef luaComponents = luaE["components"];
         LuaRef luaMC = luaComponents["MovementComponent"];
@@ -21,7 +21,7 @@ namespace bb {
             auto* mc = new MovementComponent();
             mc->m_velocities = {luaVelocities[1].cast<float>(), luaVelocities[2].cast<float>()};
             mc->m_isOnGround = false;
-            list[std::type_index(typeid(MovementComponent))] = mc;
+            list[std::type_index(typeid(MovementComponent))] = std::unique_ptr<MovementComponent>(mc);
         }
         LuaRef luaCC = luaComponents["CollisionComponent"];
         if(!luaCC.isNil()) {
@@ -31,34 +31,34 @@ namespace bb {
             cc->m_hitbox = {luaHitbox[1].cast<float>(), luaHitbox[2].cast<float>(),
                 luaHitbox[3].cast<float>(), luaHitbox[4].cast<float>()};
             cc->m_collideFunc = std::make_shared<LuaRef>(luaCollideFunc);
-            list[std::type_index(typeid(CollisionComponent))] = cc;
+            list[std::type_index(typeid(CollisionComponent))] = std::unique_ptr<CollisionComponent>(cc);
         }
     }
 
-    void PhysicsSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
-        Entity* entity) {
-        auto* component = list[std::type_index(typeid(MovementComponent))];
-        if(component) {
-            auto* mc = new MovementComponent(*dynamic_cast<MovementComponent*>(component));
+    void PhysicsSystem::createComponent(rapidjson::Value& jsonE,
+        std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity) {
+        auto* mcomponent = list[std::type_index(typeid(MovementComponent))].get();
+        if(mcomponent) {
+            auto* mc = new MovementComponent(*dynamic_cast<MovementComponent*>(mcomponent));
             if(jsonE.HasMember("velocityX"))
                 mc->m_velocities.x = jsonE["velocityX"].GetDouble();
             if(jsonE.HasMember("velocityY"))
                 mc->m_velocities.y = jsonE["velocityY"].GetDouble();
             entity->addComponent(std::type_index(typeid(MovementComponent)), mc);
         }
-        component = list[std::type_index(typeid(CollisionComponent))];
-        if(component) {
-            auto* cc = new CollisionComponent(*dynamic_cast<CollisionComponent*>(component));
+        auto* ccomponent = list[std::type_index(typeid(CollisionComponent))].get();
+        if(ccomponent) {
+            auto* cc = new CollisionComponent(*dynamic_cast<CollisionComponent*>(ccomponent));
             entity->addComponent(std::type_index(typeid(CollisionComponent)), cc);
         }
     }
 
     void PhysicsSystem::update() {
-        auto& mcList = *m_game.getWorld().getField()->getComponentList<MovementComponent>();
-        auto& ccList = *m_game.getWorld().getField()->getComponentList<CollisionComponent>();
+        auto& mcList = m_game.getWorld().getField()->getComponentList<MovementComponent>()->m_list;
+        auto& ccList = m_game.getWorld().getField()->getComponentList<CollisionComponent>()->m_list;
         Entity* e;
         for(auto& mcI : mcList) {
-            auto& mc = *dynamic_cast<MovementComponent*>(mcI.second);
+            auto& mc = *dynamic_cast<MovementComponent*>(mcI.second.get());
             e = m_game.getWorld().getField()->getEntity(mcI.first);
             if(!mc.m_isOnGround) {
                 if(mc.m_velocities.y > -30.0F)
@@ -82,7 +82,7 @@ namespace bb {
                     mc.m_isOnGround = false;
                 }
             } else {
-                auto& ccA = *dynamic_cast<CollisionComponent*>(ccList[mcI.first]);
+                auto& ccA = *dynamic_cast<CollisionComponent*>(ccList[mcI.first].get());
                 if(e->getCoord().y + ccA.m_hitbox.top >= 0 && coord.y + ccA.m_hitbox.top <= 0) {
                     mc.m_isOnGround = true;
                     coord.y = -ccA.m_hitbox.top;
@@ -91,7 +91,7 @@ namespace bb {
                 }
                 for(auto& ccI : ccList) {
                     if(ccI.first == mcI.first) continue;
-                    auto& ccB = *dynamic_cast<CollisionComponent*>(ccI.second);
+                    auto& ccB = *dynamic_cast<CollisionComponent*>(ccI.second.get());
                     sf::Vector2f coordB = m_game.getWorld().getField()->getEntity(ccI.first)->getCoord();
                     auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
 
@@ -145,11 +145,6 @@ namespace bb {
             }
             e->setCoord(coord);
         }
-    }
-
-    void PhysicsSystem::damage(int entity, int damage) {
-        m_game.getWorld().getField()->getEntity(entity)->addComponent(std::type_index(typeid(DamageComponent)),
-            new DamageComponent(damage));
     }
 
     bool PhysicsSystem::contain(Entity* e, sf::Vector2f pointCoord) {

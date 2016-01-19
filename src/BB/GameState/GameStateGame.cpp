@@ -4,15 +4,19 @@
 #include "BB/World/LuaEntity.h"
 
 namespace bb {
-    GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
-        luabridge::lua_State* L) : IGameState(game), m_windowHandler(windowHandler),
-        m_resourceHandler(resourceHandler), L(L), m_world(*this, "test") {
+    GameStateGame::GameStateGame(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler)
+        : IGameState(game),
+        m_resourceHandler(std::unique_ptr<ResourceHandler>(resourceHandler)),
+        m_windowHandler(std::unique_ptr<WindowHandler>(windowHandler)),
+        L(luabridge::luaL_newstate()), m_world(*this, "test") {
+        m_audioHandler = std::unique_ptr<AudioHandler>(new AudioHandler(*m_resourceHandler.get()));
         m_state = RUNNING;
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
         luabridge::getGlobalNamespace(L)
             .beginClass<LuaEntity>("LuaEntity")
             .addFunction("setDamage", &LuaEntity::setDamage)
             .endClass();
+        m_audioHandler->play("test1");
     }
 
     void GameStateGame::handleInput() {
@@ -39,7 +43,8 @@ namespace bb {
             case RUNNING:
                 break;
             case TITLE:
-                m_game.changeState(new GameStateTitle(m_game, m_resourceHandler, m_windowHandler, L));
+                m_game.changeState(new GameStateTitle(m_game, m_resourceHandler.release(),
+                    m_windowHandler.release()));
                 break;
             case QUIT:
                 m_windowHandler->getWindow().close();
@@ -55,11 +60,11 @@ namespace bb {
     }
 
     ResourceHandler* GameStateGame::getResourceHandler() {
-        return m_resourceHandler;
+        return m_resourceHandler.get();
     }
 
     WindowHandler* GameStateGame::getWindowHandler() {
-        return m_windowHandler;
+        return m_windowHandler.get();
     }
 
     luabridge::lua_State* GameStateGame::getLuaState() {

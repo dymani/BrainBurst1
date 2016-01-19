@@ -7,6 +7,7 @@ extern "C" {
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 }
+#include <memory>
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/WindowHandler.h"
@@ -16,14 +17,13 @@ namespace bb {
 
     class GameStateTitle : public IGameState {
     public:
-        GameStateTitle(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler,
-            luabridge::lua_State* L);
+        GameStateTitle(Game& game, ResourceHandler* resourceHandler, WindowHandler* windowHandler);
         void handleInput();
         bool update();
         void draw(const double dt);
     private:
-        ResourceHandler* m_resourceHandler;
-        WindowHandler* m_windowHandler;
+        std::unique_ptr<ResourceHandler> m_resourceHandler;
+        std::unique_ptr<WindowHandler> m_windowHandler;
         luabridge::lua_State* L;
         enum State {
             RUNNING, QUIT, GAME

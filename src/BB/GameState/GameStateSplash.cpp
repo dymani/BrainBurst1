@@ -3,12 +3,12 @@
 #include "BB/GameState/GameStateTitle.h"
 
 namespace bb {
-    GameStateSplash::GameStateSplash(Game& game, ResourceHandler* resourceHandler,
-        luabridge::lua_State* L):IGameState(game) {
-        m_resourceHandler = resourceHandler;
-        m_windowHandler = new WindowHandler();
-        this->L = L;
+    GameStateSplash::GameStateSplash(Game& game, ResourceHandler* resourceHandler)
+        : IGameState(game), m_resourceHandler(std::unique_ptr<ResourceHandler>(resourceHandler)) {
+        m_windowHandler = std::unique_ptr<WindowHandler>(new WindowHandler());
         using namespace luabridge;
+        L = luabridge::luaL_newstate();
+        luaL_openlibs(L);
         if(luaL_loadfile(L, "assets/data/gameStates/splash.lua") || lua_pcall(L, 0, 0, 0)) {
             LogHandler::log<GameStateSplash>(ERR, "File \"assets/data/gameStates/splash.lua\" not found");
             assert(false);
@@ -103,7 +103,7 @@ namespace bb {
                 m_windowHandler->getWindow().close();
                 return false;
             case NEXT:
-                m_game.changeState(new GameStateTitle(m_game, m_resourceHandler, m_windowHandler, L));
+                m_game.changeState(new GameStateTitle(m_game, m_resourceHandler.release(), m_windowHandler.release()));
                 break;
         }
         return true;

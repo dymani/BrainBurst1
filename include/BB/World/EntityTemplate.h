@@ -10,6 +10,7 @@ extern "C" {
 #include <lua/lualib.h>
 }
 #include <rapidjson/document.h>
+#include <memory>
 #include "BB/World/Component/IComponent.h"
 #include "BB/World/Entity.h"
 
@@ -24,7 +25,7 @@ namespace bb {
     private:
         std::string m_name;
         sf::Vector2f m_size;
-        std::map<std::type_index, IComponent*> m_components;
+        std::map<std::type_index, std::unique_ptr<IComponent>> m_components;
     };
 }
 

@@ -11,12 +11,12 @@ namespace bb {
     class PhysicsSystem : public ISystem {
     public:
         PhysicsSystem(GameStateGame& game);
-        void createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists);
-        void createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, IComponent*>& list);
-        void createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
-            Entity* entity);
+        void createList(std::map<std::type_index, std::unique_ptr<CList>>& lists);
+        void createComponent(luabridge::LuaRef& luaE,
+            std::map<std::type_index, std::unique_ptr<IComponent>>& list);
+        void createComponent(rapidjson::Value& jsonE,
+            std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
-        void damage(int Entity, int damage);
         bool contain(Entity* e, sf::Vector2f coord);
     private:
         GameStateGame& m_game;

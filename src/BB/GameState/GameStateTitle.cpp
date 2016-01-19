@@ -3,11 +3,12 @@
 #include "BB/GameState/GameStateGame.h"
 
 namespace bb {
-    GameStateTitle::GameStateTitle(Game & game, ResourceHandler * resourceHandler,
-        WindowHandler* windowHandler, luabridge::lua_State * L):IGameState(game) {
-        m_resourceHandler = resourceHandler;
-        m_windowHandler = windowHandler;
-        this->L = L;
+    GameStateTitle::GameStateTitle(Game& game, ResourceHandler* resourceHandler,
+        WindowHandler* windowHandler) : IGameState(game),
+        m_resourceHandler(std::unique_ptr<ResourceHandler>(resourceHandler)),
+        m_windowHandler(std::unique_ptr<WindowHandler>(windowHandler)) {
+        L = luabridge::luaL_newstate();
+        luaL_openlibs(L);
         m_state = RUNNING;
     }
 
@@ -39,9 +40,8 @@ namespace bb {
                 m_windowHandler->getWindow().close();
                 return false;
             case GAME:
-                luabridge::lua_State* L2 = luabridge::luaL_newstate();
-                luaL_openlibs(L2);
-                m_game.changeState(new GameStateGame(m_game, m_resourceHandler, m_windowHandler, L2));
+                m_game.changeState(new GameStateGame(m_game, m_resourceHandler.release(),
+                    m_windowHandler.release()));
                 break;
         }
         return true;

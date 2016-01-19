@@ -3,6 +3,7 @@
 
 #include <SFML/Audio.hpp>
 #include <map>
+#include <memory>
 #include "BB/Handler/LogHandler.h"
 
 namespace bb {
@@ -18,7 +19,7 @@ namespace bb {
         void stop(int id);
     private:
         ResourceHandler& m_resourcehandler;
-        std::map<int, sf::Sound*> m_sounds;
+        std::map<int, std::unique_ptr<sf::Sound>> m_sounds;
         int id = 0;
     };
 }

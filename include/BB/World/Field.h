@@ -1,7 +1,9 @@
 #ifndef FIELD_H
 #define FIELD_H
 
+#include <memory>
 #include "BB/World/Entity.h"
+#include "BB/World/System/ISystem.h"
 
 namespace bb {
     class GameStateGame;
@@ -23,14 +25,16 @@ namespace bb {
         void deleteComponents();
         template<typename T>
         T* getComponent(int id) {
-            auto& list = *m_componentLists[std::type_index(typeid(T))];
-            if(list.find(id) == list.end()) return nullptr;
-            return dynamic_cast<T*>(list[id]);
+            if(m_componentLists.find(std::type_index(typeid(T))) == m_componentLists.end()) return nullptr;
+            auto& list = *m_componentLists[std::type_index(typeid(T))].get();
+            if(list.m_list.find(id) == list.m_list.end()) return nullptr;
+            return dynamic_cast<T*>(list.m_list[id].get());
         }
-        std::map<int, IComponent*>* getComponentList(std::type_index type);
+        CList* getComponentList(std::type_index type);
         template<typename T>
-        std::map<int, IComponent*>* getComponentList() {
-            return m_componentLists[std::type_index(typeid(T))];
+        CList* getComponentList() {
+            if(m_componentLists.find(std::type_index(typeid(T))) == m_componentLists.end()) return nullptr;
+            return m_componentLists[std::type_index(typeid(T))].get();
         }
     private:
         GameStateGame& m_game;
@@ -40,8 +44,8 @@ namespace bb {
         std::string m_tileSet;
         std::vector<int> m_tiles;
         sf::Sprite m_background;
-        std::map<int, Entity*> m_entities;
-        std::map<std::type_index, std::map<int, IComponent*>*> m_componentLists;
+        std::map<int, std::unique_ptr<Entity>> m_entities;
+        std::map<std::type_index, std::unique_ptr<CList>> m_componentLists;
         int m_playerId;
         std::vector<int> m_deletingEntities;
         std::vector<std::pair<std::type_index, int>> m_deletingComponents;

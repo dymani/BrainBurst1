@@ -6,12 +6,12 @@ namespace bb {
 
     }
 
-    void ControlSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
-        lists[std::type_index(typeid(PlayerComponent))] = new std::map<int, IComponent*>;
+    void ControlSystem::createList(std::map<std::type_index, std::unique_ptr<CList>>& lists) {
+        lists[std::type_index(typeid(PlayerComponent))] = std::unique_ptr<CList>(new CList());
     }
 
-    void ControlSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
-        IComponent*>& list) {
+    void ControlSystem::createComponent(luabridge::LuaRef& luaE,
+        std::map<std::type_index, std::unique_ptr<IComponent>>& list) {
         using namespace luabridge;
         LuaRef luaComponents = luaE["components"];
         LuaRef luaPC = luaComponents["PlayerComponent"];
@@ -20,12 +20,12 @@ namespace bb {
         pc->m_state = pc->IDLE;
         pc->m_facingLeft = true;
         pc->m_movingLeft = true;
-        list[std::type_index(typeid(PlayerComponent))] = pc;
+        list[std::type_index(typeid(PlayerComponent))] = std::unique_ptr<PlayerComponent>(pc);
     }
 
-    void ControlSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
-        Entity* entity) {
-        auto* component = list[std::type_index(typeid(PlayerComponent))];
+    void ControlSystem::createComponent(rapidjson::Value& jsonE,
+        std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity) {
+        auto* component = list[std::type_index(typeid(PlayerComponent))].get();
         if(!component) return;
         auto* pc = new PlayerComponent(*dynamic_cast<PlayerComponent*>(component));
         entity->addComponent(std::type_index(typeid(PlayerComponent)), pc);
@@ -48,28 +48,29 @@ namespace bb {
         bool mouseLeft = sf::Mouse::isButtonPressed(sf::Mouse::Left);
         sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
         sf::Vector2f mouseCoord = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
-        auto& cList = *m_game.getWorld().getField()->getComponentList<PlayerComponent>();
+        auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
+        auto& cList = m_game.getWorld().getField()->getComponentList<PlayerComponent>()->m_list;
         for(auto& c : cList) {
-            auto& pc = *dynamic_cast<PlayerComponent*>(c.second);
+            auto& pc = *dynamic_cast<PlayerComponent*>(c.second.get());
             auto& mc = *m_game.getWorld().getField()->getComponent<MovementComponent>(c.first);
             auto gc = m_game.getWorld().getField()->getComponent<GraphicsComponent>(c.first);
             auto* pE = m_game.getWorld().getField()->getEntity(c.first);
-            sf::Vector2f playerPos = m_game.getWorld().getSystem<GraphicsSystem>().mapCoordsToPixel(pE->getCoord());
-            if(mouseCoord.x > playerPos.x && pc.m_facingLeft == true) {
+            sf::Vector2f playerPos = gs.mapCoordsToPixel(pE->getCoord());
+            if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && pc.m_facingLeft == true) {
                 if(pc.m_state == PlayerComponent::IDLE)
-                    m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleR");
+                    gs.setAnimation(gc, "idleR");
                 else if(pc.m_state == PlayerComponent::WALKING)
-                    m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkR");
+                    gs.setAnimation(gc, "walkR");
                 else if(pc.m_state == PlayerComponent::CROUCHING)
-                    m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
+                    gs.setAnimation(gc, "crouchR");
                 pc.m_facingLeft = false;
-            } else if(mouseCoord.x < playerPos.x && pc.m_facingLeft == false) {
+            } else if(mouseCoord.x < playerPos.x + gs.getTileSize() / 2 && pc.m_facingLeft == false) {
                 if(pc.m_state == PlayerComponent::IDLE)
-                    m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleL");
+                    gs.setAnimation(gc, "idleL");
                 else if(pc.m_state == PlayerComponent::WALKING)
-                    m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkL");
+                    gs.setAnimation(gc, "walkL");
                 else if(pc.m_state == PlayerComponent::CROUCHING)
-                    m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchL");
+                    gs.setAnimation(gc, "crouchL");
                 pc.m_facingLeft = true;
             }
             switch(pc.m_state) {
@@ -85,17 +86,17 @@ namespace bb {
                             mc.m_velocities.x = 3.0F;
                         }
                         if(pc.m_facingLeft)
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkL");
+                            gs.setAnimation(gc, "walkL");
                         else
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkR");
+                            gs.setAnimation(gc, "walkR");
                     }
                     if(keyShift) {
                         pc.m_state = PlayerComponent::CROUCHING;
                         mc.m_velocities.x = 0.0F;
                         if(pc.m_facingLeft)
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchL");
+                            gs.setAnimation(gc, "crouchL");
                         else
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
+                            gs.setAnimation(gc, "crouchR");
                     } else if(keySpace || keyW) {
                         pc.m_state = PlayerComponent::JUMPING;
                         mc.m_velocities.y = 15.0F;
@@ -115,17 +116,17 @@ namespace bb {
                         pc.m_state = PlayerComponent::IDLE;
                         mc.m_velocities.x = 0.0F;
                         if(pc.m_facingLeft)
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleL");
+                            gs.setAnimation(gc, "idleL");
                         else
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleR");
+                            gs.setAnimation(gc, "idleR");
                     }
                     if(keyShift) {
                         pc.m_state = PlayerComponent::CROUCHING;
                         mc.m_velocities.x = 0.0F;
                         if(pc.m_facingLeft)
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchL");
+                            gs.setAnimation(gc, "crouchL");
                         else
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
+                            gs.setAnimation(gc, "crouchR");
                     } else if(keySpace || keyW) {
                         pc.m_state = PlayerComponent::JUMPING;
                         mc.m_velocities.y = 15.0F;
@@ -146,14 +147,14 @@ namespace bb {
                     }
                     if(pc.m_facingLeft) {
                         if(mc.m_velocities.x == 0)
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleL");
+                            gs.setAnimation(gc, "idleL");
                         else
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkL");
+                            gs.setAnimation(gc, "walkL");
                     } else {
                         if(mc.m_velocities.x == 0)
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleR");
+                            gs.setAnimation(gc, "idleR");
                         else
-                            m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkR");
+                            gs.setAnimation(gc, "walkR");
                     }
                     if(mc.m_isOnGround)
                         if(mc.m_velocities.x == 0)
@@ -174,22 +175,22 @@ namespace bb {
                         mc.m_velocities.x = 0.0F;
                     }
                     if(pc.m_facingLeft)
-                        m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchL");
+                        gs.setAnimation(gc, "crouchL");
                     else
-                        m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "crouchR");
+                        gs.setAnimation(gc, "crouchR");
                     if(!keyShift)
                         if(mc.m_velocities.x == 0) {
                             pc.m_state = PlayerComponent::IDLE;
                             if(pc.m_facingLeft)
-                                m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleL");
+                                gs.setAnimation(gc, "idleL");
                             else
-                                m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "idleR");
+                                gs.setAnimation(gc, "idleR");
                         } else {
                             pc.m_state = PlayerComponent::WALKING;
                             if(pc.m_facingLeft)
-                                m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkL");
+                                gs.setAnimation(gc, "walkL");
                             else
-                                m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "walkR");
+                                gs.setAnimation(gc, "walkR");
                         }
                     break;
             }
@@ -213,7 +214,7 @@ namespace bb {
             sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
             sf::Vector2f mousePixel = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
             sf::Vector2f mouseCoord = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords(mousePixel);
-            auto& list = *m_game.getWorld().getField()->getComponentList<HealthComponent>();
+            auto& list = m_game.getWorld().getField()->getComponentList<HealthComponent>()->m_list;
             for(auto& hc : list) {
                 auto* entity = m_game.getWorld().getField()->getEntity(hc.first);
                 if(m_game.getWorld().getSystem<PhysicsSystem>().contain(entity, mouseCoord)) {

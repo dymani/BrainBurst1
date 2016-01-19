@@ -7,12 +7,12 @@ namespace bb {
     HealthSystem::HealthSystem(GameStateGame& game) : m_game(game) {
     }
 
-    void HealthSystem::createList(std::map<std::type_index, std::map<int, IComponent*>*>& lists) {
-        lists[std::type_index(typeid(HealthComponent))] = new std::map<int, IComponent*>;
-        lists[std::type_index(typeid(DamageComponent))] = new std::map<int, IComponent*>;
+    void HealthSystem::createList(std::map<std::type_index, std::unique_ptr<CList>>& lists) {
+        lists[std::type_index(typeid(HealthComponent))] = std::unique_ptr<CList>(new CList());
+        lists[std::type_index(typeid(DamageComponent))] = std::unique_ptr<CList>(new CList());
     }
 
-    void HealthSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, IComponent*>& list) {
+    void HealthSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, std::unique_ptr<IComponent>>& list) {
         using namespace luabridge;
         LuaRef luaSize = luaE["size"];
         LuaRef luaComponents = luaE["components"];
@@ -57,12 +57,12 @@ namespace bb {
             }
         }
         hc->m_deathFunc = std::make_shared<LuaRef>(luaDeathFunc);
-        list[std::type_index(typeid(HealthComponent))] = hc;
+        list[std::type_index(typeid(HealthComponent))] = std::unique_ptr<HealthComponent>(hc);
     }
 
-    void HealthSystem::createComponent(rapidjson::Value& jsonE, std::map<std::type_index, IComponent*>& list,
-        Entity* entity) {
-        auto* component = list[std::type_index(typeid(HealthComponent))];
+    void HealthSystem::createComponent(rapidjson::Value& jsonE,
+        std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity) {
+        auto* component = list[std::type_index(typeid(HealthComponent))].get();
         if(!component) return;
         auto* hc = new HealthComponent(*dynamic_cast<HealthComponent*>(component));
         if(jsonE.HasMember("health"))
@@ -77,17 +77,17 @@ namespace bb {
     }
 
     void HealthSystem::update() {
-        auto& dcList = *m_game.getWorld().getField()->getComponentList<DamageComponent>();
+        auto& dcList = m_game.getWorld().getField()->getComponentList<DamageComponent>()->m_list;
         for(auto& c : dcList) {
-            auto& dc = *dynamic_cast<DamageComponent*>(c.second);
+            auto& dc = *dynamic_cast<DamageComponent*>(c.second.get());
             auto& hc = *m_game.getWorld().getField()->getComponent<HealthComponent>(c.first);
             hc.m_health -= dc.m_damage;
             m_game.getWorld().getField()->addDeleteComponent<DamageComponent>(c.first);
         }
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
-        auto& hcList = *m_game.getWorld().getField()->getComponentList<HealthComponent>();
+        auto& hcList = m_game.getWorld().getField()->getComponentList<HealthComponent>()->m_list;
         for(auto& c : hcList) {
-            auto& hc = *dynamic_cast<HealthComponent*>(c.second);
+            auto& hc = *dynamic_cast<HealthComponent*>(c.second.get());
             if(hc.m_health <= 0) {
                 try {
                     if((*hc.m_deathFunc)(new LuaEntity(m_game, c.first)).cast<bool>()) {

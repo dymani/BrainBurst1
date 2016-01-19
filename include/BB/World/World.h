@@ -31,22 +31,22 @@ namespace bb {
         Field* getField();
         Stage* getStage(std::string name);
         EntityTemplate* getEntityTemplate(std::string name);
-        std::map<std::type_index, ISystem*>& getSystems();
+        std::map<std::type_index, std::unique_ptr<ISystem>>& getSystems();
         template<typename T>
         T& getSystem() {
-            return *dynamic_cast<T*>(m_systems[std::type_index(typeid(T))]);
+            return *dynamic_cast<T*>(m_systems[std::type_index(typeid(T))].get());
         }
     private:
         template<typename T>
         void addSystem(T* system) {
-            m_systems[std::type_index(typeid(T))] = system;
+            m_systems[std::type_index(typeid(T))] = std::unique_ptr<ISystem>(system);
         }
         GameStateGame& m_game;
         std::string m_name, m_fieldId;
-        Field* m_field;
-        std::map<std::string, Stage*> m_stages;
-        std::map<std::string, EntityTemplate*> m_entityTemplates;
-        std::map<std::type_index, ISystem*> m_systems;
+        std::unique_ptr<Field> m_field;
+        std::map<std::string, std::unique_ptr<Stage>> m_stages;
+        std::map<std::string, std::unique_ptr<EntityTemplate>> m_entityTemplates;
+        std::map<std::type_index, std::unique_ptr<ISystem>> m_systems;
     };
 }
 

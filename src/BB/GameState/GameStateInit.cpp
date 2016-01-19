@@ -34,11 +34,11 @@ bool setTransparency(HWND hWnd, unsigned char alpha) {
 
 namespace bb {
     GameStateInit::GameStateInit(Game& game):IGameState(game) {
-        m_windowHandler = new WindowHandler();
-        m_resourceHandler = new ResourceHandler(m_game);
+        m_windowHandler = std::unique_ptr<WindowHandler>(new WindowHandler());
+        m_resourceHandler = std::unique_ptr<ResourceHandler>(new ResourceHandler(m_game));
         m_state = RUNNING;
         using namespace luabridge;
-        L = luaL_newstate();
+        L = luabridge::luaL_newstate();
         luaL_openlibs(L);
         m_resourceHandler->load(L);
         using namespace luabridge;
@@ -94,7 +94,7 @@ namespace bb {
             case NEXT:
                 if(m_updateCount >= 50) {
                     m_windowHandler->getWindow().close();
-                    m_game.changeState(new GameStateSplash(m_game, m_resourceHandler, L));
+                    m_game.changeState(new GameStateSplash(m_game, m_resourceHandler.release()));
                 }
                 break;
         }
