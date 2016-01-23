@@ -16,7 +16,9 @@ namespace bb {
         void createComponent(rapidjson::Value& jsonE,
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
+        void hit(int entity);
         void addDamage(HealthComponent* hc, int damage);
+        int getHealth(HealthComponent* hc);
     private:
         GameStateGame& m_game;
     };

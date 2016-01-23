@@ -1,5 +1,6 @@
 #include "BB/World/System/ControlSystem.h"
 #include "BB/GameState/GameStateGame.h"
+#include "BB/World/LuaEntity.h"
 
 namespace bb {
     ControlSystem::ControlSystem(GameStateGame& game) : m_game(game) {
@@ -18,10 +19,12 @@ namespace bb {
         if(luaCC.isNil()) return;
         auto* cc = new ControlComponent();
         LuaRef luaControl = luaCC["control"];
+        LuaRef luaOnInput = luaCC["onInput"];
         cc->m_control = luaControl.cast<bool>();
         cc->m_state = cc->IDLE;
         cc->m_facingLeft = true;
         cc->m_movingLeft = true;
+        cc->m_onInput = std::make_shared<LuaRef>(luaOnInput);
         list[std::type_index(typeid(ControlComponent))] = std::unique_ptr<ControlComponent>(cc);
     }
 
@@ -53,6 +56,7 @@ namespace bb {
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
         auto& cList = m_game.getWorld().getField()->getComponentList<ControlComponent>()->m_list;
         for(auto& c : cList) {
+            bool update = false;
             auto& cc = *dynamic_cast<ControlComponent*>(c.second.get());
             if(!cc.m_control) continue;
             auto& pc = *m_game.getWorld().getField()->getComponent<PhysicsComponent>(c.first);
@@ -60,25 +64,16 @@ namespace bb {
             auto* pE = m_game.getWorld().getField()->getEntity(c.first);
             sf::Vector2f playerPos = gs.mapCoordsToPixel(pE->getCoord());
             if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == true) {
-                if(cc.m_state == ControlComponent::IDLE)
-                    gs.setAnimation(gc, "idleR");
-                else if(cc.m_state == ControlComponent::WALKING)
-                    gs.setAnimation(gc, "walkR");
-                else if(cc.m_state == ControlComponent::CROUCHING)
-                    gs.setAnimation(gc, "crouchR");
+                update = true;
                 cc.m_facingLeft = false;
             } else if(mouseCoord.x < playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == false) {
-                if(cc.m_state == ControlComponent::IDLE)
-                    gs.setAnimation(gc, "idleL");
-                else if(cc.m_state == ControlComponent::WALKING)
-                    gs.setAnimation(gc, "walkL");
-                else if(cc.m_state == ControlComponent::CROUCHING)
-                    gs.setAnimation(gc, "crouchL");
+                update = true;
                 cc.m_facingLeft = true;
             }
             switch(cc.m_state) {
                 case ControlComponent::IDLE:
                     if(keyA ^ keyD) {
+                        update = true;
                         if(keyA) {
                             cc.m_movingLeft = true;
                             cc.m_state = ControlComponent::WALKING;
@@ -88,19 +83,13 @@ namespace bb {
                             cc.m_state = ControlComponent::WALKING;
                             pc.m_velocities.x = 3.0F;
                         }
-                        if(cc.m_facingLeft)
-                            gs.setAnimation(gc, "walkL");
-                        else
-                            gs.setAnimation(gc, "walkR");
                     }
                     if(keyShift || keyS) {
+                        update = true;
                         cc.m_state = ControlComponent::CROUCHING;
                         pc.m_velocities.x = 0.0F;
-                        if(cc.m_facingLeft)
-                            gs.setAnimation(gc, "crouchL");
-                        else
-                            gs.setAnimation(gc, "crouchR");
                     } else if(keySpace || keyW) {
+                        update = true;
                         cc.m_state = ControlComponent::JUMPING;
                         pc.m_velocities.y = 15.0F;
                         pc.m_isOnGround = false;
@@ -116,21 +105,16 @@ namespace bb {
                             pc.m_velocities.x = 3.0F;
                         }
                     } else {
+                        update = true;
                         cc.m_state = ControlComponent::IDLE;
                         pc.m_velocities.x = 0.0F;
-                        if(cc.m_facingLeft)
-                            gs.setAnimation(gc, "idleL");
-                        else
-                            gs.setAnimation(gc, "idleR");
                     }
                     if(keyShift || keyS) {
+                        update = true;
                         cc.m_state = ControlComponent::CROUCHING;
                         pc.m_velocities.x = 0.0F;
-                        if(cc.m_facingLeft)
-                            gs.setAnimation(gc, "crouchL");
-                        else
-                            gs.setAnimation(gc, "crouchR");
                     } else if(keySpace || keyW) {
+                        update = true;
                         cc.m_state = ControlComponent::JUMPING;
                         pc.m_velocities.y = 15.0F;
                         pc.m_isOnGround = false;
@@ -138,6 +122,8 @@ namespace bb {
                     break;
                 case ControlComponent::JUMPING:
                     if(keyA ^ keyD) {
+                        if(pc.m_velocities.x == 0)
+                            update = true;
                         if(keyA) {
                             cc.m_movingLeft = true;
                             pc.m_velocities.x = -3.0F;
@@ -146,24 +132,17 @@ namespace bb {
                             pc.m_velocities.x = 3.0F;
                         }
                     } else {
+                        if(pc.m_velocities.x != 0)
+                            update = true;
                         pc.m_velocities.x = 0.0F;
                     }
-                    if(cc.m_facingLeft) {
-                        if(pc.m_velocities.x == 0)
-                            gs.setAnimation(gc, "idleL");
-                        else
-                            gs.setAnimation(gc, "walkL");
-                    } else {
-                        if(pc.m_velocities.x == 0)
-                            gs.setAnimation(gc, "idleR");
-                        else
-                            gs.setAnimation(gc, "walkR");
-                    }
-                    if(pc.m_isOnGround)
+                    if(pc.m_isOnGround) {
+                        update = true;
                         if(pc.m_velocities.x == 0)
                             cc.m_state = ControlComponent::IDLE;
                         else
                             cc.m_state = ControlComponent::WALKING;
+                    }
                     break;
                 case ControlComponent::CROUCHING:
                     if(keyA ^ keyD) {
@@ -177,25 +156,25 @@ namespace bb {
                     } else {
                         pc.m_velocities.x = 0.0F;
                     }
-                    if(cc.m_facingLeft)
-                        gs.setAnimation(gc, "crouchL");
-                    else
-                        gs.setAnimation(gc, "crouchR");
-                    if(!(keyShift || keyS))
+                    if(!(keyShift || keyS)) {
+                        update = true;
                         if(pc.m_velocities.x == 0) {
                             cc.m_state = ControlComponent::IDLE;
-                            if(cc.m_facingLeft)
-                                gs.setAnimation(gc, "idleL");
-                            else
-                                gs.setAnimation(gc, "idleR");
                         } else {
                             cc.m_state = ControlComponent::WALKING;
-                            if(cc.m_facingLeft)
-                                gs.setAnimation(gc, "walkL");
-                            else
-                                gs.setAnimation(gc, "walkR");
                         }
+                    }
                     break;
+            }
+            if(update) {
+                try {
+                    if((*cc.m_onInput)(new LuaEntity(m_game, c.first)).cast<bool>()) {
+                        m_game.getWorld().getField()->addDeleteEntity(c.first);
+                    }
+                } catch(luabridge::LuaException const& e) {
+                    LogHandler::log<HealthSystem>(ERR, "LuaException: ");
+                    std::cout << "                " << e.what() << std::endl;
+                }
             }
         }
     }
@@ -209,10 +188,21 @@ namespace bb {
             for(auto& hc : list) {
                 auto* entity = m_game.getWorld().getField()->getEntity(hc.first);
                 if(m_game.getWorld().getSystem<PhysicsSystem>().contain(entity, mouseCoord)) {
-                    m_game.getWorld().getSystem<HealthSystem>().addDamage(
-                        dynamic_cast<HealthComponent*>(hc.second.get()), 1);
+                    m_game.getWorld().getSystem<HealthSystem>().hit(hc.first);
                 }
             }
         }
+    }
+
+    int ControlSystem::getState(ControlComponent* cc) {
+        return int(cc->m_state);
+    }
+
+    bool ControlSystem::isFacingLeft(ControlComponent* cc) {
+        return cc->m_facingLeft;
+    }
+
+    bool ControlSystem::isMovingLeft(ControlComponent* cc) {
+        return cc->m_movingLeft;
     }
 }

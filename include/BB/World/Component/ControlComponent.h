@@ -1,6 +1,8 @@
 #ifndef CONTROL_COMPONENT_H
 #define CONTROL_COMPONENT_H
 
+#include <memory>
+#include <LuaBridge/LuaBridge.h>
 #include "BB/World/Component/IComponent.h"
 
 namespace bb {
@@ -15,7 +17,7 @@ namespace bb {
         enum State {
             IDLE, WALKING, JUMPING, CROUCHING
         } m_state;
-
+        std::shared_ptr<luabridge::LuaRef> m_onInput;
     };
 }
 

@@ -51,12 +51,52 @@ entities = {
                 type = 2,
                 velocities = {0, 0},
                 hitbox = {0.3, 0, 0.4, 0.94},
-                collide = function(e)
+                onHitGround = function(this)
+                    return false
+                end,
+                onCollide = function(this, other)
                     return false
                 end
             },
             ControlComponent = {
-                control = true
+                control = true,
+                onInput = function(this)
+                    if(this.csFacingLeft) then
+                        if(this.csState == 0) then
+                            this:gsSetAnimation("idleL")
+                        elseif(this.csState == 1) then
+                            this:gsSetAnimation("walkL")
+                        elseif(this.csState == 2) then
+                            if(this.psVelocityX == 0) then
+                                this:gsSetAnimation("idleL")
+                            else
+                                this:gsSetAnimation("walkL")
+                            end
+                        elseif(this.csState == 3) then
+                            this:gsSetAnimation("crouchL")
+                        end
+                    else
+                        if(this.csState == 0) then
+                            this:gsSetAnimation("idleR")
+                        elseif(this.csState == 1) then
+                            this:gsSetAnimation("walkR")
+                        elseif(this.csState == 2) then
+                            if(this.psVelocityX == 0) then
+                                this:gsSetAnimation("idleR")
+                            else
+                                this:gsSetAnimation("walkR")
+                            end    
+                        elseif(this.csState == 3) then
+                            this:gsSetAnimation("crouchR")
+                        end
+                    end
+                    if(this.csState == 3) then
+                        this:psSetHitbox(0.3, 0, 0.4, 0.66)
+                    else
+                        this:psSetHitbox(0.3, 0, 0.4, 0.94)
+                    end
+                    return false
+                end
             }
         }
     },
@@ -67,6 +107,7 @@ entities = {
             GraphicsComponent = {
                 z = 5,
                 type = 1,
+                defaultAnimation = "full",
                 animations = {
                     {
                         name = "full",
@@ -98,16 +139,31 @@ entities = {
                 isMovable = false,
                 type = 2,
                 hitbox = {0.22, 0, 0.56, 2},
-                collide = function(e)
-                    e:setDamage(1)
+                onCollide = function(this, other)
+                    --this:hsSetDamage(1)
                     return false
                 end
             },
             HealthComponent = {
                 maxHealth = 7,
                 health = 7,
-                frames = {"full", "slight", "more", "broken"},
-                death = function(e)
+                onHit = function(this)
+                    this:hsSetDamage(1)
+                    return false
+                end,
+                onHealthChange = function(this)
+                    if(this.hsHealth == 7) then
+                        this:gsSetAnimation("full")
+                    elseif(this.hsHealth >= 4) then
+                        this:gsSetAnimation("slight")
+                    elseif(this.hsHealth >= 2) then
+                        this:gsSetAnimation("more")
+                    else
+                        this:gsSetAnimation("broken")
+                    end
+                    return false
+                end,
+                onDeath = function(this)
                     return true
                 end
             }
@@ -126,7 +182,7 @@ entities = {
                 isMovable = false,
                 type = 2,
                 hitbox = {0.28, 0, 0.47, 1},
-                collide = function(e)
+                onCollide = function(this, other)
                     return false
                 end
             }

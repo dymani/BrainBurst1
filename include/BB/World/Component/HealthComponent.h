@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <LuaBridge/LuaBridge.h>
 #include "BB/World/Component/IComponent.h"
 
 namespace bb {
@@ -15,8 +16,9 @@ namespace bb {
         int m_maxHealth;
         int m_health;
         int m_damage;
-        std::map<int, std::string> m_frames;
-        std::shared_ptr<luabridge::LuaRef> m_deathFunc;
+        std::shared_ptr<luabridge::LuaRef> m_onHit;
+        std::shared_ptr<luabridge::LuaRef> m_onHealthChange;
+        std::shared_ptr<luabridge::LuaRef> m_onDeath;
     };
 }
 

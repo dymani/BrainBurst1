@@ -2,12 +2,12 @@
     "entities":[
         {"name":"rock1", "id":100, "coordX":0, "coordY":0, "stage":"HL06", "velocityX":0, "velocityY":30, "animation":"full", "frame":0},
         {"name":"rock2", "id":101, "coordX":4, "coordY":0, "stage":"HL06"},
-        {"name":"rock1", "id":107, "coordX":5, "coordY":0, "stage":"HL06"},
-        {"name":"rock1", "id":102, "coordX":6, "coordY":1, "stage":"HL06"},
-        {"name":"rock1", "id":103, "coordX":7, "coordY":2, "stage":"HL06"},
-        {"name":"rock1", "id":104, "coordX":8, "coordY":3, "stage":"HL06"},
-        {"name":"rock1", "id":105, "coordX":9, "coordY":4, "stage":"HL06", "damage":1},
-        {"name":"rock1", "id":106, "coordX":10, "coordY":5, "stage":"HL06"},
+        {"name":"rock1", "id":107, "coordX":5, "coordY":0.67, "stage":"HL06"},
+        {"name":"rock1", "id":102, "coordX":5.6, "coordY":0.67, "stage":"HL06"},
+        {"name":"rock1", "id":103, "coordX":6.2, "coordY":2, "stage":"HL06"},
+        {"name":"rock1", "id":104, "coordX":6.8, "coordY":3, "stage":"HL06"},
+        {"name":"rock1", "id":105, "coordX":7.4, "coordY":4, "stage":"HL06", "damage":1},
+        {"name":"rock1", "id":106, "coordX":8, "coordY":5, "stage":"HL06"},
         {"name":"player", "id":0, "coordX":7, "coordY":0, "animation":"idleL", "frame":0, "velocityX":0, "velocityY":0}
     ],
     "tileSet":"HL06",

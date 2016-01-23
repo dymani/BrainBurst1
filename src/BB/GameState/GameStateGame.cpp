@@ -14,7 +14,19 @@ namespace bb {
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
         luabridge::getGlobalNamespace(L)
             .beginClass<LuaEntity>("LuaEntity")
-            .addFunction("setDamage", &LuaEntity::setDamage)
+            .addProperty("csState", &LuaEntity::csGetState)
+            .addProperty("csFacingLeft", &LuaEntity::csIsFacingLeft)
+            .addProperty("csMovingLeft", &LuaEntity::csIsMovingLeft)
+            .addProperty("x", &LuaEntity::getCoordX, &LuaEntity::setCoordX)
+            .addProperty("y", &LuaEntity::getCoordY, &LuaEntity::setCoordY)
+            .addFunction("gsSetAnimation", &LuaEntity::gsSetAnimation)
+            .addFunction("gsSetAnimationFrame", &LuaEntity::gsSetAnimationFrame)
+            .addProperty("hsHealth", &LuaEntity::hsGetHealth)
+            .addFunction("hsSetDamage", &LuaEntity::hsSetDamage)
+            .addFunction("print", &LuaEntity::print)
+            .addProperty("psVelocityX", &LuaEntity::psGetVelocityX, &LuaEntity::psSetVelocityX)
+            .addProperty("psVlocityY", &LuaEntity::psGetVelocityY, &LuaEntity::psSetVelocityY)
+            .addFunction("psSetHitbox", &LuaEntity::psSetHitbox)
             .endClass();
         m_audioHandler->play("test1");
     }

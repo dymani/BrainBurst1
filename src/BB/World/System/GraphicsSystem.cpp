@@ -12,8 +12,8 @@ namespace bb {
         lists[std::type_index(typeid(GraphicsComponent))] = std::unique_ptr<CList>(new CList());
     }
 
-    void GraphicsSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index,
-        std::unique_ptr<IComponent>>& list) {
+    void GraphicsSystem::createComponent(luabridge::LuaRef& luaE, std::map < std::type_index,
+        std::unique_ptr < IComponent >> &list) {
         using namespace luabridge;
         LuaRef luaSize = luaE["size"];
         LuaRef luaComponents = luaE["components"];
@@ -49,6 +49,7 @@ namespace bb {
                 gc->m_sprite.setTexture(tex);
                 gc->m_hasTexture = true;
             }
+            LuaRef luaDefaultAnimation = luaGC["defaultAnimation"];
             LuaRef luaAnimations = luaGC["animations"];
             for(int i = 1; i <= luaAnimations.length(); i++) {
                 LuaRef luaAnimation = luaAnimations[i];
@@ -60,7 +61,11 @@ namespace bb {
                 animation.speed = luaAnimation["speed"].cast<float>();
                 gc->m_animations[luaAnimation["name"].cast<std::string>()] = animation;
             }
-            gc->m_currentAnimation = gc->m_animations.begin()->first;
+            if(luaDefaultAnimation.isString())
+                gc->m_currentAnimation = luaDefaultAnimation.cast<std::string>();
+            else
+                gc->m_currentAnimation = gc->m_animations.begin()->first;
+            setAnimation(gc, "");
             Animation animation = gc->m_animations.begin()->second;
             gc->m_currentFrame = 0;
             gc->m_frameInterval = 0;

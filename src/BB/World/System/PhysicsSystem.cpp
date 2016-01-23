@@ -20,18 +20,20 @@ namespace bb {
             LuaRef luaType = luaPC["type"];
             LuaRef luaVelocities = luaPC["velocities"];
             LuaRef luaHitbox = luaPC["hitbox"];
-            LuaRef luaCollideFunc = luaPC["collide"];
+            LuaRef luaOnHitGround = luaPC["onHitGround"];
+            LuaRef luaOnCollide = luaPC["onCollide"];
             auto* pc = new PhysicsComponent();
             pc->m_isMovable = luaIsMovable.cast<bool>();
             if(pc->m_isMovable) {
                 pc->m_velocities = {luaVelocities[1].cast<float>(), luaVelocities[2].cast<float>()};
                 pc->m_isOnGround = false;
+                pc->m_onHitGround = std::make_shared<LuaRef>(luaOnHitGround);
             }
             pc->m_type = luaType.cast<int>();
             if(pc->m_type != 0) {
                 pc->m_hitbox = {luaHitbox[1].cast<float>(), luaHitbox[2].cast<float>(),
                     luaHitbox[3].cast<float>(), luaHitbox[4].cast<float>()};
-                pc->m_collideFunc = std::make_shared<LuaRef>(luaCollideFunc);
+                pc->m_onCollide = std::make_shared<LuaRef>(luaOnCollide);
             }
             list[std::type_index(typeid(PhysicsComponent))] = std::unique_ptr<PhysicsComponent>(pc);
         }
@@ -72,22 +74,41 @@ namespace bb {
             coord.x += pcA.m_velocities.x / 50;
             coord.y += pcA.m_velocities.y / 50;
             if(pcA.m_type == 0) {
-                if(e->getCoord().y >= 0 && coord.y <= 0) {
+                if(coord.y <= 0) {
                     pcA.m_isOnGround = true;
                     coord.y = 0;
+                    pcA.m_velocities.y = 0;
+                    try {
+                        if(pcA.m_isMovable)
+                            if((*pcA.m_onHitGround)(new LuaEntity(m_game, pcIA.first)).cast<bool>())
+                                m_game.getWorld().getField()->addDeleteEntity(pcIA.first);
+                    } catch(luabridge::LuaException const& e) {
+                        LogHandler::log<PhysicsSystem>(ERR, "LuaException: ");
+                        std::cout << "                " << e.what() << std::endl;
+                    }
                 } else {
                     pcA.m_isOnGround = false;
                 }
             } else {
-                if(e->getCoord().y + pcA.m_hitbox.top >= 0 && coord.y + pcA.m_hitbox.top <= 0) {
+                if(coord.y + pcA.m_hitbox.top <= 0) {
                     pcA.m_isOnGround = true;
                     coord.y = -pcA.m_hitbox.top;
+                    pcA.m_velocities.y = 0;
+                    try {
+                        if(pcA.m_isMovable)
+                            if((*pcA.m_onHitGround)(new LuaEntity(m_game, pcIA.first)).cast<bool>())
+                                m_game.getWorld().getField()->addDeleteEntity(pcIA.first);
+                    } catch(luabridge::LuaException const& e) {
+                        LogHandler::log<PhysicsSystem>(ERR, "LuaException: ");
+                        std::cout << "                " << e.what() << std::endl;
+                    }
                 } else {
                     pcA.m_isOnGround = false;
                 }
                 for(auto& pcIB : pcList) {
                     if(pcIA.first == pcIB.first) continue;
                     auto& pcB = *dynamic_cast<PhysicsComponent*>(pcIB.second.get());
+                    if(pcB.m_type == 0) return;
                     sf::Vector2f coordB = m_game.getWorld().getField()->getEntity(pcIB.first)->getCoord();
                     auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
 
@@ -132,10 +153,14 @@ namespace bb {
                         }
                     }
                     try {
-                        if((*pcA.m_collideFunc)(new LuaEntity(m_game, pcIA.first)).cast<bool>())
-                            m_game.getWorld().getField()->addDeleteEntity(pcIA.first);
-                        if((*pcB.m_collideFunc)(new LuaEntity(m_game, pcIB.first)).cast<bool>())
-                            m_game.getWorld().getField()->addDeleteEntity(pcIB.first);
+                        if(pcA.m_type != 0)
+                            if((*pcA.m_onCollide)(new LuaEntity(m_game, pcIA.first), new LuaEntity(m_game,
+                                pcIB.first)).cast<bool>())
+                                m_game.getWorld().getField()->addDeleteEntity(pcIA.first);
+                        if(pcB.m_type != 0)
+                            if((*pcB.m_onCollide)(new LuaEntity(m_game, pcIB.first), new LuaEntity(m_game,
+                                pcIA.first)).cast<bool>())
+                                m_game.getWorld().getField()->addDeleteEntity(pcIB.first);
                     } catch(luabridge::LuaException const& e) {
                         LogHandler::log<PhysicsSystem>(ERR, "LuaException: ");
                         std::cout << "                " << e.what() << std::endl;
@@ -156,5 +181,17 @@ namespace bb {
         sf::FloatRect hitbox = {gs.mapCoordsToPixel(ltCoord), size * float(gs.getTileSize())};
         sf::Vector2f pointPixel = gs.mapCoordsToPixel(pointCoord);
         return hitbox.contains(pointPixel);
+    }
+
+    sf::Vector2f PhysicsSystem::getVelocity(PhysicsComponent * pc) {
+        return pc->m_velocities;
+    }
+
+    void PhysicsSystem::setVelocity(PhysicsComponent* pc, sf::Vector2f velocity) {
+        pc->m_velocities = velocity;
+    }
+
+    void PhysicsSystem::setHitbox(PhysicsComponent* pc, sf::FloatRect hitbox) {
+        pc->m_hitbox = hitbox;
     }
 }

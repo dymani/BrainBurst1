@@ -19,6 +19,9 @@ namespace bb {
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void handleInput();
         void handleInput(sf::Event& windowEvent);
+        int getState(ControlComponent* cc);
+        bool isFacingLeft(ControlComponent* cc);
+        bool isMovingLeft(ControlComponent* cc);
     private:
         GameStateGame& m_game;
     };

@@ -17,6 +17,9 @@ namespace bb {
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
         bool contain(Entity* e, sf::Vector2f coord);
+        sf::Vector2f getVelocity(PhysicsComponent* pc);
+        void setVelocity(PhysicsComponent* pc, sf::Vector2f velocity);
+        void setHitbox(PhysicsComponent* pc, sf::FloatRect hitbox);
     private:
         GameStateGame& m_game;
     };

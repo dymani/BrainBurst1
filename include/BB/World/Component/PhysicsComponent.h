@@ -19,7 +19,8 @@ namespace bb {
         bool m_isOnGround;
         sf::Vector2f m_velocities;
         sf::FloatRect m_hitbox;
-        std::shared_ptr<luabridge::LuaRef> m_collideFunc;
+        std::shared_ptr<luabridge::LuaRef> m_onHitGround;
+        std::shared_ptr<luabridge::LuaRef> m_onCollide;
     };
 }
 
