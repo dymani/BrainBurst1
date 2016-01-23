@@ -1,5 +1,5 @@
-#ifndef COLLISION_COMPONENT_H
-#define COLLISION_COMPONENT_H
+#ifndef PHYSICS_COMPONENT_H
+#define PHYSICS_COMPONENT_H
 
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -7,12 +7,17 @@
 #include "BB/World/Component/IComponent.h"
 
 namespace bb {
-    class CollisionComponent : public IComponent {
+    class PhysicsComponent : public IComponent {
         friend class PhysicsSystem;
+        friend class ControlSystem;
     public:
-        CollisionComponent() : IComponent() {
+        PhysicsComponent() : IComponent() {
         }
     private:
+        bool m_isMovable;
+        int m_type;
+        bool m_isOnGround;
+        sf::Vector2f m_velocities;
         sf::FloatRect m_hitbox;
         std::shared_ptr<luabridge::LuaRef> m_collideFunc;
     };

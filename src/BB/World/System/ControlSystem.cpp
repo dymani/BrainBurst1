@@ -7,28 +7,30 @@ namespace bb {
     }
 
     void ControlSystem::createList(std::map<std::type_index, std::unique_ptr<CList>>& lists) {
-        lists[std::type_index(typeid(PlayerComponent))] = std::unique_ptr<CList>(new CList());
+        lists[std::type_index(typeid(ControlComponent))] = std::unique_ptr<CList>(new CList());
     }
 
     void ControlSystem::createComponent(luabridge::LuaRef& luaE,
         std::map<std::type_index, std::unique_ptr<IComponent>>& list) {
         using namespace luabridge;
         LuaRef luaComponents = luaE["components"];
-        LuaRef luaPC = luaComponents["PlayerComponent"];
-        if(luaPC.isNil()) return;
-        auto* pc = new PlayerComponent();
-        pc->m_state = pc->IDLE;
-        pc->m_facingLeft = true;
-        pc->m_movingLeft = true;
-        list[std::type_index(typeid(PlayerComponent))] = std::unique_ptr<PlayerComponent>(pc);
+        LuaRef luaCC = luaComponents["ControlComponent"];
+        if(luaCC.isNil()) return;
+        auto* cc = new ControlComponent();
+        LuaRef luaControl = luaCC["control"];
+        cc->m_control = luaControl.cast<bool>();
+        cc->m_state = cc->IDLE;
+        cc->m_facingLeft = true;
+        cc->m_movingLeft = true;
+        list[std::type_index(typeid(ControlComponent))] = std::unique_ptr<ControlComponent>(cc);
     }
 
     void ControlSystem::createComponent(rapidjson::Value& jsonE,
         std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity) {
-        auto* component = list[std::type_index(typeid(PlayerComponent))].get();
+        auto* component = list[std::type_index(typeid(ControlComponent))].get();
         if(!component) return;
-        auto* pc = new PlayerComponent(*dynamic_cast<PlayerComponent*>(component));
-        entity->addComponent(std::type_index(typeid(PlayerComponent)), pc);
+        auto* cc = new ControlComponent(*dynamic_cast<ControlComponent*>(component));
+        entity->addComponent(std::type_index(typeid(ControlComponent)), cc);
     }
 
     void ControlSystem::handleInput() {
@@ -49,163 +51,152 @@ namespace bb {
         sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
         sf::Vector2f mouseCoord = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
-        auto& cList = m_game.getWorld().getField()->getComponentList<PlayerComponent>()->m_list;
+        auto& cList = m_game.getWorld().getField()->getComponentList<ControlComponent>()->m_list;
         for(auto& c : cList) {
-            auto& pc = *dynamic_cast<PlayerComponent*>(c.second.get());
-            auto& mc = *m_game.getWorld().getField()->getComponent<MovementComponent>(c.first);
+            auto& cc = *dynamic_cast<ControlComponent*>(c.second.get());
+            if(!cc.m_control) continue;
+            auto& pc = *m_game.getWorld().getField()->getComponent<PhysicsComponent>(c.first);
             auto gc = m_game.getWorld().getField()->getComponent<GraphicsComponent>(c.first);
             auto* pE = m_game.getWorld().getField()->getEntity(c.first);
             sf::Vector2f playerPos = gs.mapCoordsToPixel(pE->getCoord());
-            if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && pc.m_facingLeft == true) {
-                if(pc.m_state == PlayerComponent::IDLE)
+            if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == true) {
+                if(cc.m_state == ControlComponent::IDLE)
                     gs.setAnimation(gc, "idleR");
-                else if(pc.m_state == PlayerComponent::WALKING)
+                else if(cc.m_state == ControlComponent::WALKING)
                     gs.setAnimation(gc, "walkR");
-                else if(pc.m_state == PlayerComponent::CROUCHING)
+                else if(cc.m_state == ControlComponent::CROUCHING)
                     gs.setAnimation(gc, "crouchR");
-                pc.m_facingLeft = false;
-            } else if(mouseCoord.x < playerPos.x + gs.getTileSize() / 2 && pc.m_facingLeft == false) {
-                if(pc.m_state == PlayerComponent::IDLE)
+                cc.m_facingLeft = false;
+            } else if(mouseCoord.x < playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == false) {
+                if(cc.m_state == ControlComponent::IDLE)
                     gs.setAnimation(gc, "idleL");
-                else if(pc.m_state == PlayerComponent::WALKING)
+                else if(cc.m_state == ControlComponent::WALKING)
                     gs.setAnimation(gc, "walkL");
-                else if(pc.m_state == PlayerComponent::CROUCHING)
+                else if(cc.m_state == ControlComponent::CROUCHING)
                     gs.setAnimation(gc, "crouchL");
-                pc.m_facingLeft = true;
+                cc.m_facingLeft = true;
             }
-            switch(pc.m_state) {
-                case PlayerComponent::IDLE:
+            switch(cc.m_state) {
+                case ControlComponent::IDLE:
                     if(keyA ^ keyD) {
                         if(keyA) {
-                            pc.m_movingLeft = true;
-                            pc.m_state = PlayerComponent::WALKING;
-                            mc.m_velocities.x = -3.0F;
+                            cc.m_movingLeft = true;
+                            cc.m_state = ControlComponent::WALKING;
+                            pc.m_velocities.x = -3.0F;
                         } else if(keyD) {
-                            pc.m_movingLeft = false;
-                            pc.m_state = PlayerComponent::WALKING;
-                            mc.m_velocities.x = 3.0F;
+                            cc.m_movingLeft = false;
+                            cc.m_state = ControlComponent::WALKING;
+                            pc.m_velocities.x = 3.0F;
                         }
-                        if(pc.m_facingLeft)
+                        if(cc.m_facingLeft)
                             gs.setAnimation(gc, "walkL");
                         else
                             gs.setAnimation(gc, "walkR");
                     }
-                    if(keyShift) {
-                        pc.m_state = PlayerComponent::CROUCHING;
-                        mc.m_velocities.x = 0.0F;
-                        if(pc.m_facingLeft)
+                    if(keyShift || keyS) {
+                        cc.m_state = ControlComponent::CROUCHING;
+                        pc.m_velocities.x = 0.0F;
+                        if(cc.m_facingLeft)
                             gs.setAnimation(gc, "crouchL");
                         else
                             gs.setAnimation(gc, "crouchR");
                     } else if(keySpace || keyW) {
-                        pc.m_state = PlayerComponent::JUMPING;
-                        mc.m_velocities.y = 15.0F;
-                        mc.m_isOnGround = false;
+                        cc.m_state = ControlComponent::JUMPING;
+                        pc.m_velocities.y = 15.0F;
+                        pc.m_isOnGround = false;
                     }
                     break;
-                case PlayerComponent::WALKING:
+                case ControlComponent::WALKING:
                     if(keyA ^ keyD) {
                         if(keyA) {
-                            pc.m_movingLeft = true;
-                            mc.m_velocities.x = -3.0F;
+                            cc.m_movingLeft = true;
+                            pc.m_velocities.x = -3.0F;
                         } else if(keyD) {
-                            pc.m_movingLeft = false;
-                            mc.m_velocities.x = 3.0F;
+                            cc.m_movingLeft = false;
+                            pc.m_velocities.x = 3.0F;
                         }
                     } else {
-                        pc.m_state = PlayerComponent::IDLE;
-                        mc.m_velocities.x = 0.0F;
-                        if(pc.m_facingLeft)
+                        cc.m_state = ControlComponent::IDLE;
+                        pc.m_velocities.x = 0.0F;
+                        if(cc.m_facingLeft)
                             gs.setAnimation(gc, "idleL");
                         else
                             gs.setAnimation(gc, "idleR");
                     }
-                    if(keyShift) {
-                        pc.m_state = PlayerComponent::CROUCHING;
-                        mc.m_velocities.x = 0.0F;
-                        if(pc.m_facingLeft)
+                    if(keyShift || keyS) {
+                        cc.m_state = ControlComponent::CROUCHING;
+                        pc.m_velocities.x = 0.0F;
+                        if(cc.m_facingLeft)
                             gs.setAnimation(gc, "crouchL");
                         else
                             gs.setAnimation(gc, "crouchR");
                     } else if(keySpace || keyW) {
-                        pc.m_state = PlayerComponent::JUMPING;
-                        mc.m_velocities.y = 15.0F;
-                        mc.m_isOnGround = false;
+                        cc.m_state = ControlComponent::JUMPING;
+                        pc.m_velocities.y = 15.0F;
+                        pc.m_isOnGround = false;
                     }
                     break;
-                case PlayerComponent::JUMPING:
+                case ControlComponent::JUMPING:
                     if(keyA ^ keyD) {
                         if(keyA) {
-                            pc.m_movingLeft = true;
-                            mc.m_velocities.x = -3.0F;
+                            cc.m_movingLeft = true;
+                            pc.m_velocities.x = -3.0F;
                         } else if(keyD) {
-                            pc.m_movingLeft = false;
-                            mc.m_velocities.x = 3.0F;
+                            cc.m_movingLeft = false;
+                            pc.m_velocities.x = 3.0F;
                         }
                     } else {
-                        mc.m_velocities.x = 0.0F;
+                        pc.m_velocities.x = 0.0F;
                     }
-                    if(pc.m_facingLeft) {
-                        if(mc.m_velocities.x == 0)
+                    if(cc.m_facingLeft) {
+                        if(pc.m_velocities.x == 0)
                             gs.setAnimation(gc, "idleL");
                         else
                             gs.setAnimation(gc, "walkL");
                     } else {
-                        if(mc.m_velocities.x == 0)
+                        if(pc.m_velocities.x == 0)
                             gs.setAnimation(gc, "idleR");
                         else
                             gs.setAnimation(gc, "walkR");
                     }
-                    if(mc.m_isOnGround)
-                        if(mc.m_velocities.x == 0)
-                            pc.m_state = PlayerComponent::IDLE;
+                    if(pc.m_isOnGround)
+                        if(pc.m_velocities.x == 0)
+                            cc.m_state = ControlComponent::IDLE;
                         else
-                            pc.m_state = PlayerComponent::WALKING;
+                            cc.m_state = ControlComponent::WALKING;
                     break;
-                case PlayerComponent::CROUCHING:
+                case ControlComponent::CROUCHING:
                     if(keyA ^ keyD) {
                         if(keyA) {
-                            pc.m_movingLeft = true;
-                            mc.m_velocities.x = -1.5F;
+                            cc.m_movingLeft = true;
+                            pc.m_velocities.x = -1.5F;
                         } else if(keyD) {
-                            pc.m_movingLeft = false;
-                            mc.m_velocities.x = 1.5F;
+                            cc.m_movingLeft = false;
+                            pc.m_velocities.x = 1.5F;
                         }
                     } else {
-                        mc.m_velocities.x = 0.0F;
+                        pc.m_velocities.x = 0.0F;
                     }
-                    if(pc.m_facingLeft)
+                    if(cc.m_facingLeft)
                         gs.setAnimation(gc, "crouchL");
                     else
                         gs.setAnimation(gc, "crouchR");
-                    if(!keyShift)
-                        if(mc.m_velocities.x == 0) {
-                            pc.m_state = PlayerComponent::IDLE;
-                            if(pc.m_facingLeft)
+                    if(!(keyShift || keyS))
+                        if(pc.m_velocities.x == 0) {
+                            cc.m_state = ControlComponent::IDLE;
+                            if(cc.m_facingLeft)
                                 gs.setAnimation(gc, "idleL");
                             else
                                 gs.setAnimation(gc, "idleR");
                         } else {
-                            pc.m_state = PlayerComponent::WALKING;
-                            if(pc.m_facingLeft)
+                            cc.m_state = ControlComponent::WALKING;
+                            if(cc.m_facingLeft)
                                 gs.setAnimation(gc, "walkL");
                             else
                                 gs.setAnimation(gc, "walkR");
                         }
                     break;
             }
-            //if(keyW2 || keyS2) {
-            //    if(keyW2) mc.m_velocities.y = 3.0F;
-            //    if(keyS2) mc.m_velocities.y = -3.0F;
-            //} else {
-            //    mc.m_velocities.y = 0;
-            //}
-            //if(keyA2 || keyD2) {
-            //    if(keyA2) mc.m_velocities.x = -3.0F;
-            //    if(keyD2) mc.m_velocities.x = 3.0F;
-            //} else {
-            //    mc.m_velocities.x = 0;
-            //}
         }
     }
 
@@ -218,7 +209,8 @@ namespace bb {
             for(auto& hc : list) {
                 auto* entity = m_game.getWorld().getField()->getEntity(hc.first);
                 if(m_game.getWorld().getSystem<PhysicsSystem>().contain(entity, mouseCoord)) {
-                    entity->addComponent(std::type_index(typeid(DamageComponent)), new DamageComponent(1));
+                    m_game.getWorld().getSystem<HealthSystem>().addDamage(
+                        dynamic_cast<HealthComponent*>(hc.second.get()), 1);
                 }
             }
         }

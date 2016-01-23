@@ -3,7 +3,6 @@
 
 #include "BB/World/System/ISystem.h"
 #include "BB/World/Component/HealthComponent.h"
-#include "BB/World/Component/DamageComponent.h"
 
 namespace bb {
     class GameStateGame;
@@ -17,7 +16,7 @@ namespace bb {
         void createComponent(rapidjson::Value& jsonE,
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
-        void addDamage(DamageComponent* dc, int damage);
+        void addDamage(HealthComponent* hc, int damage);
     private:
         GameStateGame& m_game;
     };

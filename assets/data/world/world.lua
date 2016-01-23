@@ -46,16 +46,17 @@ entities = {
                     }
                 }
             },
-            MovementComponent = {
-                velocities = {0, 0}
-            },
-            PlayerComponent = {
-            },
-            CollisionComponent = {
+            PhysicsComponent = {
+                isMovable = true,
+                type = 2,
+                velocities = {0, 0},
                 hitbox = {0.3, 0, 0.4, 0.94},
                 collide = function(e)
                     return false
                 end
+            },
+            ControlComponent = {
+                control = true
             }
         }
     },
@@ -93,7 +94,9 @@ entities = {
                     }
                 }
             },
-            CollisionComponent = {
+            PhysicsComponent = {
+                isMovable = false,
+                type = 2,
                 hitbox = {0.22, 0, 0.56, 2},
                 collide = function(e)
                     e:setDamage(1)
@@ -101,8 +104,8 @@ entities = {
                 end
             },
             HealthComponent = {
-                maxHealth = 40,
-                health = 40,
+                maxHealth = 7,
+                health = 7,
                 frames = {"full", "slight", "more", "broken"},
                 death = function(e)
                     return true
@@ -119,7 +122,9 @@ entities = {
                 type = 0, 
                 textureRect = {0, 93, 32, 35}
             },
-            CollisionComponent = {
+            PhysicsComponent = {
+                isMovable = false,
+                type = 2,
                 hitbox = {0.28, 0, 0.47, 1},
                 collide = function(e)
                     return false

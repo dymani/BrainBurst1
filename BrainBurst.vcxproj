@@ -163,13 +163,11 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\BB\World\Component\CollisionComponent.h" />
-    <ClInclude Include="include\BB\World\Component\DamageComponent.h" />
     <ClInclude Include="include\BB\World\Component\GraphicsComponent.h" />
     <ClInclude Include="include\BB\World\Component\HealthComponent.h" />
     <ClInclude Include="include\BB\World\Component\IComponent.h" />
-    <ClInclude Include="include\BB\World\Component\MovementComponent.h" />
-    <ClInclude Include="include\BB\World\Component\PlayerComponent.h" />
+    <ClInclude Include="include\BB\World\Component\PhysicsComponent.h" />
+    <ClInclude Include="include\BB\World\Component\ControlComponent.h" />
     <ClInclude Include="include\BB\World\Entity.h" />
     <ClInclude Include="include\BB\World\EntityTemplate.h" />
     <ClInclude Include="include\BB\World\Field.h" />

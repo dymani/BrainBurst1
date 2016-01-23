@@ -2,8 +2,7 @@
 #define PHYSICS_SYSTEM_H
 
 #include "BB/World/System/ISystem.h"
-#include "BB/World/Component/MovementComponent.h"
-#include "BB/World/Component/CollisionComponent.h"
+#include "BB/World/Component/PhysicsComponent.h"
 
 namespace bb {
     class GameStateGame;

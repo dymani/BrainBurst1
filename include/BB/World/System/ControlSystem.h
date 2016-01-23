@@ -3,8 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "BB/World/System/ISystem.h"
-#include "BB/World/Component/PlayerComponent.h"
-#include "BB/World/Component/MovementComponent.h"
+#include "BB/World/Component/ControlComponent.h"
+#include "BB/World/Component/PhysicsComponent.h"
 
 namespace bb {
     class GameStateGame;

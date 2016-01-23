@@ -1,7 +1,6 @@
 #include "BB/World/Field.h"
 #include "BB/GameState/GameStateGame.h"
 #include "BB/World/Component/GraphicsComponent.h"
-#include "BB/World/Component/MovementComponent.h"
 
 namespace bb {
     Field::Field(GameStateGame& game, std::string worldName, std::string id) : m_game(game) {
@@ -66,15 +65,15 @@ namespace bb {
         sf::View view = m_game.getWindowHandler()->getWindow().getDefaultView();
         m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
             view.getSize().x / m_background.getTexture()->getSize().x);
-        m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(0, -1);
-        m_playerId = m_componentLists[std::type_index(typeid(PlayerComponent))].get()->m_list.begin()->first;
+        m_playerId = m_componentLists[std::type_index(typeid(ControlComponent))].get()->m_list.begin()->first;
+        m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(m_entities[m_playerId]->getCoord().x, -1);
     }
 
     void Field::update() {
     }
 
     void Field::draw(const double dt) {
-        auto gs = m_game.getWorld().getSystem<GraphicsSystem>();
+        auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
         sf::Vector2f playerCoord = m_entities[m_playerId]->getCoord();
         if(gs.getViewCoord().x > playerCoord.x + 3) {
             gs.setViewCoord(playerCoord.x + 3, gs.getViewCoord().y);
@@ -83,8 +82,8 @@ namespace bb {
         }
         if(gs.getViewCoord().y < playerCoord.y - 5) {
             gs.setViewCoord(gs.getViewCoord().x, playerCoord.y - 5);
-        } else if(gs.getViewCoord().y > playerCoord.y - 3) {
-            gs.setViewCoord(gs.getViewCoord().x, playerCoord.y - 3);
+        } else if(gs.getViewCoord().y > playerCoord.y - 5) {
+            gs.setViewCoord(gs.getViewCoord().x, playerCoord.y - 5);
         }
         sf::View view = gs.getView();
         auto& window = m_game.getWindowHandler()->getWindow();

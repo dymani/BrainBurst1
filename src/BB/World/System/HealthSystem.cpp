@@ -9,7 +9,6 @@ namespace bb {
 
     void HealthSystem::createList(std::map<std::type_index, std::unique_ptr<CList>>& lists) {
         lists[std::type_index(typeid(HealthComponent))] = std::unique_ptr<CList>(new CList());
-        lists[std::type_index(typeid(DamageComponent))] = std::unique_ptr<CList>(new CList());
     }
 
     void HealthSystem::createComponent(luabridge::LuaRef& luaE, std::map<std::type_index, std::unique_ptr<IComponent>>& list) {
@@ -25,6 +24,7 @@ namespace bb {
         auto* hc = new HealthComponent();
         hc->m_maxHealth = luaMaxHealth.cast<int>();
         hc->m_health = luaHealth.cast<int>();
+        hc->m_damage = 0;
         if(luaFrames.length() == 1) {
             for(int i = 0; i <= hc->m_maxHealth; i++)
                 hc->m_frames[i] = luaFrames[1].cast<std::string>();
@@ -68,8 +68,7 @@ namespace bb {
         if(jsonE.HasMember("health"))
             hc->m_health = float(jsonE["health"].GetDouble());
         if(jsonE.HasMember("damage"))
-            entity->addComponent(std::type_index(typeid(DamageComponent)),
-                new DamageComponent(jsonE["damage"].GetInt()));
+            hc->m_damage = jsonE["damage"].GetInt();
         entity->addComponent(std::type_index(typeid(HealthComponent)), hc);
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
         auto* gc = m_game.getWorld().getField()->getComponent<GraphicsComponent>(entity->getId());
@@ -77,17 +76,12 @@ namespace bb {
     }
 
     void HealthSystem::update() {
-        auto& dcList = m_game.getWorld().getField()->getComponentList<DamageComponent>()->m_list;
-        for(auto& c : dcList) {
-            auto& dc = *dynamic_cast<DamageComponent*>(c.second.get());
-            auto& hc = *m_game.getWorld().getField()->getComponent<HealthComponent>(c.first);
-            hc.m_health -= dc.m_damage;
-            m_game.getWorld().getField()->addDeleteComponent<DamageComponent>(c.first);
-        }
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
         auto& hcList = m_game.getWorld().getField()->getComponentList<HealthComponent>()->m_list;
         for(auto& c : hcList) {
             auto& hc = *dynamic_cast<HealthComponent*>(c.second.get());
+            hc.m_health -= hc.m_damage;
+            hc.m_damage = 0;
             if(hc.m_health <= 0) {
                 try {
                     if((*hc.m_deathFunc)(new LuaEntity(m_game, c.first)).cast<bool>()) {
@@ -104,7 +98,7 @@ namespace bb {
         }
     }
 
-    void HealthSystem::addDamage(DamageComponent* dc, int damage) {
-        dc->m_damage += damage;
+    void HealthSystem::addDamage(HealthComponent* hc, int damage) {
+        hc->m_damage += damage;
     }
 }

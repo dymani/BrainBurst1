@@ -146,19 +146,10 @@
     <ClInclude Include="include\BB\World\Stage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\World\Component\MovementComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BB\World\System\PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\World\Component\PlayerComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\BB\World\System\ControlSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BB\World\Component\CollisionComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\BB\World\Component\HealthComponent.h">
@@ -167,10 +158,13 @@
     <ClInclude Include="include\BB\World\System\HealthSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\World\Component\DamageComponent.h">
+    <ClInclude Include="include\BB\World\LuaEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BB\World\LuaEntity.h">
+    <ClInclude Include="include\BB\World\Component\PhysicsComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BB\World\Component\ControlComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,15 +1,16 @@
-#ifndef PLAYER_COMPONENT_H
-#define PLAYER_COMPONENT_H
+#ifndef CONTROL_COMPONENT_H
+#define CONTROL_COMPONENT_H
 
 #include "BB/World/Component/IComponent.h"
 
 namespace bb {
-    class PlayerComponent : public IComponent {
+    class ControlComponent : public IComponent {
         friend class ControlSystem;
     public:
-        PlayerComponent() : IComponent() {
+        ControlComponent() : IComponent() {
         }
     private:
+        bool m_control;
         bool m_facingLeft, m_movingLeft;
         enum State {
             IDLE, WALKING, JUMPING, CROUCHING

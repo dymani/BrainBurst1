@@ -35,17 +35,6 @@ namespace bb {
 
     void World::handleInput(sf::Event& windowEvent) {
         getSystem<ControlSystem>().handleInput(windowEvent);
-        if(windowEvent.type == sf::Event::KeyPressed) {
-            auto coord = getSystem<GraphicsSystem>().getViewCoord();
-            if(windowEvent.key.code == sf::Keyboard::Left)
-                getSystem<GraphicsSystem>().setViewCoord(coord.x - 0.1, coord.y);
-            else if(windowEvent.key.code == sf::Keyboard::Right)
-                getSystem<GraphicsSystem>().setViewCoord(coord.x + 0.1, coord.y);
-            else if(windowEvent.key.code == sf::Keyboard::Up)
-                getSystem<GraphicsSystem>().setViewCoord(coord.x, coord.y + 0.1);
-            else if(windowEvent.key.code == sf::Keyboard::Down)
-                getSystem<GraphicsSystem>().setViewCoord(coord.x, coord.y - 0.1);
-        }
     }
 
     void World::update() {

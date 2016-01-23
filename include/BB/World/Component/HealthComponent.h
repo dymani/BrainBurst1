@@ -14,6 +14,7 @@ namespace bb {
     private:
         int m_maxHealth;
         int m_health;
+        int m_damage;
         std::map<int, std::string> m_frames;
         std::shared_ptr<luabridge::LuaRef> m_deathFunc;
     };
