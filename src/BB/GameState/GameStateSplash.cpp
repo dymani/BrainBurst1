@@ -1,6 +1,7 @@
 #include "BB/GameState/GameStateSplash.h"
 #include "BB/Game.h"
 #include "BB/GameState/GameStateTitle.h"
+#include "BB/GameState/GameStateInit.h"
 
 namespace bb {
     GameStateSplash::GameStateSplash(Game& game, ResourceHandler* resourceHandler)
@@ -74,6 +75,9 @@ namespace bb {
                     case sf::Keyboard::Escape:
                         m_state = QUIT;
                         return;
+                    case sf::Keyboard::F5:
+                        m_state = RELOAD;
+                        break;
                 }
             }
         }
@@ -104,6 +108,10 @@ namespace bb {
                 return false;
             case NEXT:
                 m_game.changeState(new GameStateTitle(m_game, m_resourceHandler.release(), m_windowHandler.release()));
+                break;
+            case RELOAD:
+                m_windowHandler->getWindow().close();
+                m_game.changeState(new GameStateInit(m_game));
                 break;
         }
         return true;

@@ -74,6 +74,9 @@ namespace bb {
                     case sf::Keyboard::Escape:
                         m_state = QUIT;
                         return;
+                    case sf::Keyboard::F5:
+                        m_state = RELOAD;
+                        break;
                 }
             }
         }
@@ -96,6 +99,10 @@ namespace bb {
                     m_windowHandler->getWindow().close();
                     m_game.changeState(new GameStateSplash(m_game, m_resourceHandler.release()));
                 }
+                break;
+            case RELOAD:
+                m_windowHandler->getWindow().close();
+                m_game.changeState(new GameStateInit(m_game));
                 break;
         }
         return true;

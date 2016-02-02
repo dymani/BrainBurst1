@@ -11,6 +11,7 @@ extern "C" {
 #include "BB/GameState/IGameState.h"
 #include "BB/Handler/ResourceHandler.h"
 #include "BB/Handler/WindowHandler.h"
+#include "BB/Handler/GuiHandler.h"
 
 namespace bb {
     class Game;
@@ -24,10 +25,13 @@ namespace bb {
     private:
         std::unique_ptr<ResourceHandler> m_resourceHandler;
         std::unique_ptr<WindowHandler> m_windowHandler;
+        std::unique_ptr<GuiHandler> m_guiHandler;
         luabridge::lua_State* L;
         enum State {
-            RUNNING, QUIT, GAME
+            RUNNING, QUIT, GAME, RELOAD
         } m_state;
+        sf::Sprite m_background;
+        std::map<int, int> m_callbacks;
     };
 }
 

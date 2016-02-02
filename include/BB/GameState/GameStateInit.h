@@ -29,7 +29,7 @@ namespace bb {
         sf::Sprite m_sprite;
         int m_updateCount;
         enum State {
-            RUNNING, QUIT, NEXT
+            RUNNING, QUIT, NEXT, RELOAD
         } m_state;
     };
 }

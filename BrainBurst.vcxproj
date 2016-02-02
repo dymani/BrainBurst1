@@ -136,6 +136,8 @@
     <ClCompile Include="src\BB\GameState\GameStateSplash.cpp" />
     <ClCompile Include="src\BB\GameState\GameStateTitle.cpp" />
     <ClCompile Include="src\BB\Handler\AudioHandler.cpp" />
+    <ClCompile Include="src\BB\Handler\GuiHandler.cpp" />
+    <ClCompile Include="src\BB\Handler\Gui\Button.cpp" />
     <ClCompile Include="src\BB\Handler\ResourceHandler.cpp" />
     <ClCompile Include="src\BB\Handler\WindowHandler.cpp" />
     <ClCompile Include="src\BB\World\EntityTemplate.cpp" />
@@ -163,6 +165,10 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BB\Handler\GuiHandler.h" />
+    <ClInclude Include="include\BB\Handler\Gui\Button.h" />
+    <ClInclude Include="include\BB\Handler\Gui\IGuiElement.h" />
+    <ClInclude Include="include\BB\Handler\Gui\IGuiElementData.h" />
     <ClInclude Include="include\BB\World\Component\GraphicsComponent.h" />
     <ClInclude Include="include\BB\World\Component\HealthComponent.h" />
     <ClInclude Include="include\BB\World\Component\IComponent.h" />

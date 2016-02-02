@@ -30,7 +30,7 @@ namespace bb {
         int m_updateCount, m_splashes, m_duration, m_splashCount;
         std::vector<sf::Sprite> m_sprites;
         enum State {
-            RUNNING, QUIT, NEXT
+            RUNNING, QUIT, NEXT, RELOAD
         } m_state;
     };
 }

@@ -6,6 +6,8 @@ textures = {
   { name = "objects_HL06", file = "world/fields/objects_HL06.png"},
   { name = "bakcground_HL06", file = "world/fields/bakcground_HL06.png"},
   { name = "player", file = "world/player.png"},
+  { name = "button", file = "gui/button.png"},
+  { name = "title", file = "gui/title.png"},
   { name = "NULL", file = "null.png"}
 }
 
