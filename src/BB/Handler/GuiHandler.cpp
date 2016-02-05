@@ -11,7 +11,7 @@ namespace bb {
     void GuiHandler::load(luabridge::LuaRef& luaGui) {
         using namespace luabridge;
         LuaRef luaButton = luaGui[1];
-        Button* button = new Button(m_resourceHandler, luaButton);
+        Button* button = new Button(m_resourceHandler, m_windowHandler, luaButton);
         m_elements[0] = std::unique_ptr<IGuiElement>(button);
     }
 

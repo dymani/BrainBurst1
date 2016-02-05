@@ -45,7 +45,6 @@ namespace bb {
             } else if(windowEvent.type == sf::Event::KeyPressed) {
                 switch(windowEvent.key.code) {
                     case sf::Keyboard::Return:
-                    case sf::Keyboard::Space:
                         m_state = GAME;
                         break;
                     case sf::Keyboard::Escape:

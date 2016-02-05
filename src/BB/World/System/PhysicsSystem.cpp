@@ -122,6 +122,7 @@ namespace bb {
                     sf::FloatRect hitboxA = {gs.mapCoordsToPixel(ltCoordA), sizeA * float(gs.getTileSize())};
                     sf::FloatRect hitboxB = {gs.mapCoordsToPixel(ltCoordB), sizeB * float(gs.getTileSize())};
                     if(!hitboxA.intersects(hitboxB)) continue;
+                    sf::Vector2f newVelocities = pcA.m_velocities;
                     if(pcA.m_type == 2) {
                         float bottomA = hitboxA.top + hitboxA.height;
                         float bottomB = hitboxB.top + hitboxB.height;
@@ -136,20 +137,20 @@ namespace bb {
                         if(tCol < bCol && tCol < lCol && tCol < rCol) { //Top collision
                             coord.y = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
                                 0, bottomB + hitboxA.height}).y - pcA.m_hitbox.top;
-                            pcA.m_velocities.y = 0.0F;
+                            newVelocities.y = 0.0F;
                         } else if(bCol < tCol && bCol < lCol && bCol < rCol) { //bottom collision
                             coord.y = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
                                 0, hitboxB.top}).y - pcA.m_hitbox.top;
-                            pcA.m_velocities.y = 0.0F;
+                            newVelocities.y = 0.0F;
                             pcA.m_isOnGround = true;
                         } else if(lCol < rCol && lCol < tCol && lCol < bCol) { //Left collision
                             coord.x = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
                                 rightB, 0}).x - pcA.m_hitbox.left;
-                            pcA.m_velocities.x = 0.0F;
+                            newVelocities.x = 0.0F;
                         } else if(rCol < lCol && rCol < tCol && rCol < bCol) { //Right collision
                             coord.x = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords({
                                 hitboxB.left - hitboxA.width, 0}).x - pcA.m_hitbox.left;
-                            pcA.m_velocities.x = 0.0F;
+                            newVelocities.x = 0.0F;
                         }
                     }
                     try {
@@ -165,6 +166,7 @@ namespace bb {
                         LogHandler::log<PhysicsSystem>(ERR, "LuaException: ");
                         std::cout << "                " << e.what() << std::endl;
                     }
+                    pcA.m_velocities = newVelocities;
                 }
             }
             e->setCoord(coord);

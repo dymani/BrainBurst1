@@ -1,6 +1,6 @@
 duration = 1
 
-resolution = {1024, 576}
+resolution = {1120, 630}
 
 splashes = {
   "splash0",

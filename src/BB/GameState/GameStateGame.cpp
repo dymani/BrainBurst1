@@ -25,7 +25,7 @@ namespace bb {
             .addFunction("hsSetDamage", &LuaEntity::hsSetDamage)
             .addFunction("print", &LuaEntity::print)
             .addProperty("psVelocityX", &LuaEntity::psGetVelocityX, &LuaEntity::psSetVelocityX)
-            .addProperty("psVlocityY", &LuaEntity::psGetVelocityY, &LuaEntity::psSetVelocityY)
+            .addProperty("psVelocityY", &LuaEntity::psGetVelocityY, &LuaEntity::psSetVelocityY)
             .addFunction("psSetHitbox", &LuaEntity::psSetHitbox)
             .endClass();
         m_audioHandler->play("test1");

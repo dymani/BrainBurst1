@@ -19,8 +19,8 @@ gui = {
     {
         {
             id = 100,
-            position = {362, 340},
-            size = {300, 60},
+            position = {710, 650},
+            size = {500, 100},
             texture = "button",
             textureRect = {0, 0, 900, 60},
             text = "Play",
@@ -28,8 +28,8 @@ gui = {
         },
         {
             id = 101,
-            position = {362, 420},
-            size = {300, 60},
+            position = {710, 770},
+            size = {500, 100},
             texture = "button",
             textureRect = {0, 0, 900, 60},
             text = "Reload",
@@ -37,8 +37,8 @@ gui = {
             },
         {
             id = 102,
-            position = {362, 500},
-            size = {300, 60},
+            position = {710, 890},
+            size = {500, 100},
             texture = "button",
             textureRect = {0, 0, 900, 60},
             text = "Quit",

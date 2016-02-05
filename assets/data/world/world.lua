@@ -55,6 +55,9 @@ entities = {
                     return false
                 end,
                 onCollide = function(this, other)
+                    if(this.psVelocityY <= -20) then
+                       other:hsSetDamage(-20 - this.psVelocityY)
+                    end
                     return false
                 end
             },

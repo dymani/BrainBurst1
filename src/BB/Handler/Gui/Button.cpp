@@ -1,9 +1,10 @@
 #include "BB/Handler/Gui/Button.h"
 #include "BB/Handler/ResourceHandler.h"
+#include "BB/Handler/WindowHandler.h"
 
 namespace bb {
-    Button::Button(ResourceHandler& resourceHandler, luabridge::LuaRef& luaElement)
-        : m_resourceHandler(resourceHandler) {
+    Button::Button(ResourceHandler& resourceHandler, WindowHandler& windowHandler
+        , luabridge::LuaRef& luaElement) : m_resourceHandler(resourceHandler) {
         using namespace luabridge;
         if(!luaElement.isTable()) return;
         for(int i = 1; i <= luaElement.length(); i++) {
@@ -25,14 +26,16 @@ namespace bb {
             data->m_textureRect[1] = {rect.width / 3, rect.top, rect.width / 3, rect.height};
             data->m_textureRect[2] = {rect.width / 3 * 2, rect.top, rect.width / 3, rect.height};
             data->m_sprite.setTextureRect(data->m_textureRect[0]);
-            data->m_sprite.setPosition(sf::Vector2f(data->m_position));
-            data->m_sprite.setScale({float(data->m_size.x) / data->m_textureRect->width,
-                float(data->m_size.y) / data->m_textureRect->height});
+            float scale = float(windowHandler.getWindow().getSize().x) / 1920.0F;
+            data->m_sprite.setPosition(sf::Vector2f(data->m_position) * scale);
+            data->m_sprite.setScale({float(data->m_size.x) / data->m_textureRect->width * scale,
+                float(data->m_size.y) / data->m_textureRect->height * scale});
             data->m_text.setFont(m_resourceHandler.getFont(luaFont.cast<std::string>()));
             data->m_text.setString(luaText.cast<std::string>());
-            data->m_text.setCharacterSize(int(luaSize[2].cast<int>() * 0.7F));
-            data->m_text.setPosition({data->m_sprite.getPosition().x + (data->m_sprite.getGlobalBounds().width - data->m_text.getGlobalBounds().width) / 2, data->m_sprite.getPosition().y
-                + (data->m_sprite.getGlobalBounds().height- data->m_text.getCharacterSize()) / 4});
+            data->m_text.setCharacterSize(int(luaSize[2].cast<int>() * 0.7F * scale));
+            data->m_text.setPosition({data->m_sprite.getPosition().x +
+                (data->m_sprite.getGlobalBounds().width - data->m_text.getGlobalBounds().width) / 2, data->m_sprite.getPosition().y + (data->m_sprite.getGlobalBounds().height
+                    - data->m_text.getCharacterSize()) / 4});
             data->m_state = ButtonData::IDLE;
             m_data[luaId.cast<int>()] = std::unique_ptr<IGuiElementData>(data);
         }
@@ -91,7 +94,6 @@ namespace bb {
             auto* button = dynamic_cast<ButtonData*>(data.second.get());
             if(button->m_state == ButtonData::RELEASED) {
                 button->m_state = ButtonData::HOVER;
-                std::cout << data.first << std::endl;
                 return data.first;
             }
         }

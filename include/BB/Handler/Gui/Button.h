@@ -14,11 +14,12 @@ extern "C" {
 
 namespace bb {
     class ResourceHandler;
+    class WindowHandler;
 
     class Button : public IGuiElement {
         friend class GuiHandler;
     public:
-        Button(ResourceHandler& game, luabridge::LuaRef& luaElement);
+        Button(ResourceHandler& resourceHandler, WindowHandler& windowHandler, luabridge::LuaRef& luaElement);
         bool handleInput(sf::RenderWindow& window, sf::Event& windowEvent);
         int update();
         void draw(sf::RenderWindow& window);
