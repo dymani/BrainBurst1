@@ -12,12 +12,8 @@ namespace bb {
         ControlComponent() : IComponent() {
         }
     private:
-        bool m_control;
-        bool m_facingLeft, m_movingLeft;
-        enum State {
-            IDLE, WALKING, JUMPING, CROUCHING
-        } m_state;
-        std::shared_ptr<luabridge::LuaRef> m_onInput;
+        bool m_control, m_script;
+        std::string m_scriptName;
     };
 }
 

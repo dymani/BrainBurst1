@@ -189,6 +189,14 @@ namespace bb {
         return pc->m_velocities;
     }
 
+    bool PhysicsSystem::getOnGround(PhysicsComponent* pc) {
+        return pc->m_isOnGround;
+    }
+
+    void PhysicsSystem::setOnGround(PhysicsComponent* pc, bool onGround) {
+        pc->m_isOnGround = onGround;
+    }
+
     void PhysicsSystem::setVelocity(PhysicsComponent* pc, sf::Vector2f velocity) {
         pc->m_velocities = velocity;
     }

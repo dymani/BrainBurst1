@@ -12,23 +12,8 @@ namespace bb {
         m_audioHandler = std::unique_ptr<AudioHandler>(new AudioHandler(*m_resourceHandler.get()));
         m_state = RUNNING;
         m_windowHandler->getWindow().setKeyRepeatEnabled(true);
-        luabridge::getGlobalNamespace(L)
-            .beginClass<LuaEntity>("LuaEntity")
-            .addProperty("csState", &LuaEntity::csGetState)
-            .addProperty("csFacingLeft", &LuaEntity::csIsFacingLeft)
-            .addProperty("csMovingLeft", &LuaEntity::csIsMovingLeft)
-            .addProperty("x", &LuaEntity::getCoordX, &LuaEntity::setCoordX)
-            .addProperty("y", &LuaEntity::getCoordY, &LuaEntity::setCoordY)
-            .addFunction("gsSetAnimation", &LuaEntity::gsSetAnimation)
-            .addFunction("gsSetAnimationFrame", &LuaEntity::gsSetAnimationFrame)
-            .addProperty("hsHealth", &LuaEntity::hsGetHealth)
-            .addFunction("hsSetDamage", &LuaEntity::hsSetDamage)
-            .addFunction("print", &LuaEntity::print)
-            .addProperty("psVelocityX", &LuaEntity::psGetVelocityX, &LuaEntity::psSetVelocityX)
-            .addProperty("psVelocityY", &LuaEntity::psGetVelocityY, &LuaEntity::psSetVelocityY)
-            .addFunction("psSetHitbox", &LuaEntity::psSetHitbox)
-            .endClass();
-        m_audioHandler->play("test1");
+        LuaEntity::registerState(L);
+        ControlSystem::registerState(L);
     }
 
     void GameStateGame::handleInput() {

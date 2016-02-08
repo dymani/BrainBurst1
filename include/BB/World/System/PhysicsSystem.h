@@ -18,6 +18,8 @@ namespace bb {
         void update();
         bool contain(Entity* e, sf::Vector2f coord);
         sf::Vector2f getVelocity(PhysicsComponent* pc);
+        bool getOnGround(PhysicsComponent* pc);
+        void setOnGround(PhysicsComponent* pc, bool onGround);
         void setVelocity(PhysicsComponent* pc, sf::Vector2f velocity);
         void setHitbox(PhysicsComponent* pc, sf::FloatRect hitbox);
     private:

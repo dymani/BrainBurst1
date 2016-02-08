@@ -3,6 +3,22 @@
 #include "BB/World/LuaEntity.h"
 
 namespace bb {
+    void ControlSystem::registerState(luabridge::lua_State* L) {
+        luabridge::getGlobalNamespace(L)
+            .beginClass<LuaInput>("LuaInput")
+            .addData("keyW", &LuaInput::keyW, false)
+            .addData("keyA", &LuaInput::keyA, false)
+            .addData("keyS", &LuaInput::keyS, false)
+            .addData("keyD", &LuaInput::keyD, false)
+            .addData("keySpace", &LuaInput::keySpace, false)
+            .addData("keyShift", &LuaInput::keyShift, false)
+            .addData("keyCtrl", &LuaInput::keyCtrl, false)
+            .addData("mouseLeft", &LuaInput::mouseLeft, false)
+            .addData("mouseX", &LuaInput::mouseX, false)
+            .addData("mouseY", &LuaInput::mouseY, false)
+            .endClass();
+    }
+
     ControlSystem::ControlSystem(GameStateGame& game) : m_game(game) {
 
     }
@@ -19,12 +35,28 @@ namespace bb {
         if(luaCC.isNil()) return;
         auto* cc = new ControlComponent();
         LuaRef luaControl = luaCC["control"];
-        LuaRef luaOnInput = luaCC["onInput"];
+        LuaRef luaScriptName = luaCC["scriptName"];
         cc->m_control = luaControl.cast<bool>();
-        cc->m_state = cc->IDLE;
-        cc->m_facingLeft = true;
-        cc->m_movingLeft = true;
-        cc->m_onInput = std::make_shared<LuaRef>(luaOnInput);
+        cc->m_scriptName = luaScriptName.cast<std::string>();
+        if(cc->m_scriptName == "") {
+            cc->m_script = false;
+        } else {
+            if(m_scripts.find(cc->m_scriptName) == m_scripts.end()) {
+                using namespace luabridge;
+                auto* L = m_game.getLuaState();
+                std::string file = "assets/data/world/scripts/" + cc->m_scriptName + ".lua";
+                if(luaL_loadfile(L, file.c_str()) || lua_pcall(L, 0, 0, 0)) {
+                    LogHandler::log<Field>(ERR, "Script \"" + file + "\" not found");
+                    cc->m_script = false;
+                } else {
+                    cc->m_script = true;
+                    luabridge::LuaRef& luaOnInput = getGlobal(L, "onInput");
+                    m_scripts[cc->m_scriptName] = std::make_shared<LuaRef>(luaOnInput);
+                }
+            } else {
+                cc->m_script = true;
+            }
+        }
         list[std::type_index(typeid(ControlComponent))] = std::unique_ptr<ControlComponent>(cc);
     }
 
@@ -37,33 +69,46 @@ namespace bb {
     }
 
     void ControlSystem::handleInput() {
-        bool keyW = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
-        bool keyA = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
-        bool keyS = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-        bool keyD = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-
-        bool keyW2 = sf::Keyboard::isKeyPressed(sf::Keyboard::T);
-        bool keyA2 = sf::Keyboard::isKeyPressed(sf::Keyboard::F);
-        bool keyS2 = sf::Keyboard::isKeyPressed(sf::Keyboard::G);
-        bool keyD2 = sf::Keyboard::isKeyPressed(sf::Keyboard::H);
-
-        bool keySpace = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
-        bool keyControl = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl);
-        bool keyShift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
-        bool mouseLeft = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-        sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
-        sf::Vector2f mouseCoord = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
+        sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
+        sf::Vector2f mousePos2 = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
+        sf::Vector2f mouseCoord = gs.mapPixelToCoords(mousePos2);
+        LuaInput input;
+        input.keyW = sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+        input.keyA = sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+        input.keyS = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+        input.keyD = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+        input.keySpace = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+        input.keyShift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+        input.keyCtrl = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl);
+        input.mouseLeft = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+        input.mouseX = mouseCoord.x;
+        input.mouseY = mouseCoord.y;
+
         auto& cList = m_game.getWorld().getField()->getComponentList<ControlComponent>()->m_list;
         for(auto& c : cList) {
-            bool update = false;
             auto& cc = *dynamic_cast<ControlComponent*>(c.second.get());
-            if(!cc.m_control) continue;
-            auto& pc = *m_game.getWorld().getField()->getComponent<PhysicsComponent>(c.first);
-            auto gc = m_game.getWorld().getField()->getComponent<GraphicsComponent>(c.first);
-            auto* pE = m_game.getWorld().getField()->getEntity(c.first);
-            sf::Vector2f playerPos = gs.mapCoordsToPixel(pE->getCoord());
-            if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == true) {
+            if(!cc.m_script) continue;
+            if(cc.m_control) {
+                try {
+                    if((*m_scripts[cc.m_scriptName])(new LuaEntity(m_game, c.first), input).cast<bool>()) {
+                        m_game.getWorld().getField()->addDeleteEntity(c.first);
+                    }
+                } catch(luabridge::LuaException const& e) {
+                    LogHandler::log<ControlSystem>(ERR, "LuaException: ");
+                    std::cout << "                " << e.what() << std::endl;
+                }
+            } else {
+                try {
+                    if((*m_scripts[cc.m_scriptName])(new LuaEntity(m_game, c.first)).cast<bool>()) {
+                        m_game.getWorld().getField()->addDeleteEntity(c.first);
+                    }
+                } catch(luabridge::LuaException const& e) {
+                    LogHandler::log<ControlSystem>(ERR, "LuaException: ");
+                    std::cout << "                " << e.what() << std::endl;
+                }
+            }
+            /*if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == true) {
                 update = true;
                 cc.m_facingLeft = false;
             } else if(mouseCoord.x < playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == false) {
@@ -165,17 +210,7 @@ namespace bb {
                         }
                     }
                     break;
-            }
-            if(update) {
-                try {
-                    if((*cc.m_onInput)(new LuaEntity(m_game, c.first)).cast<bool>()) {
-                        m_game.getWorld().getField()->addDeleteEntity(c.first);
-                    }
-                } catch(luabridge::LuaException const& e) {
-                    LogHandler::log<HealthSystem>(ERR, "LuaException: ");
-                    std::cout << "                " << e.what() << std::endl;
-                }
-            }
+            }*/
         }
     }
 
@@ -192,17 +227,5 @@ namespace bb {
                 }
             }
         }
-    }
-
-    int ControlSystem::getState(ControlComponent* cc) {
-        return int(cc->m_state);
-    }
-
-    bool ControlSystem::isFacingLeft(ControlComponent* cc) {
-        return cc->m_facingLeft;
-    }
-
-    bool ControlSystem::isMovingLeft(ControlComponent* cc) {
-        return cc->m_movingLeft;
     }
 }

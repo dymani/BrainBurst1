@@ -6,6 +6,24 @@
 #include "BB/World/System/HealthSystem.h"
 
 namespace bb {
+    void LuaEntity::registerState(luabridge::lua_State* L) {
+        luabridge::getGlobalNamespace(L)
+            .beginClass<LuaEntity>("LuaEntity")
+            .addProperty("x", &LuaEntity::getCoordX, &LuaEntity::setCoordX)
+            .addProperty("y", &LuaEntity::getCoordY, &LuaEntity::setCoordY)
+            .addFunction("gsSetAnimation", &LuaEntity::gsSetAnimation)
+            .addFunction("gsSetAnimationFrame", &LuaEntity::gsSetAnimationFrame)
+            .addProperty("hsHealth", &LuaEntity::hsGetHealth)
+            .addFunction("hsSetDamage", &LuaEntity::hsSetDamage)
+            .addFunction("print", &LuaEntity::print)
+            .addProperty("psVelocityX", &LuaEntity::psGetVelocityX, &LuaEntity::psSetVelocityX)
+            .addProperty("psVelocityY", &LuaEntity::psGetVelocityY, &LuaEntity::psSetVelocityY)
+            .addFunction("psSetHitbox", &LuaEntity::psSetHitbox)
+            .addProperty("psOnGround", &LuaEntity::psGetOnGround, &LuaEntity::psSetOnGround)
+            .addData("id", &LuaEntity::m_entity)
+            .endClass();
+    }
+
     LuaEntity::LuaEntity(GameStateGame& game, int entity) : m_game(game), m_entity(entity) {
     }
 
@@ -33,24 +51,6 @@ namespace bb {
         m_game.getWorld().getSystem<GraphicsSystem>().setAnimation(gc, "", frame);
     }
 
-    int LuaEntity::csGetState() const {
-        auto* cc = m_game.getWorld().getField()->getComponent<ControlComponent>(m_entity);
-        if(!cc) return -1;
-        return m_game.getWorld().getSystem<ControlSystem>().getState(cc);
-    }
-
-    bool LuaEntity::csIsFacingLeft() const {
-        auto* cc = m_game.getWorld().getField()->getComponent<ControlComponent>(m_entity);
-        if(!cc) return false;
-        return m_game.getWorld().getSystem<ControlSystem>().isFacingLeft(cc);
-    }
-
-    bool LuaEntity::csIsMovingLeft() const {
-        auto* cc = m_game.getWorld().getField()->getComponent<ControlComponent>(m_entity);
-        if(!cc) return false;
-        return m_game.getWorld().getSystem<ControlSystem>().isMovingLeft(cc);
-    }
-
     void LuaEntity::psSetVelocityX(float x) {
         auto* pc = m_game.getWorld().getField()->getComponent<PhysicsComponent>(m_entity);
         if(!pc) return;
@@ -63,6 +63,18 @@ namespace bb {
         if(!pc) return;
         float x = m_game.getWorld().getSystem<PhysicsSystem>().getVelocity(pc).x;
         m_game.getWorld().getSystem<PhysicsSystem>().setVelocity(pc, {x, y});
+    }
+
+    void LuaEntity::psSetOnGround(bool onGround) {
+        auto* pc = m_game.getWorld().getField()->getComponent<PhysicsComponent>(m_entity);
+        if(!pc) return;
+        m_game.getWorld().getSystem<PhysicsSystem>().setOnGround(pc, onGround);
+    }
+
+    bool LuaEntity::psGetOnGround() const {
+        auto* pc = m_game.getWorld().getField()->getComponent<PhysicsComponent>(m_entity);
+        if(!pc) return false;
+        return m_game.getWorld().getSystem<PhysicsSystem>().getOnGround(pc);
     }
 
     float LuaEntity::psGetVelocityX() const {
@@ -105,6 +117,10 @@ namespace bb {
         auto* e = m_game.getWorld().getField()->getEntity(m_entity);
         if(!e) return 0;
         return e->getCoord().y;
+    }
+
+    int LuaEntity::getId() const {
+        return m_entity;
     }
 
     void LuaEntity::print(std::string text) {

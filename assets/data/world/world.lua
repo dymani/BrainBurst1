@@ -63,43 +63,7 @@ entities = {
             },
             ControlComponent = {
                 control = true,
-                onInput = function(this)
-                    if(this.csFacingLeft) then
-                        if(this.csState == 0) then
-                            this:gsSetAnimation("idleL")
-                        elseif(this.csState == 1) then
-                            this:gsSetAnimation("walkL")
-                        elseif(this.csState == 2) then
-                            if(this.psVelocityX == 0) then
-                                this:gsSetAnimation("idleL")
-                            else
-                                this:gsSetAnimation("walkL")
-                            end
-                        elseif(this.csState == 3) then
-                            this:gsSetAnimation("crouchL")
-                        end
-                    else
-                        if(this.csState == 0) then
-                            this:gsSetAnimation("idleR")
-                        elseif(this.csState == 1) then
-                            this:gsSetAnimation("walkR")
-                        elseif(this.csState == 2) then
-                            if(this.psVelocityX == 0) then
-                                this:gsSetAnimation("idleR")
-                            else
-                                this:gsSetAnimation("walkR")
-                            end    
-                        elseif(this.csState == 3) then
-                            this:gsSetAnimation("crouchR")
-                        end
-                    end
-                    if(this.csState == 3) then
-                        this:psSetHitbox(0.3, 0, 0.4, 0.66)
-                    else
-                        this:psSetHitbox(0.3, 0, 0.4, 0.94)
-                    end
-                    return false
-                end
+                scriptName = "player"
             }
         }
     },
@@ -143,7 +107,6 @@ entities = {
                 type = 2,
                 hitbox = {0.22, 0, 0.56, 2},
                 onCollide = function(this, other)
-                    --this:hsSetDamage(1)
                     return false
                 end
             },
@@ -167,6 +130,7 @@ entities = {
                     return false
                 end,
                 onDeath = function(this)
+                    print(a[this.id])
                     return true
                 end
             }
@@ -188,6 +152,69 @@ entities = {
                 onCollide = function(this, other)
                     return false
                 end
+            }
+        }
+    },
+    {
+        name = "lavaCarbuncle",
+        size = {2, 1},
+        components = {
+            GraphicsComponent = {
+                z = 6,
+                type = 1,
+                texture = "enemies",
+                defaultAnimation = "left",
+                animations = {
+                    {
+                        name = "left",
+                        frameStrip = {0, 0, 64, 32},
+                        frames = 1,
+                        speed = -1
+                    },
+                    {
+                        name = "right",
+                        frameStrip = {64, 0, 64, 32},
+                        frames = 1,
+                        speed = -1
+                    }
+                }
+            },
+            PhysicsComponent = {
+                isMovable = true,
+                type = 2,
+                velocities = {1, 0},
+                hitbox = {0.19, 0, 1.38, 0.66},
+                onHitGround = function(this)
+                    return false
+                end,
+                onCollide = function(this, other)
+                    if(this.y - other.y >-0.1) then
+                        if(this.x + 0.19 + 0.69 - 0.5 < other.x) then
+                            this.psVelocityX = -3
+                        else
+                            this.psVelocityX = 3
+                        end
+                    end
+                    return false
+                end
+            },
+            HealthComponent = {
+                maxHealth = 10,
+                health = 10,
+                onHit = function(this)
+                    this:hsSetDamage(1)
+                    return false
+                end,
+                onHealthChange = function(this)
+                    return false
+                end,
+                onDeath = function(this)
+                    return true
+                end
+            },
+            ControlComponent = {
+                control = false,
+                scriptName = "lavaCarbuncle"
             }
         }
     }
