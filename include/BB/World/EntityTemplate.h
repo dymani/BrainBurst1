@@ -22,6 +22,7 @@ namespace bb {
         EntityTemplate(GameStateGame& game, luabridge::LuaRef& luaE);
         std::string getName();
         Entity* createEntity(GameStateGame& game, rapidjson::Value& jsonE);
+        Entity* createEntity(GameStateGame& game, int id, sf::Vector2f coord);
     private:
         std::string m_name;
         sf::Vector2f m_size;

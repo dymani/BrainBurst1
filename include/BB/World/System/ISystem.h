@@ -32,6 +32,8 @@ namespace bb {
             std::map<std::type_index, std::unique_ptr<IComponent>>& list) = 0;
         virtual void createComponent(rapidjson::Value& jsonE,
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity) = 0;
+        virtual void createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list,
+            Entity* entity) = 0;
     protected:
 
     };

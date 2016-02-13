@@ -26,4 +26,14 @@ namespace bb {
         }
         return entity;
     }
+
+    Entity* EntityTemplate::createEntity(GameStateGame& game, int id, sf::Vector2f coord) {
+        Entity* entity = new Entity(game);
+        entity->setId(id);
+        entity->setCoord(coord);
+        for(auto& system : game.getWorld().getSystems()) {
+            system.second->createComponent(m_components, entity);
+        }
+        return entity;
+    }
 }

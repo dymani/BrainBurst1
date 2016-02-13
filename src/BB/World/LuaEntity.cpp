@@ -21,6 +21,7 @@ namespace bb {
             .addFunction("psSetHitbox", &LuaEntity::psSetHitbox)
             .addProperty("psOnGround", &LuaEntity::psGetOnGround, &LuaEntity::psSetOnGround)
             .addData("id", &LuaEntity::m_entity)
+            .addFunction("create", &LuaEntity::createEntity)
             .endClass();
     }
 
@@ -125,5 +126,9 @@ namespace bb {
 
     void LuaEntity::print(std::string text) {
         LogHandler::log<LuaEntity>(INF, text);
+    }
+
+    void LuaEntity::createEntity(std::string name, float x, float y) {
+        m_game.getWorld().getField()->createEntity(name, {x, y});
     }
 }

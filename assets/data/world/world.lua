@@ -50,6 +50,7 @@ entities = {
                 isMovable = true,
                 type = 2,
                 velocities = {0, 0},
+                resistance = true,
                 hitbox = {0.3, 0, 0.4, 0.94},
                 onHitGround = function(this)
                     return false
@@ -130,7 +131,6 @@ entities = {
                     return false
                 end,
                 onDeath = function(this)
-                    print(a[this.id])
                     return true
                 end
             }
@@ -183,6 +183,7 @@ entities = {
                 isMovable = true,
                 type = 2,
                 velocities = {1, 0},
+                resistance = true,
                 hitbox = {0.19, 0, 1.38, 0.66},
                 onHitGround = function(this)
                     return false
@@ -215,6 +216,58 @@ entities = {
             ControlComponent = {
                 control = false,
                 scriptName = "lavaCarbuncle"
+            }
+        }
+    },
+    {
+        name = "FireL",
+        size = {0.1, 0.1},
+        components = {
+            GraphicsComponent = {
+                z = 10,
+                type = 0, 
+                texture = "NULL",
+                textureRect = {0, 0, 32, 32}
+            },
+            PhysicsComponent = {
+                isMovable = true,
+                type = 2,
+                hitbox = {0, 0, 0.1, 0.1},
+                velocities = {-5, 0},
+                resistance = false,
+                onHitGround = function(this)
+                    return true
+                end,
+                onCollide = function(this, other)
+                    other:hsSetDamage(1)
+                    return true
+                end
+            }
+        }
+    },
+    {
+        name = "FireR",
+        size = {0.1, 0.1},
+        components = {
+            GraphicsComponent = {
+                z = 10,
+                type = 0, 
+                texture = "NULL",
+                textureRect = {0, 0, 32, 32}
+            },
+            PhysicsComponent = {
+                isMovable = true,
+                type = 2,
+                hitbox = {0, 0, 0.1, 0.1},
+                velocities = {5, 0},
+                resistance = false,
+                onHitGround = function(this)
+                    return true
+                end,
+                onCollide = function(this, other)
+                    other:hsSetDamage(1)
+                    return true
+                end
             }
         }
     }

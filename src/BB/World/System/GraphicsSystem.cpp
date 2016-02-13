@@ -101,6 +101,21 @@ namespace bb {
         entity->addComponent(std::type_index(typeid(GraphicsComponent)), gc);
     }
 
+    void GraphicsSystem::createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list,
+        Entity* entity) {
+        auto* component = list[std::type_index(typeid(GraphicsComponent))].get();
+        if(!component) return;
+        auto* gc = new GraphicsComponent(*dynamic_cast<GraphicsComponent*>(component));
+        if(!gc->m_hasTexture) {
+            gc->m_stageObjectTexture = m_game.getWorld().getStage(m_game.getWorld().getField()->getStageName())
+                ->getObjectTexture();
+            sf::Texture& tex = m_game.getResourceHandler()->getTexture(gc->m_stageObjectTexture);
+            tex.setSmooth(false);
+            gc->m_sprite.setTexture(tex);
+        }
+        entity->addComponent(std::type_index(typeid(GraphicsComponent)), gc);
+    }
+
     void GraphicsSystem::update() {
         auto& cList = *m_game.getWorld().getField()->getComponentList<GraphicsComponent>();
         for(auto& c : cList.m_list) {

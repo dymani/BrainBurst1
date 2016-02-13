@@ -24,11 +24,14 @@ namespace bb {
             std::map<std::type_index, std::unique_ptr<IComponent>>& list);
         void createComponent(rapidjson::Value& jsonE,
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
+        void createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void handleInput();
         void handleInput(sf::Event& windowEvent);
+        int getPlayerId();
     private:
         GameStateGame& m_game;
         std::map<std::string, std::shared_ptr<luabridge::LuaRef>> m_scripts;
+        int m_player;
     };
 
     class LuaInput {

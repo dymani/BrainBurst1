@@ -28,6 +28,7 @@ namespace bb {
         float getCoordY() const;
         int getId() const;
         void print(std::string text);
+        void createEntity(std::string name, float x, float y);
     private:
         GameStateGame& m_game;
         const int m_entity;

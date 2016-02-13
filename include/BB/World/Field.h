@@ -16,6 +16,7 @@ namespace bb {
         void draw(const double dt);
         int getSize();
         Entity* getEntity(int id);
+        int createEntity(std::string name, sf::Vector2f coord);
         void addDeleteEntity(int id);
         void deleteEntities();
         template<typename T>
@@ -36,17 +37,17 @@ namespace bb {
             if(m_componentLists.find(std::type_index(typeid(T))) == m_componentLists.end()) return nullptr;
             return m_componentLists[std::type_index(typeid(T))].get();
         }
+        std::string getStageName();
     private:
         GameStateGame& m_game;
         std::string m_worldName, m_id;
         sf::RenderStates m_states;
         sf::VertexArray m_vertices;
-        std::string m_tileSet;
+        std::string m_tileSet, m_stage;
         std::vector<int> m_tiles;
         sf::Sprite m_background;
         std::map<int, std::unique_ptr<Entity>> m_entities;
         std::map<std::type_index, std::unique_ptr<CList>> m_componentLists;
-        int m_playerId;
         std::vector<int> m_deletingEntities;
         std::vector<std::pair<std::type_index, int>> m_deletingComponents;
     };

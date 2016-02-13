@@ -44,6 +44,14 @@ namespace bb {
         entity->addComponent(std::type_index(typeid(HealthComponent)), hc);
     }
 
+    void HealthSystem::createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list,
+        Entity* entity) {
+        auto* component = list[std::type_index(typeid(HealthComponent))].get();
+        if(!component) return;
+        auto* hc = new HealthComponent(*dynamic_cast<HealthComponent*>(component));
+        entity->addComponent(std::type_index(typeid(HealthComponent)), hc);
+    }
+
     void HealthSystem::update() {
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
         auto& hcList = m_game.getWorld().getField()->getComponentList<HealthComponent>()->m_list;

@@ -8,9 +8,9 @@
         {"name":"rock1", "id":104, "coordX":6.8, "coordY":3, "stage":"HL06"},
         {"name":"rock1", "id":105, "coordX":7.4, "coordY":4, "stage":"HL06", "damage":1},
         {"name":"rock1", "id":106, "coordX":8, "coordY":5, "stage":"HL06"},
-        {"name":"rock2", "id":108, "coordX":8, "coordY":0, "stage":"HL06"},
+        {"name":"rock2", "id":108, "coordX":12, "coordY":0, "stage":"HL06"},
         {"name":"player", "id":0, "coordX":11, "coordY":0, "animation":"idleL", "frame":0, "velocityX":0, "velocityY":0},
-        {"name":"lavaCarbuncle", "id" :1, "coordX":14, "coordY":0, "velocityX":0, "velocityY":0}
+        {"name":"lavaCarbuncle", "id" :1, "coordX":10, "coordY":0, "velocityX":0, "velocityY":0}
     ],
     "tileSet":"HL06",
     "tiles":[

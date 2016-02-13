@@ -1,6 +1,8 @@
 local facingLeft = {}
 local movingLeft = {}
 local state = {}
+local coolDown = {}
+local c = 50
 
 onInput = function(this, input)
     if(facingLeft[this.id] == nil) then
@@ -12,6 +14,9 @@ onInput = function(this, input)
     if(state[this.id] == nil) then
         state[this.id] = 0
     end
+    if(coolDown[this.id] == nil) then
+        coolDown[this.id] = c
+    end
     local update = false
     if(input.mouseX > (this.x + 0.5) and facingLeft[this.id]) then
         update = true
@@ -19,6 +24,18 @@ onInput = function(this, input)
     elseif(input.mouseX < (this.x + 0.5) and not(facingLeft[this.id])) then
         update = true
         facingLeft[this.id] = true
+    end
+    if(coolDown[this.id] >= c) then
+        if(input.mouseLeft) then
+            coolDown[this.id] = 0
+            if(input.mouseX < this.x) then
+                this:create("FireL", this.x, this.y + 0.5)
+            else
+                this:create("FireR", this.x + 1, this.y + 0.5)
+            end
+        end
+    else
+        coolDown[this.id] = coolDown[this.id] + 1
     end
     if(state[this.id] == 0) then
         if(input.keyA == not input.keyD) then

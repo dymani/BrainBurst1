@@ -15,6 +15,7 @@ namespace bb {
             std::map<std::type_index, std::unique_ptr<IComponent>>& list);
         void createComponent(rapidjson::Value& jsonE,
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
+        void createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
         void draw(const double dt);
         void setViewCoord(float x, float y);

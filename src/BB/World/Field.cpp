@@ -36,7 +36,8 @@ namespace bb {
                 jsonEntity);
             m_entities[entity->getId()] = std::unique_ptr<Entity>(entity);
         }
-        m_tileSet = m_game.getWorld().getStage(document["tileSet"].GetString())->getTileSet();
+        m_stage = document["tileSet"].GetString();
+        m_tileSet = m_game.getWorld().getStage(m_stage)->getTileSet();
         Value& jsonTiles = document["tiles"];
         for(SizeType i = 0; i < jsonTiles.Size(); i++) {
             m_tiles.push_back(jsonTiles[i].GetInt());
@@ -65,8 +66,8 @@ namespace bb {
         sf::View view = m_game.getWindowHandler()->getWindow().getDefaultView();
         m_background.setScale(view.getSize().x / m_background.getTexture()->getSize().x,
             view.getSize().x / m_background.getTexture()->getSize().x);
-        m_playerId = m_componentLists[std::type_index(typeid(ControlComponent))].get()->m_list.begin()->first;
-        m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(m_entities[m_playerId]->getCoord().x, -1);
+        int player = m_game.getWorld().getSystem<ControlSystem>().getPlayerId();
+        m_game.getWorld().getSystem<GraphicsSystem>().setViewCoord(m_entities[player]->getCoord().x, -1);
     }
 
     void Field::update() {
@@ -74,7 +75,8 @@ namespace bb {
 
     void Field::draw(const double dt) {
         auto& gs = m_game.getWorld().getSystem<GraphicsSystem>();
-        sf::Vector2f playerCoord = m_entities[m_playerId]->getCoord();
+        int player = m_game.getWorld().getSystem<ControlSystem>().getPlayerId();
+        sf::Vector2f playerCoord = m_entities[player]->getCoord();
         if(gs.getViewCoord().x > playerCoord.x + 3) {
             gs.setViewCoord(playerCoord.x + 3, gs.getViewCoord().y);
         } else if(gs.getViewCoord().x < playerCoord.x - 3) {
@@ -102,6 +104,13 @@ namespace bb {
         return m_entities[id].get();
     }
 
+    int Field::createEntity(std::string name, sf::Vector2f coord) {
+        int id = rand() % 1000 + 1;
+        auto* entity = m_game.getWorld().getEntityTemplate(name)->createEntity(m_game, id, coord);
+        m_entities[entity->getId()] = std::unique_ptr<Entity>(entity);
+        return id;
+    }
+
     void Field::addDeleteEntity(int id) {
         m_deletingEntities.push_back(id);
     }
@@ -124,5 +133,9 @@ namespace bb {
         if(m_componentLists.empty()) return nullptr;
         if(m_componentLists.find(type) == m_componentLists.end()) return nullptr;
         return m_componentLists[type].get();
+    }
+
+    std::string Field::getStageName() {
+        return m_stage;
     }
 }

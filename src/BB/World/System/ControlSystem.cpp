@@ -65,6 +65,16 @@ namespace bb {
         auto* component = list[std::type_index(typeid(ControlComponent))].get();
         if(!component) return;
         auto* cc = new ControlComponent(*dynamic_cast<ControlComponent*>(component));
+        if(cc->m_control) m_player = entity->getId();
+        entity->addComponent(std::type_index(typeid(ControlComponent)), cc);
+    }
+
+    void ControlSystem::createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list,
+        Entity* entity) {
+        auto* component = list[std::type_index(typeid(ControlComponent))].get();
+        if(!component) return;
+        auto* cc = new ControlComponent(*dynamic_cast<ControlComponent*>(component));
+        if(cc->m_control) m_player = entity->getId();
         entity->addComponent(std::type_index(typeid(ControlComponent)), cc);
     }
 
@@ -108,109 +118,6 @@ namespace bb {
                     std::cout << "                " << e.what() << std::endl;
                 }
             }
-            /*if(mouseCoord.x > playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == true) {
-                update = true;
-                cc.m_facingLeft = false;
-            } else if(mouseCoord.x < playerPos.x + gs.getTileSize() / 2 && cc.m_facingLeft == false) {
-                update = true;
-                cc.m_facingLeft = true;
-            }
-            switch(cc.m_state) {
-                case ControlComponent::IDLE:
-                    if(keyA ^ keyD) {
-                        update = true;
-                        if(keyA) {
-                            cc.m_movingLeft = true;
-                            cc.m_state = ControlComponent::WALKING;
-                            pc.m_velocities.x = -3.0F;
-                        } else if(keyD) {
-                            cc.m_movingLeft = false;
-                            cc.m_state = ControlComponent::WALKING;
-                            pc.m_velocities.x = 3.0F;
-                        }
-                    }
-                    if(keyShift || keyS) {
-                        update = true;
-                        cc.m_state = ControlComponent::CROUCHING;
-                        pc.m_velocities.x = 0.0F;
-                    } else if(keySpace || keyW) {
-                        update = true;
-                        cc.m_state = ControlComponent::JUMPING;
-                        pc.m_velocities.y = 15.0F;
-                        pc.m_isOnGround = false;
-                    }
-                    break;
-                case ControlComponent::WALKING:
-                    if(keyA ^ keyD) {
-                        if(keyA) {
-                            cc.m_movingLeft = true;
-                            pc.m_velocities.x = -3.0F;
-                        } else if(keyD) {
-                            cc.m_movingLeft = false;
-                            pc.m_velocities.x = 3.0F;
-                        }
-                    } else {
-                        update = true;
-                        cc.m_state = ControlComponent::IDLE;
-                        pc.m_velocities.x = 0.0F;
-                    }
-                    if(keyShift || keyS) {
-                        update = true;
-                        cc.m_state = ControlComponent::CROUCHING;
-                        pc.m_velocities.x = 0.0F;
-                    } else if(keySpace || keyW) {
-                        update = true;
-                        cc.m_state = ControlComponent::JUMPING;
-                        pc.m_velocities.y = 15.0F;
-                        pc.m_isOnGround = false;
-                    }
-                    break;
-                case ControlComponent::JUMPING:
-                    if(keyA ^ keyD) {
-                        if(pc.m_velocities.x == 0)
-                            update = true;
-                        if(keyA) {
-                            cc.m_movingLeft = true;
-                            pc.m_velocities.x = -3.0F;
-                        } else if(keyD) {
-                            cc.m_movingLeft = false;
-                            pc.m_velocities.x = 3.0F;
-                        }
-                    } else {
-                        if(pc.m_velocities.x != 0)
-                            update = true;
-                        pc.m_velocities.x = 0.0F;
-                    }
-                    if(pc.m_isOnGround) {
-                        update = true;
-                        if(pc.m_velocities.x == 0)
-                            cc.m_state = ControlComponent::IDLE;
-                        else
-                            cc.m_state = ControlComponent::WALKING;
-                    }
-                    break;
-                case ControlComponent::CROUCHING:
-                    if(keyA ^ keyD) {
-                        if(keyA) {
-                            cc.m_movingLeft = true;
-                            pc.m_velocities.x = -1.5F;
-                        } else if(keyD) {
-                            cc.m_movingLeft = false;
-                            pc.m_velocities.x = 1.5F;
-                        }
-                    } else {
-                        pc.m_velocities.x = 0.0F;
-                    }
-                    if(!(keyShift || keyS)) {
-                        update = true;
-                        if(pc.m_velocities.x == 0) {
-                            cc.m_state = ControlComponent::IDLE;
-                        } else {
-                            cc.m_state = ControlComponent::WALKING;
-                        }
-                    }
-                    break;
-            }*/
         }
     }
 
@@ -219,13 +126,30 @@ namespace bb {
             sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
             sf::Vector2f mousePixel = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
             sf::Vector2f mouseCoord = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords(mousePixel);
-            auto& list = m_game.getWorld().getField()->getComponentList<HealthComponent>()->m_list;
-            for(auto& hc : list) {
-                auto* entity = m_game.getWorld().getField()->getEntity(hc.first);
-                if(m_game.getWorld().getSystem<PhysicsSystem>().contain(entity, mouseCoord)) {
-                    m_game.getWorld().getSystem<HealthSystem>().hit(hc.first);
-                }
+            if(windowEvent.mouseButton.button == sf::Mouse::Left) {
+                /*auto& list = m_game.getWorld().getField()->getComponentList<HealthComponent>()->m_list;
+                for(auto& hc : list) {
+                    auto* entity = m_game.getWorld().getField()->getEntity(hc.first);
+                    if(m_game.getWorld().getSystem<PhysicsSystem>().contain(entity, mouseCoord)) {
+                        m_game.getWorld().getSystem<HealthSystem>().hit(hc.first);
+                    }
+                }*/
+            } else if(windowEvent.mouseButton.button == sf::Mouse::Right) {
+            }
+        } else if(windowEvent.type == sf::Event::KeyPressed) {
+            sf::Vector2i mousePos = sf::Mouse::getPosition(m_game.getWindowHandler()->getWindow());
+            sf::Vector2f mousePixel = m_game.getWindowHandler()->getWindow().mapPixelToCoords(mousePos);
+            sf::Vector2f mouseCoord = m_game.getWorld().getSystem<GraphicsSystem>().mapPixelToCoords(mousePixel);
+            if(windowEvent.key.code == sf::Keyboard::Num1) {
+                /*if(m_game.getWorld().getField()->getEntity(m_player)->getCoord().x > mouseCoord.x)
+                    m_game.getWorld().getField()->createEntity("FireL", mouseCoord);
+                else
+                    m_game.getWorld().getField()->createEntity("FireR", mouseCoord);*/
             }
         }
+    }
+
+    int ControlSystem::getPlayerId() {
+        return m_player;
     }
 }

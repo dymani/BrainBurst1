@@ -17,6 +17,7 @@ namespace bb {
         bool m_isMovable;
         int m_type;
         bool m_isOnGround;
+        bool m_resistance;
         sf::Vector2f m_velocities;
         sf::FloatRect m_hitbox;
         std::shared_ptr<luabridge::LuaRef> m_onHitGround;

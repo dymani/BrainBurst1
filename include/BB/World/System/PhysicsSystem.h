@@ -15,6 +15,7 @@ namespace bb {
             std::map<std::type_index, std::unique_ptr<IComponent>>& list);
         void createComponent(rapidjson::Value& jsonE,
             std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
+        void createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list, Entity* entity);
         void update();
         bool contain(Entity* e, sf::Vector2f coord);
         sf::Vector2f getVelocity(PhysicsComponent* pc);

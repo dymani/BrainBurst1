@@ -19,6 +19,7 @@ namespace bb {
             LuaRef luaIsMovable = luaPC["isMovable"];
             LuaRef luaType = luaPC["type"];
             LuaRef luaVelocities = luaPC["velocities"];
+            LuaRef luaResistance = luaPC["resistance"];
             LuaRef luaHitbox = luaPC["hitbox"];
             LuaRef luaOnHitGround = luaPC["onHitGround"];
             LuaRef luaOnCollide = luaPC["onCollide"];
@@ -26,6 +27,7 @@ namespace bb {
             pc->m_isMovable = luaIsMovable.cast<bool>();
             if(pc->m_isMovable) {
                 pc->m_velocities = {luaVelocities[1].cast<float>(), luaVelocities[2].cast<float>()};
+                pc->m_resistance = luaResistance.cast<bool>();
                 pc->m_isOnGround = false;
                 pc->m_onHitGround = std::make_shared<LuaRef>(luaOnHitGround);
             }
@@ -52,6 +54,15 @@ namespace bb {
         }
     }
 
+    void PhysicsSystem::createComponent(std::map<std::type_index, std::unique_ptr<IComponent>>& list,
+        Entity* entity) {
+        auto* mcomponent = list[std::type_index(typeid(PhysicsComponent))].get();
+        if(mcomponent) {
+            auto* pc = new PhysicsComponent(*dynamic_cast<PhysicsComponent*>(mcomponent));
+            entity->addComponent(std::type_index(typeid(PhysicsComponent)), pc);
+        }
+    }
+
     void PhysicsSystem::update() {
         auto& pcList = m_game.getWorld().getField()->getComponentList<PhysicsComponent>()->m_list;
         Entity* e;
@@ -59,16 +70,18 @@ namespace bb {
             auto& pcA = *dynamic_cast<PhysicsComponent*>(pcIA.second.get());
             if(pcA.m_isMovable == false) continue;
             e = m_game.getWorld().getField()->getEntity(pcIA.first);
-            if(!pcA.m_isOnGround) {
-                if(pcA.m_velocities.y > -30.0F)
-                    pcA.m_velocities.y -= 1.0F;
-            }
-            if(pcA.m_velocities.x > 0) {
-                pcA.m_velocities.x -= 0.5F;
-                if(pcA.m_velocities.x < 0) pcA.m_velocities.x = 0;
-            } else if(pcA.m_velocities.x < 0) {
-                pcA.m_velocities.x += 0.5F;
-                if(pcA.m_velocities.x > 0) pcA.m_velocities.x = 0;
+            if(pcA.m_resistance) {
+                if(!pcA.m_isOnGround) {
+                    if(pcA.m_velocities.y > -30.0F)
+                        pcA.m_velocities.y -= 1.0F;
+                }
+                if(pcA.m_velocities.x > 0) {
+                    pcA.m_velocities.x -= 0.5F;
+                    if(pcA.m_velocities.x < 0) pcA.m_velocities.x = 0;
+                } else if(pcA.m_velocities.x < 0) {
+                    pcA.m_velocities.x += 0.5F;
+                    if(pcA.m_velocities.x > 0) pcA.m_velocities.x = 0;
+                }
             }
             sf::Vector2f coord = e->getCoord();
             coord.x += pcA.m_velocities.x / 50;
